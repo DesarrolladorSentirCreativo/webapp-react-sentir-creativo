@@ -3,18 +3,16 @@ import './Login.css'
 import { Box, Button, Container, Grid, Paper, TextField, Typography } from '@mui/material'
 import { useFormik } from 'formik'
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 
-import { useNotification } from '../../context'
-
-interface LoginType {
-  email: string
-  password: string
-}
+import { type LoginData } from '../../models'
+import userService from '../../services/user.service'
 
 const Login: React.FC = () => {
-  const { getSuccess } = useNotification()
-  const formik = useFormik<LoginType>({
+  const navigate = useNavigate()
+
+  const formik = useFormik<LoginData>({
     initialValues: {
       email: '',
       password: ''
@@ -31,8 +29,9 @@ const Login: React.FC = () => {
         .required('La contraseña es obligatoria')
     }
     ),
-    onSubmit: (value) => {
-      getSuccess('entra el login')
+    onSubmit: async (values) => {
+      await userService.login(values)
+      navigate('/home')
     }
 
   })
