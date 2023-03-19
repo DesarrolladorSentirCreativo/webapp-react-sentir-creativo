@@ -6,7 +6,9 @@ interface ThemeProp {
 }
 
 export enum themePallete {
-  BG = '#F5F5F5'
+  BG = '#F5F5F5',
+  PRIMARY = '#FF6C00',
+  CONTRAST_TEXT = '#FFF'
 }
 
 const theme = createTheme({
@@ -14,6 +16,10 @@ const theme = createTheme({
     mode: 'light',
     background: {
       default: themePallete.BG
+    },
+    primary: {
+      main: themePallete.PRIMARY,
+      contrastText: themePallete.CONTRAST_TEXT
     }
   }
 

@@ -1,13 +1,17 @@
 import './App.css'
 
-import { Button } from '@mui/material'
 import React from 'react'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+
+import { Login } from './pages'
 
 const App: React.FC = () => {
   return (
-        <div className='App'>
-          <Button variant="contained">Hola app</Button>
-        </div>
+        <Router>
+            <Routes>
+                <Route path='/login' element={<Login />} />
+            </Routes>
+        </Router>
   )
 }
 
