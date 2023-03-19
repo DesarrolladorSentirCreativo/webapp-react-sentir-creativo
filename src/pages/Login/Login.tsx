@@ -5,12 +5,15 @@ import { useFormik } from 'formik'
 import React from 'react'
 import * as yup from 'yup'
 
+import { useNotification } from '../../context'
+
 interface LoginType {
   email: string
   password: string
 }
 
 const Login: React.FC = () => {
+  const { getSuccess } = useNotification()
   const formik = useFormik<LoginType>({
     initialValues: {
       email: '',
@@ -29,7 +32,7 @@ const Login: React.FC = () => {
     }
     ),
     onSubmit: (value) => {
-      console.log('funciona')
+      getSuccess('entra el login')
     }
 
   })
