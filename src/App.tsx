@@ -1,11 +1,13 @@
 import './App.css'
 
+import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 
 import { Layout } from './components'
 import { NotificationProvider } from './context'
-import { Home, Login } from './pages'
+import { Login } from './pages'
+import { routes } from './routes'
 import authService from './services/auth.service'
 
 const App: React.FC = () => {
@@ -18,8 +20,8 @@ const App: React.FC = () => {
     if ((token != null) && !(authService.isTokenExpired(token))) {
       setIsAuthenticated(true)
     } else {
-      // delete axios.defaults.headers.Authorization;
-      // localStorage.removeItem('token');
+      delete axios.defaults.headers.Authorization
+      localStorage.removeItem('token')
       setIsAuthenticated(false)
     }
   }, [location])
@@ -36,7 +38,13 @@ const App: React.FC = () => {
                         element={isAuthenticated ? <Layout /> : <Navigate to='/login' />}
                     >
                         <Route path='/' element={<Navigate to='/home' />} />
-                        <Route path="/home" element={<Home />} />
+                        {routes.map((route, index) => (
+                            <Route
+                                key={index}
+                                path={route.path}
+                                element={<route.component />}
+                            />
+                        ))}
                     </Route>
                 </Routes>
         </NotificationProvider>

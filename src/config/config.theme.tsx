@@ -10,7 +10,11 @@ export enum themePallete {
   PRIMARY = '#FF6C00',
   CONTRAST_TEXT = '#FFF',
   ERROR_MAIN = '#F44336',
-  SUCCESS_MAIN = '#4CAF50'
+  SUCCESS_MAIN = '#4CAF50',
+  SIDEBAR_BG = '#222D32',
+  SIDEBAR_COLOR = '#eeeeee',
+  SIDEBAR_HOVER_BG = '#FF6C00',
+  SIDEBAR_HOVER_COLOR = '#fff'
 }
 
 const theme = createTheme({
