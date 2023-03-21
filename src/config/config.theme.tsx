@@ -48,6 +48,48 @@ const theme = createTheme({
           color: themePallete.CONTRAST_TEXT
         }
       }
+    },
+    MuiListItem: {
+      styleOverrides: {
+        root: {
+          '&.Mui-selected:hover': {
+            backgroundColor: themePallete.PRIMARY
+          }
+        }
+      }
+    },
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: themePallete.SIDEBAR_BG,
+          border: 'none'
+        }
+      }
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          '&.Mui-selected': {
+            color: themePallete.CONTRAST_TEXT,
+            backgroundColor: themePallete.PRIMARY
+          },
+          '&.Mui-selected:hover': {
+            backgroundColor: themePallete.PRIMARY
+          },
+          '&:hover': {
+            color: themePallete.CONTRAST_TEXT,
+            backgroundColor: themePallete.SIDEBAR_HOVER_BG
+          }
+        }
+      }
+    },
+    MuiAppBar: {
+      defaultProps: {
+        style: {
+          color: themePallete.CONTRAST_TEXT,
+          marginBottom: 20
+        }
+      }
     }
   }
 

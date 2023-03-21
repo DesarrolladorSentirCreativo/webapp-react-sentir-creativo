@@ -1,10 +1,12 @@
 import './Sidebar.css'
 
-import { Avatar, Drawer, List, Stack } from '@mui/material'
+import { Drawer, Toolbar } from '@mui/material'
 import React from 'react'
 
 import { themePallete } from '../../config/config.theme'
 import sizeConfig from '../../config/size.config.'
+import { MenuProvider } from './context/menu.context'
+import MenuSidebar from './MenuSidebar'
 
 const Sidebar: React.FC = () => {
   return (
@@ -18,11 +20,14 @@ const Sidebar: React.FC = () => {
             backgroundColor: themePallete.SIDEBAR_BG
           }
         }}>
-            <List disablePadding>
-                <Stack sx={{ width: '100%' }} direction='row' justifyContent='center'>
-                    <Avatar src='/static/images/full-logo.png' className='logo' />
-                </Stack>
-            </List>
+            <div>
+                <Toolbar sx={{ background: themePallete.SIDEBAR_BG, width: '100%', p: 2 }}>
+                    <img src="/static/images/full-logo.png" className="logo" alt="Sentir Creativo"/>
+                </Toolbar>
+                <MenuProvider>
+                    <MenuSidebar />
+                </MenuProvider>
+            </div>
         </Drawer>
   )
 }
