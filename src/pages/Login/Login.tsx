@@ -40,12 +40,14 @@ const Login: React.FC = () => {
             <Grid container direction='column' alignItems='center' justifyContent='center' sx={{ minHeight: '90vh' }}>
                 <Grid item>
                     <Paper sx={{ padding: '1.2em' }}>
-                        <img
-                            src='/static/images/full-logo.png'
-                            alt='SentirCreativo'
-                            className='logo'
-                        />
-                        <Typography variant='h5'>Inicio de Sesión</Typography>
+                       <Box sx={{ display: 'flex', alignContent: 'center', alignItems: 'center', textAlign: 'center' }}>
+                           <img
+                               src='/static/images/full-logo.png'
+                               alt='SentirCreativo'
+                               className='logo-login'
+                           />
+                       </Box>
+                        <Typography variant='h5' sx={{ textAlign: 'center' }}>Inicio de Sesión</Typography>
                         <Box component='form' onSubmit={formik.handleSubmit}>
                             <TextField name='email' margin='normal' fullWidth label='correo electrónico'
                                        sx={{ mt: 2, mb: 1.5 }} required value={formik.values.email}
