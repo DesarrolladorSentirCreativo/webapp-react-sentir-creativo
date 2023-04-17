@@ -29,13 +29,9 @@ const App: React.FC = () => {
   return (
         <NotificationProvider>
                 <Routes>
-                    <Route path='/login'
-                           element={
-                               isAuthenticated ? <Navigate to='/home' replace /> : <Login />
-                           } />
                     <Route
                         path='/'
-                        element={isAuthenticated ? <Layout /> : <Navigate to='/login' />}
+                        element={ <Layout />}
                     >
                         <Route path='/' element={<Navigate to='/home' />} />
                         {routes.map((route, index) => (

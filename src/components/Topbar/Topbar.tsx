@@ -10,12 +10,13 @@ interface Props {
   handleDrawerToggle: () => void
 }
 const Topbar: React.FC<Props> = (props) => {
-  const [anchorElUser, setAnchorElUser] = useState(null)
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
   const [user, setUser] = useState<string | null>(null)
   const navigate = useNavigate()
 
-  const handleOpenUserMenu = (event): void => {
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>): void => {
     setAnchorElUser(event.currentTarget)
+    console.log(user)
   }
   const handleCloseUserMenu = (): void => {
     setAnchorElUser(null)
@@ -88,9 +89,7 @@ const Topbar: React.FC<Props> = (props) => {
                                     gutterBottom
                                     sx={{ color: '#fff', fontSize: '10px' }}
                                 >
-                                    {user.username !== null || user.username !== ''
-                                      ? user.email
-                                      : user.email}
+                                    hOLA MUNDO
                                 </Typography>
                             </IconButton>
                             <Menu

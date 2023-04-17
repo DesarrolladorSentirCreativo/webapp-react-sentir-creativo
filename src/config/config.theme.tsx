@@ -7,7 +7,7 @@ interface ThemeProp {
 
 export enum themePallete {
   BG = '#F5F5F5',
-  PRIMARY = '#FF6C00',
+  PRIMARY = '#E65100',
   CONTRAST_TEXT = '#FFF',
   ERROR_MAIN = '#F44336',
   SUCCESS_MAIN = '#4CAF50',

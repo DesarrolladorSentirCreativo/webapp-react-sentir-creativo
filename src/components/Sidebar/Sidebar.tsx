@@ -36,7 +36,7 @@ const Sidebar: React.FC<Props> = (props) => {
           >
               <div>
                   <Toolbar sx={{ background: themePallete.SIDEBAR_BG, width: '100%', p: 2 }}>
-                      <img src='/static/images/full-logo.png' className='logo' alt='Sentir Creativo' />
+                      <img src='/static/images/white_animate.com_l.png' className='logo-sidebar' alt='Sentir Creativo' />
                   </Toolbar>
                   <MenuProvider>
                       <MenuSidebar />
@@ -59,7 +59,7 @@ const Sidebar: React.FC<Props> = (props) => {
           >
               <div>
                   <Toolbar sx={{ background: themePallete.SIDEBAR_BG, width: '100%', p: 2 }}>
-                      <img src='/static/images/full-logo.png' className='logo' alt='Sentir Creativo' />
+                      <img src='/static/images/white_animate.com_l.png' className='logo-sidebar' alt='Sentir Creativo' />
                   </Toolbar>
                   <MenuProvider>
                       <MenuSidebar />
