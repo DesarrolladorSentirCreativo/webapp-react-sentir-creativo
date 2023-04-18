@@ -44,7 +44,7 @@ const Sidebar: React.FC<Props> = (props) => {
               </div>
           </Drawer>
           <Drawer variant='permanent' sx={{
-            width: sizeConfig.sidebar.width,
+            width: { md: sizeConfig.sidebar.width, xs: 0 },
             flexShrink: 0,
             '& .MuiDrawer-paper': {
               width: sizeConfig.sidebar.width,
