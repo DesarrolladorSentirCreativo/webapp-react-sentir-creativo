@@ -1,6 +1,8 @@
 import './App.css'
 
 import axios from 'axios'
+import { loadMessages, locale } from 'devextreme/localization'
+import esMessages from 'devextreme/localization/messages/es.json'
 import React, { useEffect, useState } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 
@@ -11,6 +13,8 @@ import { routes } from './routes'
 import authService from './services/auth.service'
 
 const App: React.FC = () => {
+  loadMessages(esMessages)
+  locale('es')
   const location = useLocation()
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true)
 

@@ -7,7 +7,6 @@ interface Props {
   text: string
   variant: AppButtonVariant
   color: AppButtonColor
-  onClick: () => void
   type: AppButtonType
 }
 

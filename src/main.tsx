@@ -1,5 +1,7 @@
 import './index.css'
 import './interceptors'
+import 'devextreme/dist/css/dx.material.orange.light.compact.css'
+import './assets/css/dx.material.sentir-creativo-orange.css'
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'

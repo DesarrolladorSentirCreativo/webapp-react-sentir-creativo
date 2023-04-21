@@ -1,4 +1,4 @@
-import { Paper, Typography } from '@mui/material'
+import { Paper } from '@mui/material'
 import React from 'react'
 
 interface Props {
@@ -7,11 +7,10 @@ interface Props {
 }
 
 const Card: React.FC<Props> = (props) => {
-  const { title, children } = props
+  const { children } = props
 
   return (
-      <Paper sx={{ padding: '1.2em' }}>
-          <Typography>{title}</Typography>
+      <Paper sx={{ padding: '1.2em', height: '100vh', width: '100%' }}>
           {children}
       </Paper>
   )
