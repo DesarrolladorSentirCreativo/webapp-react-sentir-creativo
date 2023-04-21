@@ -14,9 +14,12 @@ const paginate = async (pageSize: number, pageIndex: number): Promise<IPaginatio
 }
 
 const getAll = async (): Promise<Audiencia[]> => {
-  const { data } = await axios.get<Audiencia[]>('/audiencias/all')
-
-  return data
+  return await axios.get<Audiencia[]>('/audiencias/all')
+    .then(response => response.data)
+    .catch(error => {
+      console.log(error)
+      return []
+    })
 }
 
 export default { paginate, getAll }

@@ -1,10 +1,10 @@
 import axios from 'axios'
 
-import { type SelectOrganizacion } from '../models/organizacion'
+import { type SelectOrigen } from '../models'
 
-const select = async (): Promise<SelectOrganizacion[]> => {
+const select = async (): Promise<SelectOrigen[]> => {
   return await axios
-    .get<SelectOrganizacion[]>('/organizaciones/select')
+    .get<SelectOrigen[]>('/origenes/select')
     .then((response) => response.data)
     .catch((error) => {
       console.log(error)
