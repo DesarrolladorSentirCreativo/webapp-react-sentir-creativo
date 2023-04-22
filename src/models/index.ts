@@ -1,6 +1,7 @@
 export * from './AppButton'
 export * from './audiencia'
 export * from './cercania'
+export * from './estadoAudiencia'
 export * from './organizacion'
 export * from './origen'
 export * from './prefijo'
