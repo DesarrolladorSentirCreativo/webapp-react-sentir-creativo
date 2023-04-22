@@ -9,11 +9,7 @@ interface Props {
 const Card: React.FC<Props> = (props) => {
   const { children } = props
 
-  return (
-      <Paper sx={{ padding: '1.2em', height: '100vh', width: '100%' }}>
-          {children}
-      </Paper>
-  )
+  return <Paper sx={{ padding: '1.2em', width: '100%' }}>{children}</Paper>
 }
 
 export default Card

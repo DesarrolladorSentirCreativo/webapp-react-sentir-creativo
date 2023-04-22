@@ -12,16 +12,22 @@ const Layout: React.FC = () => {
     setMobileOpen(!mobileOpen)
   }
   return (
-        <Box sx={{ display: 'flex' }}>
-            <Topbar handleDrawerToggle={handleDrawerToggle}/>
-            <Box component='nav' sx={{ width: { md: 240, xs: 0 }, flexShrink: 0 }}>
-                <Sidebar mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle}/>
-            </Box>
-            <Box component='main' sx={{ flexGrow: 1, p: 3, width: '100%', height: '100vh' }}>
-                <Toolbar/>
-                <Outlet />
-            </Box>
-        </Box>
+    <Box sx={{ display: 'flex' }}>
+      <Topbar handleDrawerToggle={handleDrawerToggle} />
+      <Box component="nav" sx={{ width: { md: 240, xs: 0 }, flexShrink: 0 }}>
+        <Sidebar
+          mobileOpen={mobileOpen}
+          handleDrawerToggle={handleDrawerToggle}
+        />
+      </Box>
+      <Box
+        component="main"
+        sx={{ flexGrow: 1, p: 3, width: '100%', height: '100vh' }}
+      >
+        <Toolbar />
+        <Outlet />
+      </Box>
+    </Box>
   )
 }
 

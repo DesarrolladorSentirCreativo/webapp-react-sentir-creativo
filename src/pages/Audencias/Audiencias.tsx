@@ -2,6 +2,7 @@ import { Box } from '@mui/material'
 import CustomStore from 'devextreme/data/custom_store'
 import { Column, Lookup } from 'devextreme-react/data-grid'
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { Card, DataGridCustom } from '../../components/Controls'
 import { useCercania } from '../../hooks/useCercania'
@@ -19,6 +20,9 @@ const Audiencias: React.FC = () => {
   const { loadPrefijos, prefijos } = usePrefijo()
   const { loadCercanias, cercanias } = useCercania()
   const { loadEstadoAudiencias, estadoAudiencias } = useEstadoAudiencia()
+  const [buttonAddGrid, setButtonAddGrid] = useState({})
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     load()
@@ -27,6 +31,16 @@ const Audiencias: React.FC = () => {
 
   const loadData = async (): Promise<void> => {
     try {
+      setButtonAddGrid({
+        location: 'after',
+        widget: 'dxButton',
+        options: {
+          icon: 'add',
+          onClick: () => {
+            navigate('/audiencias/nuevo')
+          }
+        }
+      })
       setAudienciasStore(
         new CustomStore({
           key: 'id',
@@ -86,7 +100,7 @@ const Audiencias: React.FC = () => {
           dataStore={audienciasStore}
           updating={false}
           deleting={true}
-          addButton={null}
+          addButton={buttonAddGrid}
           pageSize={10}
           columnCount={'nombre'}
           adding={false}
