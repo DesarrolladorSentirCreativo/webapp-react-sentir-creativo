@@ -27,7 +27,8 @@ const Audiencias: React.FC = () => {
       setAudienciasStore(
         new CustomStore({
           key: 'id',
-          load: () => loadDataGrid()
+          load: () => loadDataGrid(),
+          remove: (key) => deleteRegister(Number(key))
         })
       )
     } catch (error) {
@@ -44,6 +45,10 @@ const Audiencias: React.FC = () => {
     await loadPrefijos()
     await loadCercanias()
     await loadOrganizaciones()
+  }
+
+  const deleteRegister = (id: number): any => {
+    return audienciaService.deleteById(id)
   }
 
   return (
