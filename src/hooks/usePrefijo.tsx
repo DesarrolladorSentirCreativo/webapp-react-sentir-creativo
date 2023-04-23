@@ -22,4 +22,4 @@ const usePrefijo = (): Props => {
   }
 }
 
-export { usePrefijo }
+export default usePrefijo

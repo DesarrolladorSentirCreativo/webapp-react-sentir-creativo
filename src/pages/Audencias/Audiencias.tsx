@@ -5,11 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { Card, DataGridCustom } from '../../components/Controls'
-import { useCercania } from '../../hooks/useCercania'
-import { useEstadoAudiencia } from '../../hooks/useEstadoAudiencia'
-import { useOrganizacion } from '../../hooks/useOrganizacion'
-import { useOrigen } from '../../hooks/useOrigen'
-import { usePrefijo } from '../../hooks/usePrefijo'
+import { useAntiguedad, useCercania, useEstadoAudiencia, useOrganizacion, useOrigen, usePrefijo } from '../../hooks'
 import { type SelectEstadoAudiencia } from '../../models'
 import audienciaService from '../../services/audiencia.service'
 
@@ -20,6 +16,7 @@ const Audiencias: React.FC = () => {
   const { loadPrefijos, prefijos } = usePrefijo()
   const { loadCercanias, cercanias } = useCercania()
   const { loadEstadoAudiencias, estadoAudiencias } = useEstadoAudiencia()
+  const { loadAntiguedades, antiguedades } = useAntiguedad()
   const [buttonAddGrid, setButtonAddGrid] = useState({})
 
   const navigate = useNavigate()
@@ -63,6 +60,7 @@ const Audiencias: React.FC = () => {
     await loadCercanias()
     await loadOrganizaciones()
     await loadEstadoAudiencias()
+    await loadAntiguedades()
   }
 
   const deleteRegister = (id: number): any => {
@@ -118,56 +116,16 @@ const Audiencias: React.FC = () => {
           }}
         >
           <Column dataField="id" caption="ID" />
-          <Column
-            dataField="estadoId"
-            caption="Estado Audiencia"
-            cellRender={renderCell}
-          />
-          <Column
-            dataField="nombre"
-            caption="Nombre"
-            dataType={'text'}
-            allowEditing={false}
-            allowSearch={true}
-          />
-          <Column
-            dataField="apellido"
-            caption="Apellidos"
-            dataType={'text'}
-            allowEditing={false}
-            allowSearch={true}
-          />
+          <Column dataField="estadoId" caption="Estado Audiencia" cellRender={renderCell} />
+          <Column dataField="nombre" caption="Nombre" dataType={'text'} allowEditing={false} allowSearch={true} />
+          <Column dataField="apellido" caption="Apellidos" dataType={'text'} allowEditing={false} allowSearch={true} />
           <Column dataField="organizacionId" caption="Organizacion">
-            <Lookup
-              dataSource={organizaciones}
-              valueExpr="id"
-              displayExpr="nombre"
-            />
+            <Lookup dataSource={organizaciones} valueExpr="id" displayExpr="nombre" />
           </Column>
-          <Column
-            dataField="celular"
-            caption="Telefono"
-            dataType={'text'}
-            allowEditing={false}
-          />
-          <Column
-            dataField="email"
-            caption="Email"
-            dataType={'text'}
-            allowEditing={false}
-          />
-          <Column
-            dataField="documentoIdentidad"
-            caption="Documento Identidad"
-            dataType={'text'}
-            allowEditing={false}
-          />
-          <Column
-            dataField="profesion"
-            caption="Profesion"
-            dataType={'text'}
-            allowEditing={false}
-          />
+          <Column dataField="celular" caption="Telefono" dataType={'text'} allowEditing={false} />
+          <Column dataField="email" caption="Email" dataType={'text'} allowEditing={false} />
+          <Column dataField="documentoIdentidad" caption="Documento Identidad" dataType={'text'} allowEditing={false} />
+          <Column dataField="profesion" caption="Profesion" dataType={'text'} allowEditing={false} />
           <Column dataField="origenId" caption="Origen">
             <Lookup dataSource={origenes} valueExpr="id" displayExpr="nombre" />
           </Column>
@@ -175,18 +133,12 @@ const Audiencias: React.FC = () => {
             <Lookup dataSource={prefijos} valueExpr="id" displayExpr="nombre" />
           </Column>
           <Column dataField="cercaniaId" caption="Cercania">
-            <Lookup
-              dataSource={cercanias}
-              valueExpr="id"
-              displayExpr="nombre"
-            />
+            <Lookup dataSource={cercanias} valueExpr="id" displayExpr="nombre" />
           </Column>
-          <Column
-            dataField="cargo"
-            caption="Cargo"
-            dataType={'text'}
-            allowEditing={false}
-          />
+          <Column dataField="cargo" caption="Cargo" dataType={'text'} allowEditing={false} />
+          <Column dataField="antiguedadId" caption="Antiguedad">
+            <Lookup dataSource={antiguedades} valueExpr="id" displayExpr="nombre" />
+          </Column>
         </DataGridCustom>
       </Box>
     </Card>

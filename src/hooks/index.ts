@@ -1,0 +1,6 @@
+export { default as useAntiguedad } from './useAntiguedad'
+export { default as useCercania } from './useCercania'
+export { default as useEstadoAudiencia } from './useEstadoAudiencia'
+export { default as useOrganizacion } from './useOrganizacion'
+export { default as useOrigen } from './useOrigen'
+export { default as usePrefijo } from './usePrefijo'

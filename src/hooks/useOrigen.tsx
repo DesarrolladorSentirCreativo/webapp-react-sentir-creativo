@@ -22,4 +22,4 @@ const useOrigen = (): Props => {
   }
 }
 
-export { useOrigen }
+export default useOrigen

@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { type SelectOrganizacion } from '../models/organizacion'
-import organizacionService from '../services/organizacion.service'
+import { fetchOrganizaciones } from '../redux/states/organizacion'
+import { type AppDispatch, type RootState } from '../redux/store'
 
 interface Props {
   organizaciones: SelectOrganizacion[]
@@ -9,11 +10,11 @@ interface Props {
 }
 
 const useOrganizacion = (): Props => {
-  const [organizaciones, setOrganizaciones] = useState<SelectOrganizacion[]>([])
+  const dispatch: AppDispatch = useDispatch()
+  const organizaciones = useSelector((state: RootState) => state.organizacion.listSelect)
 
   const loadOrganizaciones = async (): Promise<void> => {
-    const data = await organizacionService.select()
-    setOrganizaciones(data)
+    dispatch(fetchOrganizaciones())
   }
 
   return {
@@ -22,4 +23,4 @@ const useOrganizacion = (): Props => {
   }
 }
 
-export { useOrganizacion }
+export default useOrganizacion

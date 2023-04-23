@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { type SelectEstadoAudiencia } from '../models'
-import estadoAudienciaService from '../services/estadoAudiencia.service'
+import { fetchEstadoAudiencias } from '../redux/states/estadoAudiencia'
+import { type AppDispatch, type RootState } from '../redux/store'
 
 interface Props {
   estadoAudiencias: SelectEstadoAudiencia[]
@@ -9,13 +10,11 @@ interface Props {
 }
 
 const useEstadoAudiencia = (): Props => {
-  const [estadoAudiencias, setEstadoAudiencias] = useState<
-    SelectEstadoAudiencia[]
-  >([])
+  const dispatch: AppDispatch = useDispatch()
+  const estadoAudiencias = useSelector((state: RootState) => state.estadoAudiencia.listSelect)
 
   const loadEstadoAudiencias = async (): Promise<void> => {
-    const data = await estadoAudienciaService.select()
-    setEstadoAudiencias(data)
+    dispatch(fetchEstadoAudiencias())
   }
 
   return {
@@ -24,4 +23,4 @@ const useEstadoAudiencia = (): Props => {
   }
 }
 
-export { useEstadoAudiencia }
+export default useEstadoAudiencia

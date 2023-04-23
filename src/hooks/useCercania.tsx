@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { type SelectCercania } from '../models'
-import cercaniaService from '../services/cercania.service'
+import { fetchCercanias } from '../redux/states/cercania'
+import { type AppDispatch, type RootState } from '../redux/store'
 
 interface Props {
   cercanias: SelectCercania[]
@@ -9,11 +10,11 @@ interface Props {
 }
 
 const useCercania = (): Props => {
-  const [cercanias, setCercanias] = useState<SelectCercania[]>([])
+  const dispatch: AppDispatch = useDispatch()
+  const cercanias = useSelector((state: RootState) => state.cercania.listSelect)
 
   const loadCercanias = async (): Promise<void> => {
-    const data = await cercaniaService.select()
-    setCercanias(data)
+    dispatch(fetchCercanias())
   }
 
   return {
@@ -22,4 +23,4 @@ const useCercania = (): Props => {
   }
 }
 
-export { useCercania }
+export default useCercania
