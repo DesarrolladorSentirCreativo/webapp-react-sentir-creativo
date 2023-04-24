@@ -93,6 +93,9 @@ const CreateFormAudiencia: React.FC = () => {
           Formulario para Creación de Audiencia
         </Typography>
         <Grid container spacing={2} padding={2}>
+          <Grid item xs={12}>
+            <Typography variant="h6">Datos Personales</Typography>
+          </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <TextField
               name="nombre"
@@ -131,34 +134,6 @@ const CreateFormAudiencia: React.FC = () => {
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
-            <Autocomplete
-              disablePortal
-              fullWidth
-              size="small"
-              id="estadoAudiencia"
-              options={estadoAudiencias}
-              onChange={(event, value) => {
-                formik.setFieldValue('estadoAudienciaId', value?.id ?? null)
-              }}
-              getOptionLabel={(option) => option.nombre}
-              renderInput={(params) => <TextField {...params} fullWidth label="Estado Audiencia" required value={formik.values.estadoAudienciaId} />}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Autocomplete
-              disablePortal
-              fullWidth
-              size="small"
-              id="organizacion"
-              options={organizaciones}
-              onChange={(event, value) => {
-                formik.setFieldValue('organizacionId', value?.id ?? null)
-              }}
-              getOptionLabel={(option) => option.nombre}
-              renderInput={(params) => <TextField {...params} fullWidth label="Organización" required value={formik.values.organizacionId} />}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
             <TextField
               name="celular"
               label="Teléfono"
@@ -168,6 +143,18 @@ const CreateFormAudiencia: React.FC = () => {
               onChange={formik.handleChange}
               error={formik.touched.celular === true && Boolean(formik.errors.celular)}
               helperText={formik.touched.celular === true && formik.errors.celular}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <TextField
+              name="profesion"
+              label="Profesión"
+              fullWidth
+              size="small"
+              value={formik.values.profesion}
+              onChange={formik.handleChange}
+              error={formik.touched.profesion === true && Boolean(formik.errors.profesion)}
+              helperText={formik.touched.profesion === true && formik.errors.profesion}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -195,16 +182,21 @@ const CreateFormAudiencia: React.FC = () => {
               helperText={formik.touched.email2 === true && formik.errors.email2}
             />
           </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6">Datos Organización</Typography>
+          </Grid>
           <Grid item xs={12} sm={6} md={4}>
-            <TextField
-              name="profesion"
-              label="Profesión"
+            <Autocomplete
+              disablePortal
               fullWidth
               size="small"
-              value={formik.values.profesion}
-              onChange={formik.handleChange}
-              error={formik.touched.profesion === true && Boolean(formik.errors.profesion)}
-              helperText={formik.touched.profesion === true && formik.errors.profesion}
+              id="organizacion"
+              options={organizaciones}
+              onChange={(event, value) => {
+                formik.setFieldValue('organizacionId', value?.id ?? null)
+              }}
+              getOptionLabel={(option) => option.nombre}
+              renderInput={(params) => <TextField {...params} fullWidth label="Organización" required value={formik.values.organizacionId} />}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -229,6 +221,23 @@ const CreateFormAudiencia: React.FC = () => {
               onChange={formik.handleChange}
               error={formik.touched.departamento === true && Boolean(formik.errors.departamento)}
               helperText={formik.touched.departamento === true && formik.errors.departamento}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6">Otros Datos</Typography>
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Autocomplete
+              disablePortal
+              fullWidth
+              size="small"
+              id="estadoAudiencia"
+              options={estadoAudiencias}
+              onChange={(event, value) => {
+                formik.setFieldValue('estadoAudienciaId', value?.id ?? null)
+              }}
+              getOptionLabel={(option) => option.nombre}
+              renderInput={(params) => <TextField {...params} fullWidth label="Estado Audiencia" required value={formik.values.estadoAudienciaId} />}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -341,7 +350,15 @@ const CreateFormAudiencia: React.FC = () => {
             </Button>
           </Grid>
           <Grid item xs={12} sm={6} md={6}>
-            <Button fullWidth type="button" variant="contained" color="error">
+            <Button
+              fullWidth
+              type="button"
+              variant="contained"
+              color="error"
+              onClick={() => {
+                navigate('/audiencias')
+              }}
+            >
               Cancelar
             </Button>
           </Grid>
