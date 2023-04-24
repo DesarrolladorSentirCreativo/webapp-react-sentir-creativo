@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { Card, DataGridCustom } from '../../components/Controls'
-import { useAntiguedad, useCercania, useEstadoAudiencia, useOrganizacion, useOrigen, usePrefijo } from '../../hooks'
+import { useAntiguedad, useCercania, useEstadoAudiencia, useMotivacion, useOrganizacion, useOrigen, usePrefijo } from '../../hooks'
 import { type SelectEstadoAudiencia } from '../../models'
 import audienciaService from '../../services/audiencia.service'
 
@@ -17,6 +17,7 @@ const Audiencias: React.FC = () => {
   const { loadCercanias, cercanias } = useCercania()
   const { loadEstadoAudiencias, estadoAudiencias } = useEstadoAudiencia()
   const { loadAntiguedades, antiguedades } = useAntiguedad()
+  const { loadMotivaciones, motivaciones } = useMotivacion()
   const [buttonAddGrid, setButtonAddGrid] = useState({})
 
   const navigate = useNavigate()
@@ -61,6 +62,7 @@ const Audiencias: React.FC = () => {
     await loadOrganizaciones()
     await loadEstadoAudiencias()
     await loadAntiguedades()
+    await loadMotivaciones()
   }
 
   const deleteRegister = (id: number): any => {
@@ -125,7 +127,7 @@ const Audiencias: React.FC = () => {
           <Column dataField="celular" caption="Telefono" dataType={'text'} allowEditing={false} />
           <Column dataField="email" caption="Email" dataType={'text'} allowEditing={false} />
           <Column dataField="documentoIdentidad" caption="Documento Identidad" dataType={'text'} allowEditing={false} />
-          <Column dataField="profesion" caption="Profesion" dataType={'text'} allowEditing={false} />
+          <Column dataField="profesion" caption="Profesión" dataType={'text'} allowEditing={false} />
           <Column dataField="origenId" caption="Origen">
             <Lookup dataSource={origenes} valueExpr="id" displayExpr="nombre" />
           </Column>
@@ -138,6 +140,9 @@ const Audiencias: React.FC = () => {
           <Column dataField="cargo" caption="Cargo" dataType={'text'} allowEditing={false} />
           <Column dataField="antiguedadId" caption="Antiguedad">
             <Lookup dataSource={antiguedades} valueExpr="id" displayExpr="nombre" />
+          </Column>
+          <Column dataField="motivacionId" caption="Motivación">
+            <Lookup dataSource={motivaciones} valueExpr="id" displayExpr="nombre" />
           </Column>
         </DataGridCustom>
       </Box>

@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { type SelectOrigen } from '../models'
-import origenService from '../services/origen.service'
+import { fetchOrigenes } from '../redux/states/origen'
+import { type AppDispatch, type RootState } from '../redux/store'
 
 interface Props {
   origenes: SelectOrigen[]
@@ -9,11 +10,11 @@ interface Props {
 }
 
 const useOrigen = (): Props => {
-  const [origenes, setOrigenes] = useState<SelectOrigen[]>([])
+  const dispatch: AppDispatch = useDispatch()
+  const origenes = useSelector((state: RootState) => state.origen.listSelect)
 
   const loadOrigenes = async (): Promise<void> => {
-    const data = await origenService.select()
-    setOrigenes(data)
+    dispatch(fetchOrigenes())
   }
 
   return {

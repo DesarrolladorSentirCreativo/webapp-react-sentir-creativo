@@ -41,3 +41,29 @@ export interface Audiencia {
   documentoIdentidad?: any
   activo: any
 }
+
+export interface AudienciaData {
+  id: number
+  nombre?: string
+  apellido?: string
+  profesion?: string
+  email: string
+  celular?: string
+  organizacionId: number
+  departamento?: string
+  cargo?: string
+  antiguedadId: number
+  cercaniaId: number
+  motivacionId: number
+  estadoAudienciaId: number
+  prefijoId: number
+  origenId: number
+  email2: string | null
+  destacado?: boolean
+  documentoIdentidad?: string
+  activo: boolean
+  difusiones: []
+  cuponDescuentos: []
+}
+
+export interface CreateAudiencia extends Omit<AudienciaData, 'id' | 'activo' | 'destacado'> {}

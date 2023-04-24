@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { type SelectPrefijo } from '../models'
-import prefijoService from '../services/prefijo.service'
+import { fetchPrefijos } from '../redux/states/prefijo'
+import { type AppDispatch, type RootState } from '../redux/store'
 
 interface Props {
   prefijos: SelectPrefijo[]
@@ -9,11 +10,11 @@ interface Props {
 }
 
 const usePrefijo = (): Props => {
-  const [prefijos, setPrefijos] = useState<SelectPrefijo[]>([])
+  const dispatch: AppDispatch = useDispatch()
+  const prefijos = useSelector((state: RootState) => state.prefijo.listSelect)
 
   const loadPrefijos = async (): Promise<void> => {
-    const data = await prefijoService.select()
-    setPrefijos(data)
+    dispatch(fetchPrefijos())
   }
 
   return {
