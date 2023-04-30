@@ -4,6 +4,7 @@ import antiguedadReducer from './states/antiguedad'
 import cercaniaReducer from './states/cercania'
 import cuponDescuentoReducer from './states/cuponDescuento'
 import difusionReducer from './states/difusion'
+import direccionReducer from './states/direccion'
 import estadoAudienciaReducer from './states/estadoAudiencia'
 import motivacionReducer from './states/motivacion'
 import organizacionReducer from './states/organizacion'
@@ -22,7 +23,8 @@ const store = configureStore({
     motivacion: motivacionReducer,
     origen: origenReducer,
     prefijo: prefijoReducer,
-    rubro: rubroReducer
+    rubro: rubroReducer,
+    direccion: direccionReducer
   }
 })
 

@@ -1,6 +1,10 @@
 import axios from 'axios'
 
-import { type OrganizacionDataGrid, type SelectOrganizacion } from '../models'
+import {
+  type CreateOrganizacion,
+  type OrganizacionDataGrid,
+  type SelectOrganizacion
+} from '../models'
 
 const select = async (): Promise<SelectOrganizacion[]> => {
   return await axios
@@ -22,4 +26,9 @@ const getAll = async (): Promise<OrganizacionDataGrid[]> => {
     })
 }
 
-export default { select, getAll }
+const create = async (values: CreateOrganizacion): Promise<void> => {
+  const { data } = await axios.post('/organizaciones', values)
+  return data
+}
+
+export default { select, getAll, create }

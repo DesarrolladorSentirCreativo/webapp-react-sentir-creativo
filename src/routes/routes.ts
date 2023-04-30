@@ -1,4 +1,10 @@
-import { Audiencias, CreateFormAudiencia, Home, Organizaciones } from '../pages'
+import {
+  Audiencias,
+  CreateFormAudiencia,
+  CreateFormOrganizacion,
+  Home,
+  Organizaciones
+} from '../pages'
 
 const routes = [
   {
@@ -16,6 +22,10 @@ const routes = [
   {
     path: '/organizaciones',
     component: Organizaciones
+  },
+  {
+    path: '/organizaciones/nuevo',
+    component: CreateFormOrganizacion
   }
 ]
 
