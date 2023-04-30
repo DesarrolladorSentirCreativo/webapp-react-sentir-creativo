@@ -4,12 +4,12 @@ import { type SelectPrefijo } from '../models'
 import { fetchPrefijos } from '../redux/states/prefijo'
 import { type AppDispatch, type RootState } from '../redux/store'
 
-interface Props {
+interface UsePrefijoInterface {
   prefijos: SelectPrefijo[]
   loadPrefijos: () => Promise<void>
 }
 
-const usePrefijo = (): Props => {
+const usePrefijo = (): UsePrefijoInterface => {
   const dispatch: AppDispatch = useDispatch()
   const prefijos = useSelector((state: RootState) => state.prefijo.listSelect)
 

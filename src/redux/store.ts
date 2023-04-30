@@ -9,6 +9,7 @@ import motivacionReducer from './states/motivacion'
 import organizacionReducer from './states/organizacion'
 import origenReducer from './states/origen'
 import prefijoReducer from './states/prefijo'
+import rubroReducer from './states/rubro'
 
 const store = configureStore({
   reducer: {
@@ -20,7 +21,8 @@ const store = configureStore({
     cuponDescuento: cuponDescuentoReducer,
     motivacion: motivacionReducer,
     origen: origenReducer,
-    prefijo: prefijoReducer
+    prefijo: prefijoReducer,
+    rubro: rubroReducer
   }
 })
 
