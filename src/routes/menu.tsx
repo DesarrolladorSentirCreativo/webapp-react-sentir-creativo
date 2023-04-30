@@ -1,3 +1,4 @@
+import BusinessIcon from '@mui/icons-material/Business'
 import HailIcon from '@mui/icons-material/Hail'
 import HouseIcon from '@mui/icons-material/House'
 
@@ -7,18 +8,24 @@ const menu: RouteType[] = [
   {
     id: 'home',
     title: 'Home',
-    icon: <HouseIcon/>,
+    icon: <HouseIcon />,
     path: '/home',
     children: []
   },
   {
     id: 'audiencias',
     title: 'Audiencias',
-    icon: <HailIcon/>,
+    icon: <HailIcon />,
     path: '/audiencias',
     children: []
+  },
+  {
+    id: 'organizacion',
+    title: 'Organizaciones',
+    icon: <BusinessIcon />,
+    path: '/organizaciones',
+    children: []
   }
-
 ]
 
 export { menu }
