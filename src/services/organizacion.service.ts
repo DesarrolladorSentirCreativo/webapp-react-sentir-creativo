@@ -31,4 +31,14 @@ const create = async (values: CreateOrganizacion): Promise<void> => {
   return data
 }
 
-export default { select, getAll, create }
+const deleteById = async (id: number): Promise<void> => {
+  await axios
+    .delete(`/organizaciones/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      throw new Error(error)
+    })
+}
+
+export default { select, getAll, create, deleteById }

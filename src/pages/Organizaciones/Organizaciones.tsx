@@ -48,7 +48,7 @@ const Organizaciones: React.FC = () => {
   }
 
   const deleteRegister = (id: number): any => {
-    console.log(id)
+    return organizacionService.deleteById(id)
   }
 
   return (
