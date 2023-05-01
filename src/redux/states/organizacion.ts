@@ -1,14 +1,23 @@
-import { createSlice, type Dispatch, type PayloadAction } from '@reduxjs/toolkit'
+import {
+  createSlice,
+  type Dispatch,
+  type PayloadAction
+} from '@reduxjs/toolkit'
 
-import { type SelectOrganizacion } from '../../models'
+import {
+  type OrganizacionDataGrid,
+  type SelectOrganizacion
+} from '../../models'
 import organizacionService from '../../services/organizacion.service'
 
 export interface OrganizacionState {
   listSelect: SelectOrganizacion[]
+  data: OrganizacionDataGrid[]
 }
 
 const initialState: OrganizacionState = {
-  listSelect: []
+  listSelect: [],
+  data: []
 }
 
 export const organizacionSlice = createSlice({
@@ -17,11 +26,15 @@ export const organizacionSlice = createSlice({
   reducers: {
     setOrganizacionesList: (state, action: PayloadAction<any[]>) => {
       state.listSelect = action.payload
+    },
+    setOrganizacionDataGrid: (state, action: PayloadAction<any[]>) => {
+      state.data = action.payload
     }
   }
 })
 
-export const { setOrganizacionesList } = organizacionSlice.actions
+export const { setOrganizacionesList, setOrganizacionDataGrid } =
+  organizacionSlice.actions
 
 export default organizacionSlice.reducer
 

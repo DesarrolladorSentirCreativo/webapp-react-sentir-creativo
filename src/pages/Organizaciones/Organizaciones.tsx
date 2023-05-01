@@ -2,14 +2,17 @@ import { Box } from '@mui/material'
 import CustomStore from 'devextreme/data/custom_store'
 import { Column, Lookup } from 'devextreme-react/data-grid'
 import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 import { Card, DataGridCustom } from '../../components/Controls'
 import { useRubro } from '../../hooks'
+import { setOrganizacionDataGrid } from '../../redux/states/organizacion'
 import organizacionService from '../../services/organizacion.service'
 
 const Organizaciones: React.FC = () => {
   const { rubros, loadRubros } = useRubro()
+  const dispatch = useDispatch()
   const [organizacionesStore, setOrganizacionesStore] = useState<any>()
   const [buttonAddGrid, setButtonAddGrid] = useState<object>({})
   const navigate = useNavigate()
@@ -34,7 +37,7 @@ const Organizaciones: React.FC = () => {
       setOrganizacionesStore(
         new CustomStore({
           key: 'id',
-          load: () => loadDataGrid(),
+          load: async () => await loadDataGrid(),
           remove: (key) => deleteRegister(Number(key))
         })
       )
@@ -43,8 +46,10 @@ const Organizaciones: React.FC = () => {
     }
   }
 
-  const loadDataGrid = (): any => {
-    return organizacionService.getAll()
+  const loadDataGrid = async (): Promise<any> => {
+    const data = await organizacionService.getAll()
+    dispatch(setOrganizacionDataGrid(data))
+    return data
   }
 
   const deleteRegister = (id: number): any => {
