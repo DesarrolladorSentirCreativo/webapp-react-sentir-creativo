@@ -1,11 +1,28 @@
-import { Autocomplete, Box, Button, Grid, TextField, Typography } from '@mui/material'
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Grid,
+  TextField,
+  Typography
+} from '@mui/material'
 import { useFormik } from 'formik'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 
 import { Card } from '../../components/Controls'
-import { useAntiguedad, useCercania, useCuponDescuento, useDifusion, useEstadoAudiencia, useMotivacion, useOrganizacion, useOrigen, usePrefijo } from '../../hooks'
+import {
+  useAntiguedad,
+  useCercania,
+  useCuponDescuento,
+  useDifusion,
+  useEstadoAudiencia,
+  useMotivacion,
+  useOrganizacion,
+  useOrigen,
+  usePrefijo
+} from '../../hooks'
 import { type CreateAudiencia } from '../../models'
 import audienciaService from '../../services/audiencia.service'
 
@@ -63,22 +80,52 @@ const CreateFormAudiencia: React.FC = () => {
       cuponDescuentos: []
     },
     validationSchema: yup.object().shape({
-      email: yup.string().trim().email('El correo electrónico es invalido').required('El correo electrónico es obligatorio'),
-      nombre: yup.string().trim().max(200, 'El nombre no debe superar los 200 caracteres').required('El nombre es obligatorio'),
-      celular: yup.string().trim().max(30, 'El teléfono no debe superar los 30 caracteres'),
-      apellido: yup.string().trim().max(200, 'El apellido no debe superar los 200 caracteres'),
-      profesion: yup.string().trim().max(200, 'El profesion no debe superar los 200 caracteres'),
-      email2: yup.string().nullable().trim().max(255, 'Elm email 2 no debe superar los 255 caracteres'),
-      departamento: yup.string().trim().max(255, 'El departamento no debe superar los 255 caracteres'),
+      email: yup
+        .string()
+        .trim()
+        .email('El correo electrónico es invalido')
+        .required('El correo electrónico es obligatorio'),
+      nombre: yup
+        .string()
+        .trim()
+        .max(200, 'El nombre no debe superar los 200 caracteres')
+        .required('El nombre es obligatorio'),
+      celular: yup
+        .string()
+        .trim()
+        .max(30, 'El teléfono no debe superar los 30 caracteres'),
+      apellido: yup
+        .string()
+        .trim()
+        .max(200, 'El apellido no debe superar los 200 caracteres'),
+      profesion: yup
+        .string()
+        .trim()
+        .max(200, 'El profesion no debe superar los 200 caracteres'),
+      email2: yup
+        .string()
+        .nullable()
+        .trim()
+        .max(255, 'Elm email 2 no debe superar los 255 caracteres'),
+      departamento: yup
+        .string()
+        .trim()
+        .max(255, 'El departamento no debe superar los 255 caracteres'),
       origenId: yup.number().required('El origen es obligatorio'),
       antiguedadId: yup.number().required('El antiguedad es obligatorio'),
       motivacionId: yup.number().required('El motivacion es obligatorio'),
       estadoAudienciaId: yup.number().required('El estado es obligatorio'),
       cercaniaId: yup.number().required('El cercania es obligatorio'),
-      cargo: yup.string().trim().max(255, 'El cargo no debe superar los 255 caracteres'),
+      cargo: yup
+        .string()
+        .trim()
+        .max(255, 'El cargo no debe superar los 255 caracteres'),
       prefijoId: yup.number().required('El prefijo es obligatorio'),
       organizacionId: yup.number().required('El organizacion es obligatorio'),
-      documentoIdentidad: yup.string().trim().max(30, 'El documentoIdentidad no debe superar los 30 caracteres')
+      documentoIdentidad: yup
+        .string()
+        .trim()
+        .max(30, 'El documentoIdentidad no debe superar los 30 caracteres')
     }),
     onSubmit: async (values) => {
       await audienciaService.create(values)
@@ -96,7 +143,74 @@ const CreateFormAudiencia: React.FC = () => {
           <Grid item xs={12}>
             <Typography variant="h6">Datos Personales</Typography>
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={6}>
+            <Autocomplete
+              disablePortal
+              fullWidth
+              size="small"
+              id="origen"
+              options={origenes}
+              getOptionLabel={(option) => option.nombre}
+              onChange={(event, value) => {
+                formik.setFieldValue('origenId', value?.id ?? null)
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  label="Origen"
+                  required
+                  onChange={formik.handleChange}
+                  value={formik.values.origenId}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={6}>
+            <Autocomplete
+              disablePortal
+              fullWidth
+              size="small"
+              id="estadoAudiencia"
+              options={estadoAudiencias}
+              onChange={(event, value) => {
+                formik.setFieldValue('estadoAudienciaId', value?.id ?? null)
+              }}
+              getOptionLabel={(option) => option.nombre}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  label="Estado Audiencia"
+                  required
+                  value={formik.values.estadoAudienciaId}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Autocomplete
+              disablePortal
+              fullWidth
+              size="small"
+              id="Prefijo"
+              options={prefijos}
+              onChange={(event, value) => {
+                formik.setFieldValue('prefijoId', value?.id ?? null)
+              }}
+              getOptionLabel={(option) => option.nombre}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  label="Prefijo"
+                  required
+                  value={formik.values.prefijoId}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
             <TextField
               name="nombre"
               label="Nombre"
@@ -105,11 +219,15 @@ const CreateFormAudiencia: React.FC = () => {
               size="small"
               value={formik.values.nombre}
               onChange={formik.handleChange}
-              error={formik.touched.nombre === true && Boolean(formik.errors.nombre)}
-              helperText={formik.touched.nombre === true && formik.errors.nombre}
+              error={
+                formik.touched.nombre === true && Boolean(formik.errors.nombre)
+              }
+              helperText={
+                formik.touched.nombre === true && formik.errors.nombre
+              }
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={3}>
             <TextField
               name="apellido"
               label="Apellido"
@@ -117,11 +235,16 @@ const CreateFormAudiencia: React.FC = () => {
               size="small"
               value={formik.values.apellido}
               onChange={formik.handleChange}
-              error={formik.touched.apellido === true && Boolean(formik.errors.apellido)}
-              helperText={formik.touched.apellido === true && formik.errors.apellido}
+              error={
+                formik.touched.apellido === true &&
+                Boolean(formik.errors.apellido)
+              }
+              helperText={
+                formik.touched.apellido === true && formik.errors.apellido
+              }
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={3}>
             <TextField
               name="documentoIdentidad"
               label="Documento Identidad"
@@ -129,11 +252,17 @@ const CreateFormAudiencia: React.FC = () => {
               size="small"
               value={formik.values.documentoIdentidad}
               onChange={formik.handleChange}
-              error={formik.touched.documentoIdentidad === true && Boolean(formik.errors.documentoIdentidad)}
-              helperText={formik.touched.documentoIdentidad === true && formik.errors.documentoIdentidad}
+              error={
+                formik.touched.documentoIdentidad === true &&
+                Boolean(formik.errors.documentoIdentidad)
+              }
+              helperText={
+                formik.touched.documentoIdentidad === true &&
+                formik.errors.documentoIdentidad
+              }
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={3}>
             <TextField
               name="celular"
               label="Teléfono"
@@ -141,23 +270,16 @@ const CreateFormAudiencia: React.FC = () => {
               size="small"
               value={formik.values.celular}
               onChange={formik.handleChange}
-              error={formik.touched.celular === true && Boolean(formik.errors.celular)}
-              helperText={formik.touched.celular === true && formik.errors.celular}
+              error={
+                formik.touched.celular === true &&
+                Boolean(formik.errors.celular)
+              }
+              helperText={
+                formik.touched.celular === true && formik.errors.celular
+              }
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <TextField
-              name="profesion"
-              label="Profesión"
-              fullWidth
-              size="small"
-              value={formik.values.profesion}
-              onChange={formik.handleChange}
-              error={formik.touched.profesion === true && Boolean(formik.errors.profesion)}
-              helperText={formik.touched.profesion === true && formik.errors.profesion}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={3}>
             <TextField
               name="email"
               label="Email"
@@ -166,11 +288,13 @@ const CreateFormAudiencia: React.FC = () => {
               size="small"
               value={formik.values.email}
               onChange={formik.handleChange}
-              error={formik.touched.email === true && Boolean(formik.errors.email)}
+              error={
+                formik.touched.email === true && Boolean(formik.errors.email)
+              }
               helperText={formik.touched.email === true && formik.errors.email}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={3}>
             <TextField
               name="email2"
               label="Email 2"
@@ -178,8 +302,29 @@ const CreateFormAudiencia: React.FC = () => {
               size="small"
               value={formik.values.email2}
               onChange={formik.handleChange}
-              error={formik.touched.email2 === true && Boolean(formik.errors.email2)}
-              helperText={formik.touched.email2 === true && formik.errors.email2}
+              error={
+                formik.touched.email2 === true && Boolean(formik.errors.email2)
+              }
+              helperText={
+                formik.touched.email2 === true && formik.errors.email2
+              }
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <TextField
+              name="profesion"
+              label="Profesión"
+              fullWidth
+              size="small"
+              value={formik.values.profesion}
+              onChange={formik.handleChange}
+              error={
+                formik.touched.profesion === true &&
+                Boolean(formik.errors.profesion)
+              }
+              helperText={
+                formik.touched.profesion === true && formik.errors.profesion
+              }
             />
           </Grid>
           <Grid item xs={12}>
@@ -196,7 +341,15 @@ const CreateFormAudiencia: React.FC = () => {
                 formik.setFieldValue('organizacionId', value?.id ?? null)
               }}
               getOptionLabel={(option) => option.nombre}
-              renderInput={(params) => <TextField {...params} fullWidth label="Organización" required value={formik.values.organizacionId} />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  label="Organización"
+                  required
+                  value={formik.values.organizacionId}
+                />
+              )}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -207,7 +360,9 @@ const CreateFormAudiencia: React.FC = () => {
               size="small"
               value={formik.values.cargo}
               onChange={formik.handleChange}
-              error={formik.touched.cargo === true && Boolean(formik.errors.cargo)}
+              error={
+                formik.touched.cargo === true && Boolean(formik.errors.cargo)
+              }
               helperText={formik.touched.cargo === true && formik.errors.cargo}
             />
           </Grid>
@@ -219,26 +374,18 @@ const CreateFormAudiencia: React.FC = () => {
               size="small"
               value={formik.values.departamento}
               onChange={formik.handleChange}
-              error={formik.touched.departamento === true && Boolean(formik.errors.departamento)}
-              helperText={formik.touched.departamento === true && formik.errors.departamento}
+              error={
+                formik.touched.departamento === true &&
+                Boolean(formik.errors.departamento)
+              }
+              helperText={
+                formik.touched.departamento === true &&
+                formik.errors.departamento
+              }
             />
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="h6">Otros Datos</Typography>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Autocomplete
-              disablePortal
-              fullWidth
-              size="small"
-              id="estadoAudiencia"
-              options={estadoAudiencias}
-              onChange={(event, value) => {
-                formik.setFieldValue('estadoAudienciaId', value?.id ?? null)
-              }}
-              getOptionLabel={(option) => option.nombre}
-              renderInput={(params) => <TextField {...params} fullWidth label="Estado Audiencia" required value={formik.values.estadoAudienciaId} />}
-            />
+            <Typography variant="h6">Calificación</Typography>
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <Autocomplete
@@ -251,7 +398,16 @@ const CreateFormAudiencia: React.FC = () => {
               onChange={(event, value) => {
                 formik.setFieldValue('antiguedadId', value?.id ?? null)
               }}
-              renderInput={(params) => <TextField {...params} fullWidth label="Antiguedad" required onChange={formik.handleChange} value={formik.values.antiguedadId} />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  label="Antiguedad"
+                  required
+                  onChange={formik.handleChange}
+                  value={formik.values.antiguedadId}
+                />
+              )}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -265,39 +421,16 @@ const CreateFormAudiencia: React.FC = () => {
                 formik.setFieldValue('cercaniaId', value?.id ?? null)
               }}
               getOptionLabel={(option) => option.nombre}
-              renderInput={(params) => <TextField {...params} fullWidth label="Cercania" required onChange={formik.handleChange} value={formik.values.cercaniaId} />}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Autocomplete
-              multiple
-              disablePortal
-              fullWidth
-              size="small"
-              id="difusion"
-              options={difusiones}
-              onChange={(event, value) => {
-                const newValues = value.map((option) => ({ difusionId: option.id }))
-                formik.setFieldValue('difusiones', newValues)
-              }}
-              getOptionLabel={(option) => option.nombre}
-              renderInput={(params) => <TextField {...params} fullWidth label="Difusión" />}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Autocomplete
-              multiple
-              disablePortal
-              fullWidth
-              size="small"
-              id="cuponDescuento"
-              options={cuponDescuentos}
-              onChange={(event, value) => {
-                const newValues = value.map((option) => ({ cuponDescuentoId: option.id }))
-                formik.setFieldValue('cuponDescuentos', newValues)
-              }}
-              getOptionLabel={(option) => option.codigo}
-              renderInput={(params) => <TextField {...params} fullWidth label="Cupon Descuento" />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  label="Cercania"
+                  required
+                  onChange={formik.handleChange}
+                  value={formik.values.cercaniaId}
+                />
+              )}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -311,35 +444,59 @@ const CreateFormAudiencia: React.FC = () => {
               onChange={(event, value) => {
                 formik.setFieldValue('motivacionId', value?.id ?? null)
               }}
-              renderInput={(params) => <TextField {...params} fullWidth label="Motivación" required onChange={formik.handleChange} value={formik.values.motivacionId} />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  label="Motivación"
+                  required
+                  onChange={formik.handleChange}
+                  value={formik.values.motivacionId}
+                />
+              )}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12}>
+            <Typography variant="h6">Marketing</Typography>
+          </Grid>
+          <Grid item xs={12} sm={6} md={6}>
             <Autocomplete
+              multiple
               disablePortal
               fullWidth
               size="small"
-              id="origen"
-              options={origenes}
-              getOptionLabel={(option) => option.nombre}
+              id="difusion"
+              options={difusiones}
               onChange={(event, value) => {
-                formik.setFieldValue('origenId', value?.id ?? null)
+                const newValues = value.map((option) => ({
+                  difusionId: option.id
+                }))
+                formik.setFieldValue('difusiones', newValues)
               }}
-              renderInput={(params) => <TextField {...params} fullWidth label="Origen" required onChange={formik.handleChange} value={formik.values.origenId} />}
+              getOptionLabel={(option) => option.nombre}
+              renderInput={(params) => (
+                <TextField {...params} fullWidth label="Difusión" />
+              )}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={6}>
             <Autocomplete
+              multiple
               disablePortal
               fullWidth
               size="small"
-              id="Prefijo"
-              options={prefijos}
+              id="cuponDescuento"
+              options={cuponDescuentos}
               onChange={(event, value) => {
-                formik.setFieldValue('prefijoId', value?.id ?? null)
+                const newValues = value.map((option) => ({
+                  cuponDescuentoId: option.id
+                }))
+                formik.setFieldValue('cuponDescuentos', newValues)
               }}
-              getOptionLabel={(option) => option.nombre}
-              renderInput={(params) => <TextField {...params} fullWidth label="Prefijo" required value={formik.values.prefijoId} />}
+              getOptionLabel={(option) => option.codigo}
+              renderInput={(params) => (
+                <TextField {...params} fullWidth label="Cupon Descuento" />
+              )}
             />
           </Grid>
         </Grid>
