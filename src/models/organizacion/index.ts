@@ -37,6 +37,7 @@ export interface OrganizacionData {
   calle?: string
   telefono?: number
   paisId: number
+  direccionId?: number
 }
 
 export interface OrganizacionDireccion {
@@ -48,7 +49,10 @@ export interface OrganizacionDireccion {
 }
 
 export interface CreateOrganizacion
-  extends Omit<OrganizacionData, 'id' | 'activo' | 'publishedAt'> {}
+  extends Omit<
+    OrganizacionData,
+    'id' | 'activo' | 'publishedAt' | 'direccionId'
+  > {}
 
 export interface UpdateOrganizacion
   extends Omit<OrganizacionData, 'activo' | 'publishedAt'> {}

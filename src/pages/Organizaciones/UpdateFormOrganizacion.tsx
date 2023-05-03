@@ -59,18 +59,25 @@ const UpdateFormOrganizacion: React.FC = () => {
     formik.setValues({
       id: organizacionData?.id,
       nombre: organizacionData?.nombre,
-      website: organizacionData?.website,
+      website:
+        organizacionData?.website !== null ? organizacionData?.website : '',
       rubroId: organizacionData?.rubroId,
-      facebook: organizacionData?.facebook,
-      twitter: organizacionData?.twitter,
-      instagram: organizacionData?.instagram,
-      historial: organizacionData?.historial,
-      email: organizacionData?.email,
+      facebook:
+        organizacionData?.facebook !== null ? organizacionData?.facebook : '',
+      twitter:
+        organizacionData?.twitter !== null ? organizacionData?.twitter : '',
+      instagram:
+        organizacionData?.instagram !== null ? organizacionData?.instagram : '',
+      historial:
+        organizacionData?.historial !== null ? organizacionData?.historial : '',
+      email: organizacionData?.email !== null ? organizacionData?.email : '',
       ciudadId: direccion?.ciudadId !== undefined ? direccion?.ciudadId : 0,
       regionId: direccion?.regionId !== undefined ? direccion?.regionId : 0,
       calle: direccion?.calle,
       telefono: organizacionData?.telefono,
-      paisId: direccion?.paisId !== undefined ? direccion?.paisId : 0
+      paisId: direccion?.paisId !== undefined ? direccion?.paisId : 0,
+      direccionId:
+        direccion?.direccionId !== undefined ? direccion?.direccionId : 0
     })
   }
 
@@ -100,7 +107,8 @@ const UpdateFormOrganizacion: React.FC = () => {
       facebook: '',
       twitter: '',
       instagram: '',
-      website: ''
+      website: '',
+      direccionId: 0
     },
     validationSchema: yup.object().shape({
       email: yup.string().trim().email('El correo electrónico es invalido'),
@@ -141,7 +149,7 @@ const UpdateFormOrganizacion: React.FC = () => {
     onSubmit: async (values) => {
       setIsLoading(true)
       try {
-        await organizacionService.create(values)
+        await organizacionService.update(values)
         navigate('/organizaciones')
       } catch (e) {
         console.log(e)
@@ -158,7 +166,8 @@ const UpdateFormOrganizacion: React.FC = () => {
         <Box component="form" onSubmit={formik.handleSubmit}>
           <Typography variant="h5" sx={{ textAlign: 'center' }}>
             Formulario para Creación de Organización
-          </Typography>
+          </Typography>{' '}
+          !== null
           <Grid container spacing={2} padding={2}>
             <Grid item xs={12} sm={6} md={4}>
               <TextField

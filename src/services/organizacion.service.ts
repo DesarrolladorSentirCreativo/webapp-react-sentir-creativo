@@ -4,7 +4,8 @@ import {
   type CreateOrganizacion,
   type OrganizacionDataGrid,
   type OrganizacionDireccion,
-  type SelectOrganizacion
+  type SelectOrganizacion,
+  type UpdateOrganizacion
 } from '../models'
 
 const select = async (): Promise<SelectOrganizacion[]> => {
@@ -44,6 +45,11 @@ const create = async (values: CreateOrganizacion): Promise<void> => {
   return data
 }
 
+const update = async (values: UpdateOrganizacion): Promise<void> => {
+  const { data } = await axios.put('/organizaciones', values)
+  return data
+}
+
 const deleteById = async (id: number): Promise<void> => {
   await axios
     .delete(`/organizaciones/${id}`)
@@ -54,4 +60,4 @@ const deleteById = async (id: number): Promise<void> => {
     })
 }
 
-export default { select, getAll, create, deleteById, getByDireccion }
+export default { select, getAll, create, deleteById, getByDireccion, update }
