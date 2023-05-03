@@ -1,3 +1,5 @@
+import { WeekNumberRule } from 'devextreme/ui/calendar'
+
 export interface SelectOrganizacion {
   id: number
   nombre: string
@@ -37,5 +39,16 @@ export interface OrganizacionData {
   paisId: number
 }
 
+export interface OrganizacionDireccion {
+  direccionId: number
+  paisId: number
+  regionId: number
+  ciudadId: number
+  calle?: string
+}
+
 export interface CreateOrganizacion
   extends Omit<OrganizacionData, 'id' | 'activo' | 'publishedAt'> {}
+
+export interface UpdateOrganizacion
+  extends Omit<OrganizacionData, 'activo' | 'publishedAt'> {}

@@ -3,6 +3,7 @@ import axios from 'axios'
 import {
   type CreateOrganizacion,
   type OrganizacionDataGrid,
+  type OrganizacionDireccion,
   type SelectOrganizacion
 } from '../models'
 
@@ -26,6 +27,18 @@ const getAll = async (): Promise<OrganizacionDataGrid[]> => {
     })
 }
 
+const getByDireccion = async (
+  id: number
+): Promise<OrganizacionDireccion | null> => {
+  return await axios
+    .get<OrganizacionDireccion>(`/organizaciones/direccion/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      return null
+    })
+}
+
 const create = async (values: CreateOrganizacion): Promise<void> => {
   const { data } = await axios.post('/organizaciones', values)
   return data
@@ -41,4 +54,4 @@ const deleteById = async (id: number): Promise<void> => {
     })
 }
 
-export default { select, getAll, create, deleteById }
+export default { select, getAll, create, deleteById, getByDireccion }

@@ -1,7 +1,8 @@
 import { Box } from '@mui/material'
 import CustomStore from 'devextreme/data/custom_store'
-import { Column, Lookup } from 'devextreme-react/data-grid'
-import React, { useEffect, useState } from 'react'
+import { RowClickEvent } from 'devextreme/ui/data_grid'
+import { Button, Column, Lookup } from 'devextreme-react/data-grid'
+import React, { type MouseEventHandler, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
@@ -61,7 +62,7 @@ const Organizaciones: React.FC = () => {
       <Box width="100%" display="flex" flexWrap={'wrap'}>
         <DataGridCustom
           dataStore={organizacionesStore}
-          updating={false}
+          updating={true}
           deleting={true}
           addButton={buttonAddGrid}
           pageSize={10}
@@ -138,6 +139,15 @@ const Organizaciones: React.FC = () => {
             dataType={'text'}
             allowEditing={false}
           />
+          <Column type="buttons" width={110}>
+            <Button
+              name="edit"
+              onClick={(e: any) => {
+                navigate(`/organizaciones/actualizar/${e.row.data.id}`)
+              }}
+            />
+            <Button name="delete" />
+          </Column>
         </DataGridCustom>
       </Box>
     </Card>

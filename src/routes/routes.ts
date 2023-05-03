@@ -3,7 +3,8 @@ import {
   CreateFormAudiencia,
   CreateFormOrganizacion,
   Home,
-  Organizaciones
+  Organizaciones,
+  UpdateFormOrganizacion
 } from '../pages'
 
 const routes = [
@@ -26,6 +27,10 @@ const routes = [
   {
     path: '/organizaciones/nuevo',
     component: CreateFormOrganizacion
+  },
+  {
+    path: '/organizaciones/actualizar/:id',
+    component: UpdateFormOrganizacion
   }
 ]
 
