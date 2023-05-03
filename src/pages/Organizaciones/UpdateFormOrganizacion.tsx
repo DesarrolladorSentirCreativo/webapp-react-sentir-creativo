@@ -166,8 +166,7 @@ const UpdateFormOrganizacion: React.FC = () => {
         <Box component="form" onSubmit={formik.handleSubmit}>
           <Typography variant="h5" sx={{ textAlign: 'center' }}>
             Formulario para Creación de Organización
-          </Typography>{' '}
-          !== null
+          </Typography>
           <Grid container spacing={2} padding={2}>
             <Grid item xs={12} sm={6} md={4}>
               <TextField

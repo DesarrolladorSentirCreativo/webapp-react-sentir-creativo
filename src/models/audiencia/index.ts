@@ -40,6 +40,9 @@ export interface Audiencia {
   destacado?: any
   documentoIdentidad?: any
   activo: any
+
+  // Tipo de indexación
+  [key: string]: any
 }
 
 export interface AudienciaData {
@@ -66,4 +69,5 @@ export interface AudienciaData {
   cuponDescuentos: []
 }
 
-export interface CreateAudiencia extends Omit<AudienciaData, 'id' | 'activo' | 'destacado'> {}
+export interface CreateAudiencia
+  extends Omit<AudienciaData, 'id' | 'activo' | 'destacado'> {}

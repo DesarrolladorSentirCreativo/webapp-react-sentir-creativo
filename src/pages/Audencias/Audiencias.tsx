@@ -14,7 +14,7 @@ import {
   useOrigen,
   usePrefijo
 } from '../../hooks'
-import { type SelectEstadoAudiencia } from '../../models'
+import { type Audiencia, type SelectEstadoAudiencia } from '../../models'
 import audienciaService from '../../services/audiencia.service'
 
 const Audiencias: React.FC = () => {
@@ -50,7 +50,7 @@ const Audiencias: React.FC = () => {
       setAudienciasStore(
         new CustomStore({
           key: 'id',
-          load: () => loadDataGrid(),
+          load: async () => await loadDataGrid(),
           remove: (key) => deleteRegister(Number(key))
         })
       )
@@ -59,8 +59,26 @@ const Audiencias: React.FC = () => {
     }
   }
 
-  const loadDataGrid = (): any => {
-    return audienciaService.getAll()
+  const loadDataGrid = async (): Promise<any> => {
+    const data = await audienciaService.getAll()
+
+    const newData = data.map((item) => {
+      const newItem: any = {}
+
+      Object.keys(item).forEach((key) => {
+        const value = item[key]
+
+        if (value !== null && value !== undefined) {
+          newItem[key] = String(value)
+        } else {
+          newItem[key] = ''
+        }
+      })
+
+      return newItem
+    })
+
+    return newData
   }
 
   const load = async (): Promise<void> => {
@@ -135,6 +153,7 @@ const Audiencias: React.FC = () => {
             dataField="estadoId"
             caption="Estado Audiencia"
             cellRender={renderCell}
+            allowSearch={true}
           />
           <Column
             dataField="nombre"
@@ -142,6 +161,7 @@ const Audiencias: React.FC = () => {
             dataType={'text'}
             allowEditing={false}
             allowSearch={true}
+            allowFiltering={true}
           />
           <Column
             dataField="apellido"
@@ -149,8 +169,14 @@ const Audiencias: React.FC = () => {
             dataType={'text'}
             allowEditing={false}
             allowSearch={true}
+            allowFiltering={true}
           />
-          <Column dataField="organizacionId" caption="Organizacion">
+          <Column
+            dataField="organizacionId"
+            caption="Organizacion"
+            allowFiltering={true}
+            allowSearch={true}
+          >
             <Lookup
               dataSource={organizaciones}
               valueExpr="id"
@@ -162,32 +188,55 @@ const Audiencias: React.FC = () => {
             caption="Telefono"
             dataType={'text'}
             allowEditing={false}
+            allowFiltering={true}
+            allowSearch={true}
           />
           <Column
             dataField="email"
             caption="Email"
             dataType={'text'}
             allowEditing={false}
+            allowFiltering={true}
+            allowSearch={true}
           />
           <Column
             dataField="documentoIdentidad"
             caption="Documento Identidad"
             dataType={'text'}
             allowEditing={false}
+            allowFiltering={true}
+            allowSearch={true}
           />
           <Column
             dataField="profesion"
             caption="Profesión"
             dataType={'text'}
             allowEditing={false}
+            allowFiltering={true}
+            allowSearch={true}
           />
-          <Column dataField="origenId" caption="Origen">
+          <Column
+            dataField="origenId"
+            caption="Origen"
+            allowFiltering={true}
+            allowSearch={true}
+          >
             <Lookup dataSource={origenes} valueExpr="id" displayExpr="nombre" />
           </Column>
-          <Column dataField="prefijoId" caption="Prefijo">
+          <Column
+            dataField="prefijoId"
+            caption="Prefijo"
+            allowFiltering={true}
+            allowSearch={true}
+          >
             <Lookup dataSource={prefijos} valueExpr="id" displayExpr="nombre" />
           </Column>
-          <Column dataField="cercaniaId" caption="Cercania">
+          <Column
+            dataField="cercaniaId"
+            caption="Cercania"
+            allowFiltering={true}
+            allowSearch={true}
+          >
             <Lookup
               dataSource={cercanias}
               valueExpr="id"
@@ -199,15 +248,27 @@ const Audiencias: React.FC = () => {
             caption="Cargo"
             dataType={'text'}
             allowEditing={false}
+            allowFiltering={true}
+            allowSearch={true}
           />
-          <Column dataField="antiguedadId" caption="Antiguedad">
+          <Column
+            dataField="antiguedadId"
+            caption="Antiguedad"
+            allowFiltering={true}
+            allowSearch={true}
+          >
             <Lookup
               dataSource={antiguedades}
               valueExpr="id"
               displayExpr="nombre"
             />
           </Column>
-          <Column dataField="motivacionId" caption="Motivación">
+          <Column
+            dataField="motivacionId"
+            caption="Motivación"
+            allowFiltering={true}
+            allowSearch={true}
+          >
             <Lookup
               dataSource={motivaciones}
               valueExpr="id"
