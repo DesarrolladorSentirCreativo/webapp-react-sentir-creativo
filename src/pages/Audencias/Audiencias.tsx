@@ -14,7 +14,7 @@ import {
   useOrigen,
   usePrefijo
 } from '../../hooks'
-import { type Audiencia, type SelectEstadoAudiencia } from '../../models'
+import { type SelectEstadoAudiencia } from '../../models'
 import audienciaService from '../../services/audiencia.service'
 
 const Audiencias: React.FC = () => {

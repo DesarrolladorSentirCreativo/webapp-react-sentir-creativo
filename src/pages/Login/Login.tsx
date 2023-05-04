@@ -1,8 +1,8 @@
 import './Login.css'
 
+import { LoadingButton } from '@mui/lab'
 import {
   Box,
-  Button,
   Container,
   Grid,
   Paper,
@@ -14,11 +14,15 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 
+import { useNotification } from '../../context'
 import { type LoginData } from '../../models'
 import userService from '../../services/user.service'
 
 const Login: React.FC = () => {
   const navigate = useNavigate()
+  const [isActive, setIsActive] = React.useState<boolean>(false)
+  const [loading, setLoading] = React.useState<boolean>(false)
+  const { getError } = useNotification()
 
   const formik = useFormik<LoginData>({
     initialValues: {
@@ -38,8 +42,17 @@ const Login: React.FC = () => {
         .required('La contraseña es obligatoria')
     }),
     onSubmit: async (values) => {
-      await userService.login(values)
-      navigate('/home')
+      try {
+        setLoading(true)
+        setIsActive(true)
+        await userService.login(values)
+        navigate('/home')
+      } catch (e) {
+        console.log(e)
+        getError('Las credenciales son incorrectas')
+        setLoading(false)
+        setIsActive(false)
+      }
     }
   })
   return (
@@ -105,9 +118,16 @@ const Login: React.FC = () => {
                   formik.touched.password === true && formik.errors.password
                 }
               />
-              <Button fullWidth type="submit" variant="contained">
+              <LoadingButton
+                fullWidth
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={isActive}
+                loading={loading}
+              >
                 Iniciar Sesión
-              </Button>
+              </LoadingButton>
             </Box>
             <Typography
               variant="body2"
