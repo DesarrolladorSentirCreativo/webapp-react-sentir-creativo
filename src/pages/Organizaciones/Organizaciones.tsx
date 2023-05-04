@@ -1,12 +1,12 @@
 import { Box } from '@mui/material'
 import CustomStore from 'devextreme/data/custom_store'
-import { RowClickEvent } from 'devextreme/ui/data_grid'
 import { Button, Column, Lookup } from 'devextreme-react/data-grid'
-import React, { type MouseEventHandler, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 import { Card, DataGridCustom } from '../../components/Controls'
+import { useNotification } from '../../context'
 import { useRubro } from '../../hooks'
 import { setOrganizacionDataGrid } from '../../redux/states/organizacion'
 import organizacionService from '../../services/organizacion.service'
@@ -17,6 +17,7 @@ const Organizaciones: React.FC = () => {
   const [organizacionesStore, setOrganizacionesStore] = useState<any>()
   const [buttonAddGrid, setButtonAddGrid] = useState<object>({})
   const navigate = useNavigate()
+  const { getError, getSuccess } = useNotification()
 
   useEffect(() => {
     loadRubros()
@@ -54,7 +55,14 @@ const Organizaciones: React.FC = () => {
   }
 
   const deleteRegister = (id: number): any => {
-    return organizacionService.deleteById(id)
+    try {
+      const data = organizacionService.deleteById(id)
+      getSuccess('La organización fue eliminada correctamente')
+      return data
+    } catch (error) {
+      console.log('Mi error', error)
+      getError('La organización no pudo ser eliminada')
+    }
   }
 
   return (

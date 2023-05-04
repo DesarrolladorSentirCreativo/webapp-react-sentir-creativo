@@ -45,6 +45,7 @@ const DataGridCustom: React.FC<Props> = (props) => {
 
   return (
     <DataGrid
+      id="grid"
       dataSource={dataStore}
       repaintChangesOnly={true}
       showRowLines={true}
@@ -80,7 +81,7 @@ const DataGridCustom: React.FC<Props> = (props) => {
       <Sorting mode="multiple" />
       <FilterRow visible={true} applyFilter={'auto'} />
       <HeaderFilter visible={true} />
-      <SearchPanel visible={true} />
+      <SearchPanel visible={true} width={240} />
       <Editing
         refreshMode="full"
         mode="form"

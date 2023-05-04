@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 
 import { Card } from '../../components/Controls'
+import { useNotification } from '../../context'
 import { useDireccion, useRubro } from '../../hooks'
 import { type CreateOrganizacion, type SelectCiudad } from '../../models'
 import organizacionService from '../../services/organizacion.service'
@@ -24,6 +25,7 @@ const CreateFormOrganizacion: React.FC = () => {
   const navigate = useNavigate()
   const [ciudad, setCiudad] = useState<SelectCiudad[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const { getSuccess, getError } = useNotification()
 
   useEffect(() => {
     setIsLoading(true)
@@ -97,9 +99,11 @@ const CreateFormOrganizacion: React.FC = () => {
       setIsLoading(true)
       try {
         await organizacionService.create(values)
+        getSuccess('La organización creada correctamente')
         navigate('/organizaciones')
       } catch (e) {
         console.log(e)
+        getError('La organización no pudo ser creada')
         setIsLoading(false)
       }
     }

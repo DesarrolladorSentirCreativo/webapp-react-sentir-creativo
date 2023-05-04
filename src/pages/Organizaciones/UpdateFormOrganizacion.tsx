@@ -13,6 +13,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import * as yup from 'yup'
 
 import { Card } from '../../components/Controls'
+import { useNotification } from '../../context'
 import { useDireccion, useRubro } from '../../hooks'
 import {
   type OrganizacionDataGrid,
@@ -35,6 +36,7 @@ const UpdateFormOrganizacion: React.FC = () => {
     (state: RootState) => state.organizacion.data
   )
   const [isLoading, setIsLoading] = useState(false)
+  const { getError, getSuccess } = useNotification()
 
   useEffect(() => {
     setIsLoading(true)
@@ -150,9 +152,11 @@ const UpdateFormOrganizacion: React.FC = () => {
       setIsLoading(true)
       try {
         await organizacionService.update(values)
+        getSuccess('La organización se actualizó correctamente')
         navigate('/organizaciones')
       } catch (e) {
         console.log(e)
+        getError('La organización no se actualizó correctamente')
         setIsLoading(false)
       }
     }
