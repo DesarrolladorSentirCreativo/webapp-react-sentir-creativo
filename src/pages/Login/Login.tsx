@@ -109,7 +109,10 @@ const Login: React.FC = () => {
                 Iniciar Sesión
               </Button>
             </Box>
-            <Typography variant="body2" sx={{ p: 5, color: '#757575' }}>
+            <Typography
+              variant="body2"
+              sx={{ p: 5, color: '#757575', textAlign: 'center' }}
+            >
               Copyright © Sentir Creativo 2023
             </Typography>
           </Paper>
