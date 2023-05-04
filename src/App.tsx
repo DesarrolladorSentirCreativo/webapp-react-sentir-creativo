@@ -36,10 +36,21 @@ const App: React.FC = () => {
     <Provider store={store}>
       <NotificationProvider>
         <Routes>
-          <Route path="/" element={<Layout />}>
+          <Route
+            path="/login"
+            element={isAuthenticated ? <Navigate to="/" replace /> : <Login />}
+          />
+          <Route
+            path="/"
+            element={isAuthenticated ? <Layout /> : <Navigate to="/login" />}
+          >
             <Route path="/" element={<Navigate to="/home" />} />
             {routes.map((route, index) => (
-              <Route key={index} path={route.path} element={<route.component />} />
+              <Route
+                key={index}
+                path={route.path}
+                element={<route.component />}
+              />
             ))}
           </Route>
         </Routes>

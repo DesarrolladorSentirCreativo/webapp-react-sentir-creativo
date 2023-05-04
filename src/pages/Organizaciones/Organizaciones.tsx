@@ -86,7 +86,7 @@ const Organizaciones: React.FC = () => {
             }
           }}
         >
-          <Column dataField="id" caption="ID" />
+          <Column dataField="id" caption="ID" allowSearch={true} />
           <Column
             dataField="nombre"
             caption="Nombre"
@@ -102,42 +102,49 @@ const Organizaciones: React.FC = () => {
             caption="Telefono"
             dataType={'text'}
             allowEditing={false}
+            allowSearch={true}
           />
           <Column
             dataField="email"
             caption="Email"
             dataType={'text'}
             allowEditing={false}
+            allowSearch={true}
           />
           <Column
             dataField="website"
             caption="Sitio Web"
             dataType={'text'}
             allowEditing={false}
+            allowSearch={true}
           />
           <Column
             dataField="twitter"
             caption="Twitter"
             dataType={'text'}
             allowEditing={false}
+            allowSearch={true}
           />
           <Column
             dataField="facebook"
             caption="Facebook"
             dataType={'text'}
             allowEditing={false}
+            allowSearch={true}
           />
           <Column
             dataField="instagram"
             caption="Instagram"
             dataType={'text'}
             allowEditing={false}
+            allowSearch={true}
           />
           <Column
             dataField="historial"
             caption="Historial"
             dataType={'text'}
             allowEditing={false}
+            allowSearch={true}
           />
           <Column type="buttons" width={110}>
             <Button

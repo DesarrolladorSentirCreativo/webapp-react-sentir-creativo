@@ -18,9 +18,9 @@ const select = async (): Promise<SelectOrganizacion[]> => {
     })
 }
 
-const getAll = async (): Promise<OrganizacionDataGrid[]> => {
+const getAll = async (): Promise<any> => {
   return await axios
-    .get<OrganizacionDataGrid[]>('/organizaciones/all')
+    .get<any>('/organizaciones/all')
     .then((response) => response.data)
     .catch((error) => {
       console.log(error)
