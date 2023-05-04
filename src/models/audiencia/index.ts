@@ -52,7 +52,7 @@ export interface AudienciaData {
   profesion?: string
   email: string
   celular?: string
-  organizacionId: number
+  organizaciones: []
   departamento?: string
   cargo?: string
   antiguedadId: number

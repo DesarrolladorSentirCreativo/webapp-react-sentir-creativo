@@ -65,7 +65,7 @@ const CreateFormAudiencia: React.FC = () => {
       profesion: '',
       email: '',
       celular: '',
-      organizacionId: 0,
+      organizaciones: [],
       departamento: '',
       cargo: '',
       antiguedadId: 0,
@@ -332,23 +332,21 @@ const CreateFormAudiencia: React.FC = () => {
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <Autocomplete
+              multiple
               disablePortal
               fullWidth
               size="small"
-              id="organizacion"
+              id="organizacionId"
               options={organizaciones}
               onChange={(event, value) => {
-                formik.setFieldValue('organizacionId', value?.id ?? null)
+                const newValues = value.map((option) => ({
+                  organizacionId: option.id
+                }))
+                formik.setFieldValue('organizaciones', newValues)
               }}
               getOptionLabel={(option) => option.nombre}
               renderInput={(params) => (
-                <TextField
-                  {...params}
-                  fullWidth
-                  label="Organización"
-                  required
-                  value={formik.values.organizacionId}
-                />
+                <TextField {...params} fullWidth label="Organizaciones" />
               )}
             />
           </Grid>
