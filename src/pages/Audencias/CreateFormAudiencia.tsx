@@ -2,12 +2,14 @@ import {
   Autocomplete,
   Box,
   Button,
+  CircularProgress,
   Grid,
   TextField,
   Typography
 } from '@mui/material'
+import InputAdornment from '@mui/material/InputAdornment'
 import { useFormik } from 'formik'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 
@@ -25,6 +27,7 @@ import {
 } from '../../hooks'
 import { type CreateAudiencia } from '../../models'
 import audienciaService from '../../services/audiencia.service'
+import comentarioService from '../../services/comentario.service'
 
 const CreateFormAudiencia: React.FC = () => {
   const { estadoAudiencias, loadEstadoAudiencias } = useEstadoAudiencia()
@@ -36,6 +39,8 @@ const CreateFormAudiencia: React.FC = () => {
   const { motivaciones, loadMotivaciones } = useMotivacion()
   const { prefijos, loadPrefijos } = usePrefijo()
   const { origenes, loadOrigenes } = useOrigen()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [comentario, setComentario] = useState<string>('')
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -132,6 +137,22 @@ const CreateFormAudiencia: React.FC = () => {
       navigate('/audiencias')
     }
   })
+
+  const handleComentarioSave = (): void => {
+    if (comentario.length > 0) {
+      setLoading(true)
+      comentarioService
+        .create(comentario)
+        .then((data) => {
+          console.log(data)
+          setLoading(false)
+        })
+        .catch((error) => {
+          setLoading(false)
+          console.log(error)
+        })
+    }
+  }
 
   return (
     <Card title="Formulario">
@@ -496,6 +517,53 @@ const CreateFormAudiencia: React.FC = () => {
                 <TextField {...params} fullWidth label="Cupon Descuento" />
               )}
             />
+          </Grid>
+        </Grid>
+        <Grid
+          container
+          spacing={1}
+          justifyContent="flex-end"
+          style={{ marginBottom: 16 }}
+          padding={2}
+        >
+          <Grid item xs={12}>
+            <Typography variant="h6">Comentarios</Typography>
+          </Grid>
+          <Grid item xs={12} sm={12} md={12}>
+            <TextField
+              label="Nuevo comentario"
+              multiline
+              size="small"
+              maxRows={8}
+              fullWidth
+              value={comentario ?? ''}
+              onChange={({ target }): void => {
+                setComentario(target.value ?? '')
+              }}
+              disabled={loading}
+              InputProps={
+                loading
+                  ? {
+                      startAdornment: (
+                        <InputAdornment position="end">
+                          <CircularProgress size={24} />
+                        </InputAdornment>
+                      )
+                    }
+                  : {}
+              }
+            />
+          </Grid>
+          <Grid item>
+            <Button
+              color="primary"
+              onClick={() => {
+                handleComentarioSave()
+              }}
+              disabled={!comentario.trim().length || loading}
+            >
+              Guardar comentario
+            </Button>
           </Grid>
         </Grid>
         <Grid container spacing={2} padding={2}>

@@ -10,7 +10,6 @@ import {
   Toolbar,
   Typography
 } from '@mui/material'
-import { Width } from 'devextreme-react/chart'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
