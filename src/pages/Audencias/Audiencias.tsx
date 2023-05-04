@@ -96,7 +96,7 @@ const Audiencias: React.FC = () => {
   }
 
   const getEstadoById = (id: number): SelectEstadoAudiencia | undefined => {
-    return estadoAudiencias.find((estado) => estado.id === id)
+    return estadoAudiencias.find((estado) => estado.id === Number(id))
   }
 
   const renderCell = (cellData: any): any => {
@@ -118,7 +118,6 @@ const Audiencias: React.FC = () => {
       )
     )
   }
-
   return (
     <Card title={'Listado de Audiencias'}>
       <Box width="100%" display="flex" flexWrap={'wrap'}>
@@ -153,7 +152,6 @@ const Audiencias: React.FC = () => {
             dataField="estadoId"
             caption="Estado Audiencia"
             cellRender={renderCell}
-            allowSearch={true}
           />
           <Column
             dataField="nombre"
@@ -161,7 +159,6 @@ const Audiencias: React.FC = () => {
             dataType={'text'}
             allowEditing={false}
             allowSearch={true}
-            allowFiltering={true}
           />
           <Column
             dataField="apellido"
@@ -169,14 +166,8 @@ const Audiencias: React.FC = () => {
             dataType={'text'}
             allowEditing={false}
             allowSearch={true}
-            allowFiltering={true}
           />
-          <Column
-            dataField="organizacionId"
-            caption="Organizacion"
-            allowFiltering={true}
-            allowSearch={true}
-          >
+          <Column dataField="organizacionId" caption="Organizacion">
             <Lookup
               dataSource={organizaciones}
               valueExpr="id"
@@ -188,55 +179,32 @@ const Audiencias: React.FC = () => {
             caption="Telefono"
             dataType={'text'}
             allowEditing={false}
-            allowFiltering={true}
-            allowSearch={true}
           />
           <Column
             dataField="email"
             caption="Email"
             dataType={'text'}
             allowEditing={false}
-            allowFiltering={true}
-            allowSearch={true}
           />
           <Column
             dataField="documentoIdentidad"
             caption="Documento Identidad"
             dataType={'text'}
             allowEditing={false}
-            allowFiltering={true}
-            allowSearch={true}
           />
           <Column
             dataField="profesion"
             caption="Profesión"
             dataType={'text'}
             allowEditing={false}
-            allowFiltering={true}
-            allowSearch={true}
           />
-          <Column
-            dataField="origenId"
-            caption="Origen"
-            allowFiltering={true}
-            allowSearch={true}
-          >
+          <Column dataField="origenId" caption="Origen">
             <Lookup dataSource={origenes} valueExpr="id" displayExpr="nombre" />
           </Column>
-          <Column
-            dataField="prefijoId"
-            caption="Prefijo"
-            allowFiltering={true}
-            allowSearch={true}
-          >
+          <Column dataField="prefijoId" caption="Prefijo">
             <Lookup dataSource={prefijos} valueExpr="id" displayExpr="nombre" />
           </Column>
-          <Column
-            dataField="cercaniaId"
-            caption="Cercania"
-            allowFiltering={true}
-            allowSearch={true}
-          >
+          <Column dataField="cercaniaId" caption="Cercania">
             <Lookup
               dataSource={cercanias}
               valueExpr="id"
@@ -248,27 +216,15 @@ const Audiencias: React.FC = () => {
             caption="Cargo"
             dataType={'text'}
             allowEditing={false}
-            allowFiltering={true}
-            allowSearch={true}
           />
-          <Column
-            dataField="antiguedadId"
-            caption="Antiguedad"
-            allowFiltering={true}
-            allowSearch={true}
-          >
+          <Column dataField="antiguedadId" caption="Antiguedad">
             <Lookup
               dataSource={antiguedades}
               valueExpr="id"
               displayExpr="nombre"
             />
           </Column>
-          <Column
-            dataField="motivacionId"
-            caption="Motivación"
-            allowFiltering={true}
-            allowSearch={true}
-          >
+          <Column dataField="motivacionId" caption="Motivación">
             <Lookup
               dataSource={motivaciones}
               valueExpr="id"
