@@ -1,9 +1,14 @@
+import EditIcon from '@mui/icons-material/Edit'
 import {
   Autocomplete,
   Box,
   Button,
+  Card as CardMaterial,
+  CardActions,
+  CardContent,
   CircularProgress,
   Grid,
+  IconButton,
   TextField,
   Typography
 } from '@mui/material'
@@ -14,6 +19,8 @@ import { useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 
 import { Card } from '../../components/Controls'
+import { formatDate } from '../../helpers/date.helper'
+import { getLocalStorage } from '../../helpers/localstorage.helper'
 import {
   useAntiguedad,
   useCercania,
@@ -25,9 +32,10 @@ import {
   useOrigen,
   usePrefijo
 } from '../../hooks'
-import { type CreateAudiencia } from '../../models'
+import { type CreateAudiencia, type IComentario } from '../../models'
 import audienciaService from '../../services/audiencia.service'
 import comentarioService from '../../services/comentario.service'
+import Comentario from './../../components/Comentarios/Comentario'
 
 const CreateFormAudiencia: React.FC = () => {
   const { estadoAudiencias, loadEstadoAudiencias } = useEstadoAudiencia()
@@ -42,6 +50,9 @@ const CreateFormAudiencia: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [comentario, setComentario] = useState<string>('')
   const navigate = useNavigate()
+  const [userId, setUserId] = useState<number>(0)
+  const [comentarios, setComentarios] = useState<IComentario[]>([])
+  const [editing, setEditing] = useState<boolean>(false)
 
   useEffect(() => {
     if (estadoAudiencias.length <= 0) loadEstadoAudiencias()
@@ -61,6 +72,8 @@ const CreateFormAudiencia: React.FC = () => {
     loadCuponDescuentos()
 
     loadMotivaciones()
+
+    getUserId()
   }, [])
 
   const formik = useFormik<CreateAudiencia>({
@@ -138,13 +151,20 @@ const CreateFormAudiencia: React.FC = () => {
     }
   })
 
+  const getUserId = (): void => {
+    const userData = getLocalStorage('user') || '{}'
+    const user = JSON.parse(userData)
+    setUserId(user.userId)
+  }
+
   const handleComentarioSave = (): void => {
     if (comentario.length > 0) {
       setLoading(true)
       comentarioService
-        .create(comentario)
+        .create(comentario, userId)
         .then((data) => {
-          console.log(data)
+          setComentarios([...comentarios, data])
+          setComentario('')
           setLoading(false)
         })
         .catch((error) => {
@@ -154,6 +174,10 @@ const CreateFormAudiencia: React.FC = () => {
     }
   }
 
+  const handlePrepareToEdit = (value = ''): void => {
+    setComentario(value)
+    setEditing(!editing)
+  }
   return (
     <Card title="Formulario">
       <Box component="form" onSubmit={formik.handleSubmit}>
@@ -564,6 +588,51 @@ const CreateFormAudiencia: React.FC = () => {
             >
               Guardar comentario
             </Button>
+            {editing && (
+              <Button
+                color="primary"
+                onClick={() => {
+                  handlePrepareToEdit('')
+                }}
+                disabled={!comentario.trim().length || loading}
+              >
+                Cancelar
+              </Button>
+            )}
+          </Grid>
+          <Grid container spacing={4}>
+            {comentarios?.map((x: IComentario) => (
+              <Grid item md={4} key={x.id}>
+                <CardMaterial>
+                  <CardContent>
+                    <Typography variant="body2" component="p">
+                      {x.descripcion}
+                    </Typography>
+                    <Typography variant="subtitle1" color="textSecondary">
+                      {formatDate(x.fechaCreacion, false) + ' '}
+                      &bull;
+                      {' ' +
+                        new Date(x.fechaCreacion)
+                          .toLocaleTimeString('es-CL')
+                          .slice(0, 5)}
+                    </Typography>
+                    <Typography variant="caption" color="primary">
+                      {x.usuario}
+                    </Typography>
+                  </CardContent>
+                  <CardActions disableSpacing>
+                    <IconButton
+                      onClick={() => {
+                        handlePrepareToEdit(x.descripcion)
+                      }}
+                      disabled={loading}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </CardActions>
+                </CardMaterial>
+              </Grid>
+            ))}
           </Grid>
         </Grid>
         <Grid container spacing={2} padding={2}>

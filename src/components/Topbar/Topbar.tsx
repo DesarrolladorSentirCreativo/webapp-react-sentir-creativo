@@ -38,7 +38,6 @@ const Topbar: React.FC<Props> = (props) => {
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>): void => {
     setAnchorElUser(event.currentTarget)
-    console.log(user)
   }
   const handleCloseUserMenu = (): void => {
     setAnchorElUser(null)

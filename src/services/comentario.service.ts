@@ -1,10 +1,18 @@
 import axios from 'axios'
 
-const create = async (value: string): Promise<void> => {
-  const { data } = await axios.post('/comentarios', {
-    descripcion: value
-  })
+import { type IComentario } from '../models'
+
+const getById = async (id: number): Promise<IComentario> => {
+  const { data } = await axios.get<IComentario>(`/comentarios/${id}`)
   return data
 }
 
-export default { create }
+const create = async (value: string, userId: number): Promise<IComentario> => {
+  const { data } = await axios.post('/comentarios', {
+    descripcion: value,
+    userId
+  })
+  return await getById(data)
+}
+
+export default { create, getById }

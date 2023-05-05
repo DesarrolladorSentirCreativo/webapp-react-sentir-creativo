@@ -2,7 +2,6 @@ import axios from 'axios'
 
 import {
   type CreateOrganizacion,
-  type OrganizacionDataGrid,
   type OrganizacionDireccion,
   type SelectOrganizacion,
   type UpdateOrganizacion
