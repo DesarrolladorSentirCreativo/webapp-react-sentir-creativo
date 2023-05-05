@@ -35,7 +35,6 @@ import {
 import { type CreateAudiencia, type IComentario } from '../../models'
 import audienciaService from '../../services/audiencia.service'
 import comentarioService from '../../services/comentario.service'
-import Comentario from './../../components/Comentarios/Comentario'
 
 const CreateFormAudiencia: React.FC = () => {
   const { estadoAudiencias, loadEstadoAudiencias } = useEstadoAudiencia()
@@ -53,6 +52,7 @@ const CreateFormAudiencia: React.FC = () => {
   const [userId, setUserId] = useState<number>(0)
   const [comentarios, setComentarios] = useState<IComentario[]>([])
   const [editing, setEditing] = useState<boolean>(false)
+  const [comentarioId, setComentarioId] = useState<number>(0)
 
   useEffect(() => {
     if (estadoAudiencias.length <= 0) loadEstadoAudiencias()
@@ -160,23 +160,41 @@ const CreateFormAudiencia: React.FC = () => {
   const handleComentarioSave = (): void => {
     if (comentario.length > 0) {
       setLoading(true)
-      comentarioService
-        .create(comentario, userId)
-        .then((data) => {
-          setComentarios([...comentarios, data])
-          setComentario('')
-          setLoading(false)
-        })
-        .catch((error) => {
-          setLoading(false)
-          console.log(error)
-        })
+      if (!editing) {
+        comentarioService
+          .create(comentario, userId)
+          .then((data) => {
+            setComentarios([...comentarios, data])
+            setComentario('')
+            setLoading(false)
+          })
+          .catch((error) => {
+            setLoading(false)
+            console.log(error)
+          })
+      } else {
+        comentarioService
+          .update(comentario, userId, comentarioId)
+          .then((data) => {
+            const result = comentarios.map((comentario: IComentario) =>
+              comentario.id === data.id ? data : comentario
+            )
+            setComentarios(result)
+            setComentario('')
+            setLoading(false)
+          })
+          .catch((error) => {
+            setLoading(false)
+            console.log(error)
+          })
+      }
     }
   }
 
-  const handlePrepareToEdit = (value = ''): void => {
+  const handlePrepareToEdit = (value = '', id: number): void => {
     setComentario(value)
-    setEditing(!editing)
+    setComentarioId(id)
+    setEditing(true)
   }
   return (
     <Card title="Formulario">
@@ -592,7 +610,8 @@ const CreateFormAudiencia: React.FC = () => {
               <Button
                 color="primary"
                 onClick={() => {
-                  handlePrepareToEdit('')
+                  handlePrepareToEdit('', 0)
+                  setEditing(false)
                 }}
                 disabled={!comentario.trim().length || loading}
               >
@@ -623,7 +642,7 @@ const CreateFormAudiencia: React.FC = () => {
                   <CardActions disableSpacing>
                     <IconButton
                       onClick={() => {
-                        handlePrepareToEdit(x.descripcion)
+                        handlePrepareToEdit(x.descripcion, x.id)
                       }}
                       disabled={loading}
                     >

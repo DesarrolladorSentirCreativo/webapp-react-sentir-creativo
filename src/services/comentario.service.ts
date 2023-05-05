@@ -15,4 +15,17 @@ const create = async (value: string, userId: number): Promise<IComentario> => {
   return await getById(data)
 }
 
-export default { create, getById }
+const update = async (
+  descripcion: string,
+  userId: number,
+  id: number
+): Promise<IComentario> => {
+  const { data } = await axios.put('/comentarios', {
+    id,
+    descripcion,
+    userId
+  })
+  return await getById(data)
+}
+
+export default { create, getById, update }
