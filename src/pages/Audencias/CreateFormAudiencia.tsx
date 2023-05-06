@@ -1,26 +1,18 @@
-import DeleteIcon from '@mui/icons-material/Delete'
-import EditIcon from '@mui/icons-material/Edit'
 import {
   Autocomplete,
   Box,
   Button,
-  Card as CardMaterial,
-  CardActions,
-  CardContent,
-  CircularProgress,
   Grid,
-  IconButton,
   TextField,
   Typography
 } from '@mui/material'
-import InputAdornment from '@mui/material/InputAdornment'
 import { useFormik } from 'formik'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 
+import { Comentario } from '../../components'
 import { Card, DialogButton } from '../../components/Controls'
-import { formatDate } from '../../helpers/date.helper'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
 import {
   useAntiguedad,
@@ -173,6 +165,18 @@ const CreateFormAudiencia: React.FC = () => {
       .catch((error) => {
         console.log(error)
       })
+  }
+
+  const handleSetComentario = (value: string): void => {
+    setComentario(value)
+  }
+
+  const handleSetComentarioId = (value: number): void => {
+    setComentarioId(value)
+  }
+
+  const handleSetEditing = (value: boolean): void => {
+    setEditing(value)
   }
 
   const handleComentarioSave = (): void => {
@@ -589,97 +593,18 @@ const CreateFormAudiencia: React.FC = () => {
           <Grid item xs={12}>
             <Typography variant="h6">Comentarios</Typography>
           </Grid>
-          <Grid item xs={12} sm={12} md={12}>
-            <TextField
-              label="Nuevo comentario"
-              multiline
-              size="small"
-              maxRows={8}
-              fullWidth
-              value={comentario ?? ''}
-              onChange={({ target }): void => {
-                setComentario(target.value ?? '')
-              }}
-              disabled={loading}
-              InputProps={
-                loading
-                  ? {
-                      startAdornment: (
-                        <InputAdornment position="end">
-                          <CircularProgress size={24} />
-                        </InputAdornment>
-                      )
-                    }
-                  : {}
-              }
-            />
-          </Grid>
-          <Grid item>
-            <Button
-              color="primary"
-              onClick={() => {
-                handleComentarioSave()
-              }}
-              disabled={!comentario.trim().length || loading}
-            >
-              Guardar comentario
-            </Button>
-            {editing && (
-              <Button
-                color="primary"
-                onClick={() => {
-                  handlePrepareToEdit('', 0)
-                  setEditing(false)
-                }}
-                disabled={!comentario.trim().length || loading}
-              >
-                Cancelar
-              </Button>
-            )}
-          </Grid>
-          <Grid container spacing={4}>
-            {comentarios?.map((x: IComentario) => (
-              <Grid item md={4} key={x.id}>
-                <CardMaterial>
-                  <CardContent>
-                    <Typography variant="body2" component="p">
-                      {x.descripcion}
-                    </Typography>
-                    <Typography variant="subtitle1" color="textSecondary">
-                      {formatDate(x.fechaCreacion, false) + ' '}
-                      &bull;
-                      {' ' +
-                        new Date(x.fechaCreacion)
-                          .toLocaleTimeString('es-CL')
-                          .slice(0, 5)}
-                    </Typography>
-                    <Typography variant="caption" color="primary">
-                      {x.usuario}
-                    </Typography>
-                  </CardContent>
-                  <CardActions disableSpacing>
-                    <IconButton
-                      onClick={() => {
-                        handlePrepareToEdit(x.descripcion, x.id)
-                      }}
-                      disabled={loading}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => {
-                        handleOpen()
-                        setComentarioId(x.id)
-                      }}
-                      disabled={loading}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </CardActions>
-                </CardMaterial>
-              </Grid>
-            ))}
-          </Grid>
+          <Comentario
+            handleComentarioSave={handleComentarioSave}
+            handleSetComentario={handleSetComentario}
+            comentario={comentario}
+            loading={loading}
+            editing={editing}
+            handleSetEditing={handleSetEditing}
+            handlePrepareToEdit={handlePrepareToEdit}
+            comentarios={comentarios}
+            handleOpen={handleOpen}
+            handleSetComentarioId={handleSetComentarioId}
+          />
         </Grid>
         <Grid container spacing={2} padding={2}>
           <Grid item xs={12} sm={6} md={6}>
