@@ -28,4 +28,13 @@ const update = async (
   return await getById(data)
 }
 
-export default { create, getById, update }
+const deleteById = async (id: number): Promise<void> => {
+  await axios
+    .delete(`/comentarios/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+    })
+}
+
+export default { create, getById, update, deleteById }

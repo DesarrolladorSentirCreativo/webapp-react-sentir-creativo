@@ -1,5 +1,3 @@
-import { WeekNumberRule } from 'devextreme/ui/calendar'
-
 export interface SelectOrganizacion {
   id: number
   nombre: string
