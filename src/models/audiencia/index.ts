@@ -67,7 +67,8 @@ export interface AudienciaData {
   activo: boolean
   difusiones: []
   cuponDescuentos: []
+  comentarios: []
 }
 
 export interface CreateAudiencia
-  extends Omit<AudienciaData, 'id' | 'activo' | 'destacado'> {}
+  extends Omit<AudienciaData, 'id' | 'activo' | 'destacado' | 'comentarios'> {}

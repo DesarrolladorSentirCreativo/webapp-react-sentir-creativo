@@ -141,7 +141,7 @@ const CreateFormAudiencia: React.FC = () => {
         .max(30, 'El documentoIdentidad no debe superar los 30 caracteres')
     }),
     onSubmit: async (values) => {
-      await audienciaService.create(values)
+      await audienciaService.create(values, comentarios)
       navigate('/audiencias')
     }
   })

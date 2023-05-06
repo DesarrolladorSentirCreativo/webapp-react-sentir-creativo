@@ -1,9 +1,17 @@
 import axios from 'axios'
 
-import { type Audiencia, type CreateAudiencia, type IListAudiencia } from '../models/audiencia'
+import { type IComentario } from '../models'
+import {
+  type Audiencia,
+  type CreateAudiencia,
+  type IListAudiencia
+} from '../models/audiencia'
 import { type IPagination } from '../models/pagination'
 
-const paginate = async (pageSize: number, pageIndex: number): Promise<IPagination<IListAudiencia>> => {
+const paginate = async (
+  pageSize: number,
+  pageIndex: number
+): Promise<IPagination<IListAudiencia>> => {
   const { data } = await axios.get<IPagination<IListAudiencia>>('/audiencias', {
     params: {
       pageIndex,
@@ -33,8 +41,14 @@ const deleteById = async (id: number): Promise<void> => {
     })
 }
 
-const create = async (values: CreateAudiencia): Promise<void> => {
-  const { data } = await axios.post('/audiencias', values)
+const create = async (
+  values: CreateAudiencia,
+  comentarios: IComentario[]
+): Promise<void> => {
+  const { data } = await axios.post('/audiencias', {
+    values,
+    comentarios
+  })
   return data
 }
 
