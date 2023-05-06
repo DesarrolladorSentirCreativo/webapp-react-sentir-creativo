@@ -1,3 +1,4 @@
+import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import {
   Autocomplete,
@@ -18,7 +19,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 
-import { Card } from '../../components/Controls'
+import { Card, DialogButton } from '../../components/Controls'
 import { formatDate } from '../../helpers/date.helper'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
 import {
@@ -32,6 +33,7 @@ import {
   useOrigen,
   usePrefijo
 } from '../../hooks'
+import useDialogButton from '../../hooks/useDialogButton'
 import { type CreateAudiencia, type IComentario } from '../../models'
 import audienciaService from '../../services/audiencia.service'
 import comentarioService from '../../services/comentario.service'
@@ -53,6 +55,7 @@ const CreateFormAudiencia: React.FC = () => {
   const [comentarios, setComentarios] = useState<IComentario[]>([])
   const [editing, setEditing] = useState<boolean>(false)
   const [comentarioId, setComentarioId] = useState<number>(0)
+  const { open, handleOpen, handleClose } = useDialogButton()
 
   useEffect(() => {
     if (estadoAudiencias.length <= 0) loadEstadoAudiencias()
@@ -155,6 +158,21 @@ const CreateFormAudiencia: React.FC = () => {
     const userData = getLocalStorage('user') || '{}'
     const user = JSON.parse(userData)
     setUserId(user.userId)
+  }
+
+  const handleConfirm = (): void => {
+    comentarioService
+      .deleteById(comentarioId)
+      .then((data) => {
+        setComentarios(
+          comentarios.filter((comentario) => comentario.id !== comentarioId)
+        )
+        setComentarioId(0)
+        handleClose()
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   const handleComentarioSave = (): void => {
@@ -648,6 +666,15 @@ const CreateFormAudiencia: React.FC = () => {
                     >
                       <EditIcon />
                     </IconButton>
+                    <IconButton
+                      onClick={() => {
+                        handleOpen()
+                        setComentarioId(x.id)
+                      }}
+                      disabled={loading}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
                   </CardActions>
                 </CardMaterial>
               </Grid>
@@ -675,6 +702,15 @@ const CreateFormAudiencia: React.FC = () => {
           </Grid>
         </Grid>
       </Box>
+      <DialogButton
+        open={open}
+        onClose={handleClose}
+        title="Confirmación"
+        message="¿Estás seguro de que deseas eliminar este comentario?"
+        onConfirm={handleConfirm}
+        confirmButtonText="Confirmar"
+        cancelButtonText="Cancelar"
+      />
     </Card>
   )
 }

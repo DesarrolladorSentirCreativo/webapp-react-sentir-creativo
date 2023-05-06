@@ -49,7 +49,7 @@ const update = async (values: UpdateOrganizacion): Promise<void> => {
   return data
 }
 
-const deleteById = async (id: number): Promise<void> => {
+const deleteById = async (id: number): Promise<number> => {
   await axios
     .delete(`/organizaciones/${id}`)
     .then((response) => response.data)
