@@ -67,7 +67,6 @@ export interface AudienciaData {
   activo: boolean
   difusiones: []
   cuponDescuentos: []
-  comentarios: []
 }
 
 export interface CreateAudiencia

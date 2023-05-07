@@ -45,96 +45,107 @@ const Comentario: React.FC<IComentarioProps> = (props: IComentarioProps) => {
   } = props
   return (
     <>
-      <Grid item xs={12} sm={12} md={12}>
-        <TextField
-          label="Nuevo comentario"
-          multiline
-          size="small"
-          maxRows={8}
-          fullWidth
-          value={comentario ?? ''}
-          onChange={({ target }): void => {
-            handleSetComentario(target.value ?? '')
-          }}
-          disabled={loading}
-          InputProps={
-            loading
-              ? {
-                  startAdornment: (
-                    <InputAdornment position="end">
-                      <CircularProgress size={24} />
-                    </InputAdornment>
-                  )
-                }
-              : {}
-          }
-        />
-      </Grid>
-      <Grid item>
-        <Button
-          color="primary"
-          onClick={() => {
-            handleComentarioSave()
-          }}
-          disabled={!comentario.trim().length || loading}
-        >
-          Guardar comentario
-        </Button>
-        {editing && (
+      <Grid
+        container
+        spacing={1}
+        justifyContent="flex-end"
+        style={{ marginBottom: 16 }}
+        padding={2}
+      >
+        <Grid item xs={12}>
+          <Typography variant="h6">Comentarios</Typography>
+        </Grid>
+        <Grid item xs={12} sm={12} md={12}>
+          <TextField
+            label="Nuevo comentario"
+            multiline
+            size="small"
+            maxRows={8}
+            fullWidth
+            value={comentario ?? ''}
+            onChange={({ target }): void => {
+              handleSetComentario(target.value ?? '')
+            }}
+            disabled={loading}
+            InputProps={
+              loading
+                ? {
+                    startAdornment: (
+                      <InputAdornment position="end">
+                        <CircularProgress size={24} />
+                      </InputAdornment>
+                    )
+                  }
+                : {}
+            }
+          />
+        </Grid>
+        <Grid item>
           <Button
             color="primary"
             onClick={() => {
-              handlePrepareToEdit('', 0)
-              handleSetEditing(false)
+              handleComentarioSave()
             }}
             disabled={!comentario.trim().length || loading}
           >
-            Cancelar
+            Guardar comentario
           </Button>
-        )}
-      </Grid>
-      <Grid container spacing={4}>
-        {comentarios?.map((x: IComentario) => (
-          <Grid item md={4} key={x.id}>
-            <CardMaterial>
-              <CardContent>
-                <Typography variant="body2" component="p">
-                  {x.descripcion}
-                </Typography>
-                <Typography variant="subtitle1" color="textSecondary">
-                  {formatDate(x.fechaCreacion, false) + ' '}
-                  &bull;
-                  {' ' +
-                    new Date(x.fechaCreacion)
-                      .toLocaleTimeString('es-CL')
-                      .slice(0, 5)}
-                </Typography>
-                <Typography variant="caption" color="primary">
-                  {x.usuario}
-                </Typography>
-              </CardContent>
-              <CardActions disableSpacing>
-                <IconButton
-                  onClick={() => {
-                    handlePrepareToEdit(x.descripcion, x.id)
-                  }}
-                  disabled={loading}
-                >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() => {
-                    handleOpen()
-                    handleSetComentarioId(x.id)
-                  }}
-                  disabled={loading}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </CardActions>
-            </CardMaterial>
-          </Grid>
-        ))}
+          {editing && (
+            <Button
+              color="primary"
+              onClick={() => {
+                handlePrepareToEdit('', 0)
+                handleSetEditing(false)
+              }}
+              disabled={!comentario.trim().length || loading}
+            >
+              Cancelar
+            </Button>
+          )}
+        </Grid>
+        <Grid container spacing={4}>
+          {comentarios?.map((x: IComentario) => (
+            <Grid item md={4} key={x.id}>
+              <CardMaterial>
+                <CardContent>
+                  <Typography variant="body2" component="p">
+                    {x.descripcion}
+                  </Typography>
+                  <Typography variant="subtitle1" color="textSecondary">
+                    {formatDate(x.fechaCreacion, false) + ' '}
+                    &bull;
+                    {' ' +
+                      new Date(x.fechaCreacion)
+                        .toLocaleTimeString('es-CL')
+                        .slice(0, 5)}
+                  </Typography>
+                  <Typography variant="caption" color="primary">
+                    {x.usuario}
+                  </Typography>
+                </CardContent>
+                <CardActions disableSpacing>
+                  <IconButton
+                    onClick={() => {
+                      handlePrepareToEdit(x.descripcion, x.id)
+                    }}
+                    disabled={loading}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => {
+                      handleOpen()
+                      handleSetComentarioId(x.id)
+                    }}
+                    disabled={loading}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </CardActions>
+              </CardMaterial>
+            </Grid>
+          ))}
+        </Grid>
       </Grid>
     </>
   )
