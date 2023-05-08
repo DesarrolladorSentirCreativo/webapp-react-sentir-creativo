@@ -128,31 +128,34 @@ const CreateFormAudiencia: React.FC = () => {
         .string()
         .trim()
         .max(255, 'El departamento no debe superar los 255 caracteres'),
-      origenId: yup.number().required('El origen es obligatorio'),
+      origenId: yup
+        .number()
+        .typeError('El otigen es obligatorio')
+        .required('El origen es obligatorio'),
       antiguedadId: yup
         .number()
-        .required('El antiguedad es obligatorio')
-        .min(1, 'La antiguedad es obligatorio'),
+        .typeError('La antiguedad es obligatorio')
+        .required('El antiguedad es obligatorio'),
       motivacionId: yup
         .number()
-        .required('El motivacion es obligatorio')
-        .min(1, 'La motivacion es obligatorio'),
+        .typeError('La motivacion es obligatorio')
+        .required('El motivacion es obligatorio'),
       estadoAudienciaId: yup
         .number()
-        .required('El estado es obligatorio')
-        .min(1, 'El estado es obligatorio'),
+        .typeError('El estado es obligatorio')
+        .required('El estado es obligatorio'),
       cercaniaId: yup
         .number()
-        .required('El cercania es obligatorio')
-        .min(1, 'El cercania es obligatorio'),
+        .typeError('La cercania es obligatorio')
+        .required('La cercania es obligatorio'),
       cargo: yup
         .string()
         .trim()
         .max(255, 'El cargo no debe superar los 255 caracteres'),
       prefijoId: yup
         .number()
-        .required('El prefijo es obligatorio')
-        .min(1, 'El prefijo es obligatorio'),
+        .typeError('El prefijo es obligatorio')
+        .required('El prefijo es obligatorio'),
       documentoIdentidad: yup
         .string()
         .trim()
@@ -296,6 +299,8 @@ const CreateFormAudiencia: React.FC = () => {
                 required
                 onChange={formik.handleChange}
                 value={formik.values.origenId}
+                error={!!formik.errors.origenId}
+                helperText={formik.errors.origenId}
               />
             )}
           />
@@ -342,6 +347,8 @@ const CreateFormAudiencia: React.FC = () => {
                 label="Prefijo"
                 required
                 value={formik.values.prefijoId}
+                error={!!formik.errors.prefijoId}
+                helperText={formik.errors.prefijoId}
               />
             )}
           />
@@ -524,7 +531,7 @@ const CreateFormAudiencia: React.FC = () => {
             options={antiguedades}
             getOptionLabel={(option) => option.nombre}
             onChange={(event, value) => {
-              formik.setFieldValue('antiguedadId', value?.id ?? null)
+              formik.setFieldValue('antiguedadId', value?.id ?? 0)
             }}
             renderInput={(params) => (
               <TextField
@@ -534,6 +541,8 @@ const CreateFormAudiencia: React.FC = () => {
                 required
                 onChange={formik.handleChange}
                 value={formik.values.antiguedadId}
+                error={!!formik.errors.antiguedadId}
+                helperText={formik.errors.antiguedadId}
               />
             )}
           />
@@ -557,6 +566,8 @@ const CreateFormAudiencia: React.FC = () => {
                 required
                 onChange={formik.handleChange}
                 value={formik.values.cercaniaId}
+                error={!!formik.errors.cercaniaId}
+                helperText={formik.errors.cercaniaId}
               />
             )}
           />
@@ -580,6 +591,8 @@ const CreateFormAudiencia: React.FC = () => {
                 required
                 onChange={formik.handleChange}
                 value={formik.values.motivacionId}
+                error={!!formik.errors.motivacionId}
+                helperText={formik.errors.motivacionId}
               />
             )}
           />
