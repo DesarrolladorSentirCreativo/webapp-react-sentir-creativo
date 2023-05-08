@@ -49,6 +49,7 @@ const CreateFormAudiencia: React.FC = () => {
   const [comentarioId, setComentarioId] = useState<number>(0)
   const { open, handleOpen, handleClose } = useDialogButton()
   const { getSuccess, getError } = useNotification()
+  const [messageError, setMessageError] = useState<string>('')
 
   useEffect(() => {
     if (estadoAudiencias.length <= 0) loadEstadoAudiencias()
@@ -70,6 +71,8 @@ const CreateFormAudiencia: React.FC = () => {
     loadMotivaciones()
 
     getUserId()
+    // forzamos la validacion
+    formik.validateForm()
   }, [])
 
   const formik = useFormik<CreateAudiencia>({
@@ -78,7 +81,7 @@ const CreateFormAudiencia: React.FC = () => {
       apellido: '',
       profesion: '',
       email: '',
-      celular: '',
+      celular: undefined,
       organizaciones: [],
       departamento: '',
       cargo: '',
@@ -88,7 +91,7 @@ const CreateFormAudiencia: React.FC = () => {
       estadoAudienciaId: 0,
       prefijoId: 0,
       origenId: 0,
-      email2: null,
+      email2: '',
       documentoIdentidad: '',
       difusiones: [],
       cuponDescuentos: []
@@ -126,18 +129,34 @@ const CreateFormAudiencia: React.FC = () => {
         .trim()
         .max(255, 'El departamento no debe superar los 255 caracteres'),
       origenId: yup.number().required('El origen es obligatorio'),
-      antiguedadId: yup.number().required('El antiguedad es obligatorio'),
-      motivacionId: yup.number().required('El motivacion es obligatorio'),
-      estadoAudienciaId: yup.number().required('El estado es obligatorio'),
-      cercaniaId: yup.number().required('El cercania es obligatorio'),
+      antiguedadId: yup
+        .number()
+        .required('El antiguedad es obligatorio')
+        .min(1, 'La antiguedad es obligatorio'),
+      motivacionId: yup
+        .number()
+        .required('El motivacion es obligatorio')
+        .min(1, 'La motivacion es obligatorio'),
+      estadoAudienciaId: yup
+        .number()
+        .required('El estado es obligatorio')
+        .min(1, 'El estado es obligatorio'),
+      cercaniaId: yup
+        .number()
+        .required('El cercania es obligatorio')
+        .min(1, 'El cercania es obligatorio'),
       cargo: yup
         .string()
         .trim()
         .max(255, 'El cargo no debe superar los 255 caracteres'),
-      prefijoId: yup.number().required('El prefijo es obligatorio'),
+      prefijoId: yup
+        .number()
+        .required('El prefijo es obligatorio')
+        .min(1, 'El prefijo es obligatorio'),
       documentoIdentidad: yup
         .string()
         .trim()
+        .required('El documento de identidad es obligatorio')
         .max(30, 'El documentoIdentidad no debe superar los 30 caracteres')
     }),
     onSubmit: async (values) => {
@@ -147,9 +166,12 @@ const CreateFormAudiencia: React.FC = () => {
     }
   })
 
-  useEffect(() => {}, [formik.values])
   const handleSubmit = async (): Promise<void> => {
-    formik.handleSubmit()
+    if (formik.isValid) {
+      await audienciaService.create(formik.values, comentarios)
+      navigate('/audiencias')
+    }
+    setMessageError('Por favor complete el formulario correctamente')
   }
 
   const getUserId = (): void => {
@@ -296,6 +318,8 @@ const CreateFormAudiencia: React.FC = () => {
                 label="Estado Audiencia"
                 required
                 value={formik.values.estadoAudienciaId}
+                error={!!formik.errors.estadoAudienciaId}
+                helperText={formik.errors.estadoAudienciaId}
               />
             )}
           />
@@ -616,6 +640,11 @@ const CreateFormAudiencia: React.FC = () => {
         handleOpen={handleOpen}
         handleSetComentarioId={handleSetComentarioId}
       />
+      <Grid item md={12}>
+        <Typography variant="body1" sx={{ color: 'red' }}>
+          {messageError}
+        </Typography>
+      </Grid>
       <Grid container spacing={2} padding={2}>
         <Grid item xs={12} sm={6} md={6}>
           <Button
@@ -623,7 +652,6 @@ const CreateFormAudiencia: React.FC = () => {
             variant="contained"
             type="button"
             onClick={(e) => {
-              e.preventDefault()
               handleSubmit()
             }}
           >

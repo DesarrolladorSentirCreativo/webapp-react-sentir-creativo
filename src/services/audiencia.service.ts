@@ -45,11 +45,13 @@ const create = async (
   values: CreateAudiencia,
   comentarios: IComentario[]
 ): Promise<void> => {
-  const { data } = await axios.post('/audiencias', {
-    values,
-    comentarios
+  const comentariosIds = comentarios.map((item: IComentario) => {
+    return {
+      comentarioId: item.id
+    }
   })
-  return data
+  const data = { ...values, comentariosIds }
+  await axios.post('/audiencias', data)
 }
 
 export default { paginate, getAll, deleteById, create }

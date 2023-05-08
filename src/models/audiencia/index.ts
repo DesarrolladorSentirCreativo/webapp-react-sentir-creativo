@@ -51,17 +51,17 @@ export interface AudienciaData {
   apellido?: string
   profesion?: string
   email: string
-  celular?: string
+  celular?: number
   organizaciones: []
   departamento?: string
   cargo?: string
   antiguedadId: number
   cercaniaId: number
+  prefijoId: number
   motivacionId: number
   estadoAudienciaId: number
-  prefijoId: number
   origenId: number
-  email2: string | null
+  email2: string
   destacado?: boolean
   documentoIdentidad?: string
   activo: boolean
