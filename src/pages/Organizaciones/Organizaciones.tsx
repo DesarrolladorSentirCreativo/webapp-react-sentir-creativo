@@ -1,170 +1,203 @@
-import { Box } from '@mui/material'
-import CustomStore from 'devextreme/data/custom_store'
-import { Button, Column, Lookup } from 'devextreme-react/data-grid'
-import React, { useEffect, useState } from 'react'
+import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+import { Box, Button, IconButton } from '@mui/material'
+import MaterialReactTable, { type MRT_ColumnDef } from 'material-react-table'
+import { MRT_Localization_ES } from 'material-react-table/locales/es'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
-import { Card, DataGridCustom } from '../../components/Controls'
+import { Card, DialogButton } from '../../components/Controls'
 import { useNotification } from '../../context'
 import { useRubro } from '../../hooks'
+import { type IOrganizacion } from '../../models'
 import { setOrganizacionDataGrid } from '../../redux/states/organizacion'
 import organizacionService from '../../services/organizacion.service'
 
 const Organizaciones: React.FC = () => {
-  const { rubros, loadRubros } = useRubro()
   const dispatch = useDispatch()
-  const [organizacionesStore, setOrganizacionesStore] = useState<any>()
-  const [buttonAddGrid, setButtonAddGrid] = useState<object>({})
   const navigate = useNavigate()
+  const { loadRubros, rubros } = useRubro()
   const { getError, getSuccess } = useNotification()
+  const [data, setData] = useState<IOrganizacion[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [open, setOpen] = useState<boolean>(false)
+  const [comentarioId, setComentarioId] = useState<number>(0)
 
   useEffect(() => {
-    loadRubros()
-    loadData()
+    load()
   }, [])
 
+  const load = async (): Promise<void> => {
+    setIsLoading(true)
+    await loadRubros()
+    await loadData()
+    setIsLoading(false)
+  }
+  const columns = useMemo<Array<MRT_ColumnDef<IOrganizacion>>>(
+    () => [
+      {
+        accessorKey: 'id',
+        enableHiding: false,
+        header: 'ID'
+      },
+      {
+        accessorKey: 'nombre',
+        header: 'Nombre'
+      },
+      {
+        accessorKey: 'rubroId',
+        enableHiding: false,
+        header: 'Rubro',
+        Cell: ({ cell, row }) => {
+          const value = rubros.find(
+            (rubro) => rubro.id === row.original.rubroId
+          )
+          return (
+            <span
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              {value?.nombre}
+            </span>
+          )
+        }
+      },
+      {
+        accessorKey: 'email',
+        header: 'Email'
+      },
+      {
+        accessorKey: 'facebook',
+        header: 'Facebook'
+      },
+      {
+        accessorKey: 'instagram',
+        header: 'Instagram'
+      },
+      {
+        accessorKey: 'website',
+        header: 'Pagina web'
+      }
+    ],
+    [data]
+  )
   const loadData = async (): Promise<void> => {
     try {
-      setButtonAddGrid({
-        location: 'after',
-        widget: 'dxButton',
-        options: {
-          icon: 'add',
-          onClick: () => {
-            navigate('/organizaciones/nuevo')
-          }
-        }
-      })
-      setOrganizacionesStore(
-        new CustomStore({
-          key: 'id',
-          load: async () => await loadDataGrid(),
-          remove: (key) => deleteRegister(Number(key))
-        })
-      )
+      const data = await organizacionService.getAll()
+      setData(data)
+      dispatch(setOrganizacionDataGrid(data))
     } catch (error) {
       console.log('Mi error', error)
     }
   }
 
-  const loadDataGrid = async (): Promise<any> => {
-    const data = await organizacionService.getAll()
-    dispatch(setOrganizacionDataGrid(data))
-    return data
-  }
-
-  const deleteRegister = (id: number): any => {
+  const deleteRegister = (): void => {
     try {
-      const data = organizacionService.deleteById(id)
+      organizacionService.deleteById(comentarioId)
       getSuccess('La organización fue eliminada correctamente')
-      return data
+      load()
     } catch (error) {
       console.log('Mi error', error)
       getError('La organización no pudo ser eliminada')
     }
   }
 
+  const handleOpen = (): void => {
+    setOpen(true)
+  }
+
+  const handleClose = (): void => {
+    setOpen(false)
+  }
   return (
     <Card title={'Listado de Organizaciones'}>
-      <Box width="100%" display="flex" flexWrap={'wrap'}>
-        <DataGridCustom
-          dataStore={organizacionesStore}
-          updating={true}
-          deleting={true}
-          addButton={buttonAddGrid}
-          pageSize={10}
-          columnCount={'nombre'}
-          adding={false}
-          stateStoring={{
-            enabled: true,
-            type: 'localStorage',
-            storageKey: 'myApp.gridOrganizaciones',
-            savingTimeout: 2000,
-            customLoad: function () {
-              return JSON.parse(
-                localStorage.getItem('myApp.gridOrganizaciones') ?? ''
-              )
-            },
-            customSave: function (gridState: any) {
-              localStorage.setItem(
-                'myApp.gridOrganizaciones',
-                JSON.stringify(gridState)
-              )
+      <Box sx={{ width: '100%' }}>
+        <MaterialReactTable
+          localization={MRT_Localization_ES}
+          enableRowActions
+          renderTopToolbarCustomActions={() => (
+            <Button
+              color="secondary"
+              size="small"
+              onClick={() => {
+                navigate('/organizaciones/nuevo')
+              }}
+              variant="contained"
+            >
+              Crear nueva Organización
+            </Button>
+          )}
+          renderRowActions={({ row, table }) => (
+            <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
+              <IconButton
+                color="secondary"
+                onClick={() => {
+                  navigate(`/organizaciones/actualizar/${row.original.id}`)
+                }}
+              >
+                <EditIcon />
+              </IconButton>
+              <IconButton
+                color="error"
+                onClick={() => {
+                  setComentarioId(row.original.id)
+                  handleOpen()
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Box>
+          )}
+          columns={columns}
+          data={data}
+          initialState={{ columnVisibility: { address: false } }}
+          muiTableProps={{
+            sx: {
+              width: '800px'
             }
           }}
-        >
-          <Column dataField="id" caption="ID" allowSearch={true} />
-          <Column
-            dataField="nombre"
-            caption="Nombre"
-            dataType={'text'}
-            allowEditing={false}
-            allowSearch={true}
-          />
-          <Column dataField="rubroId" caption="Rubro">
-            <Lookup dataSource={rubros} valueExpr="id" displayExpr="nombre" />
-          </Column>
-          <Column
-            dataField="telefono"
-            caption="Telefono"
-            dataType={'text'}
-            allowEditing={false}
-            allowSearch={true}
-          />
-          <Column
-            dataField="email"
-            caption="Email"
-            dataType={'text'}
-            allowEditing={false}
-            allowSearch={true}
-          />
-          <Column
-            dataField="website"
-            caption="Sitio Web"
-            dataType={'text'}
-            allowEditing={false}
-            allowSearch={true}
-          />
-          <Column
-            dataField="twitter"
-            caption="Twitter"
-            dataType={'text'}
-            allowEditing={false}
-            allowSearch={true}
-          />
-          <Column
-            dataField="facebook"
-            caption="Facebook"
-            dataType={'text'}
-            allowEditing={false}
-            allowSearch={true}
-          />
-          <Column
-            dataField="instagram"
-            caption="Instagram"
-            dataType={'text'}
-            allowEditing={false}
-            allowSearch={true}
-          />
-          <Column
-            dataField="historial"
-            caption="Historial"
-            dataType={'text'}
-            allowEditing={false}
-            allowSearch={true}
-          />
-          <Column type="buttons" width={110}>
-            <Button
-              name="edit"
-              onClick={(e: any) => {
-                navigate(`/organizaciones/actualizar/${e.row.data.id}`)
-              }}
-            />
-            <Button name="delete" />
-          </Column>
-        </DataGridCustom>
+          muiTableFooterProps={{
+            sx: (theme) => ({
+              color: theme.palette.text.secondary,
+              backgroundColor: theme.palette.background.paper
+            })
+          }}
+          muiTableHeadCellColumnActionsButtonProps={{
+            sx: (theme) => ({
+              color: theme.palette.text.secondary,
+              backgroundColor: theme.palette.background.paper
+            })
+          }}
+          muiTableBodyCellProps={{
+            sx: (theme) => ({
+              color: theme.palette.text.secondary,
+              backgroundColor: theme.palette.background.paper
+            })
+          }}
+          muiTableHeadCellProps={{
+            sx: (theme) => ({
+              color: theme.palette.text.secondary,
+              backgroundColor: theme.palette.background.paper
+            })
+          }}
+          state={{
+            isLoading
+          }}
+        />
       </Box>
+      <DialogButton
+        open={open}
+        onClose={handleClose}
+        title={'Eliminar Organización'}
+        message={'¿Está seguro que desea eliminar la organización?'}
+        confirmButtonText={'Eliminar'}
+        cancelButtonText={'Cancelar'}
+        onConfirm={deleteRegister}
+      />
     </Card>
   )
 }

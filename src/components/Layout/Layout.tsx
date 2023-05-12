@@ -20,10 +20,7 @@ const Layout: React.FC = () => {
           handleDrawerToggle={handleDrawerToggle}
         />
       </Box>
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, p: 3, width: '100%', height: '100vh' }}
-      >
+      <Box component="main" sx={{ width: '100%', overflowX: 'auto' }}>
         <Toolbar />
         <Outlet />
       </Box>

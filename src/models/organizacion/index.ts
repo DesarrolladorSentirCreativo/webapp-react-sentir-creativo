@@ -18,7 +18,7 @@ export interface OrganizacionDataGrid {
   publishedAt: any
 }
 
-export interface OrganizacionData {
+export interface IOrganizacion {
   id: number
   nombre: string
   website?: string
@@ -48,9 +48,9 @@ export interface OrganizacionDireccion {
 
 export interface CreateOrganizacion
   extends Omit<
-    OrganizacionData,
+    IOrganizacion,
     'id' | 'activo' | 'publishedAt' | 'direccionId'
   > {}
 
 export interface UpdateOrganizacion
-  extends Omit<OrganizacionData, 'activo' | 'publishedAt'> {}
+  extends Omit<IOrganizacion, 'activo' | 'publishedAt'> {}
