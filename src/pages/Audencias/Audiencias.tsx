@@ -84,7 +84,7 @@ const Audiencias: React.FC = () => {
 
   return (
     <Card title={'Listado de Audiencias'}>
-      <Box width="100%" display="flex" flexWrap={'wrap'}>
+      <Box width="100%" display="flex" flexDirection="column">
         <MaterialReactTable
           localization={MRT_Localization_ES}
           renderTopToolbarCustomActions={() => (
