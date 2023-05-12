@@ -33,7 +33,7 @@ const getAll = async (): Promise<Audiencia[]> => {
 
 const deleteById = async (id: number): Promise<void> => {
   await axios
-    .delete(`/audiencias/${id}`)
+    .put(`/audiencias/${id}`)
     .then((response) => response.data)
     .catch((error) => {
       console.log(error)

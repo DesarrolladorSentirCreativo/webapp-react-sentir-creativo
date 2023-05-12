@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogTitle
 } from '@mui/material'
-import React, { useState } from 'react'
+import React from 'react'
 
 interface IDialogButton {
   open: boolean

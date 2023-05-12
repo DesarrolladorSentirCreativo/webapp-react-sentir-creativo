@@ -21,28 +21,25 @@ export interface IListAudiencia {
 }
 
 export interface Audiencia {
-  id: any
-  nombre?: any
-  apellido?: any
-  profesion?: any
-  email: any
-  celular?: any
-  organizacionId: any
-  departamento?: any
-  cargo?: any
-  antiguedadId: any
-  cercaniaId: any
-  motivacionId: any
-  estadoId: any
-  prefijoId: any
-  origenId: any
-  email2: any
-  destacado?: any
-  documentoIdentidad?: any
-  activo: any
-
-  // Tipo de indexación
-  [key: string]: any
+  id: number
+  nombre?: string
+  apellido?: string
+  profesion?: string
+  email: string
+  celular?: number
+  organizacionId?: number
+  departamento?: number
+  cargo?: string
+  antiguedadId: number
+  cercaniaId?: number
+  motivacionId?: number
+  estadoId?: number
+  prefijoId?: number
+  origenId?: number
+  email2?: string
+  destacado?: boolean
+  documentoIdentidad?: string
+  activo: boolean
 }
 
 export interface AudienciaData {

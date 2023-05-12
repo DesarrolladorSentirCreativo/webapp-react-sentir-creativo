@@ -11,7 +11,9 @@ interface Props {
 
 const useEstadoAudiencia = (): Props => {
   const dispatch: AppDispatch = useDispatch()
-  const estadoAudiencias = useSelector((state: RootState) => state.estadoAudiencia.listSelect)
+  const estadoAudiencias = useSelector(
+    (state: RootState) => state.estadoAudiencia.listSelect
+  )
 
   const loadEstadoAudiencias = async (): Promise<void> => {
     dispatch(fetchEstadoAudiencias())

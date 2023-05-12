@@ -20,6 +20,8 @@
     "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/indent": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
-    "@typescript-eslint/no-non-null-assertion": "off"
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "multiline-ternary": "off",
+    "react/prop-types": "off"
   }
 }

@@ -49,9 +49,9 @@ const update = async (values: UpdateOrganizacion): Promise<void> => {
   return data
 }
 
-const deleteById = async (id: number): Promise<number> => {
+const deleteById = async (id: number): Promise<void> => {
   await axios
-    .delete(`/organizaciones/${id}`)
+    .put(`/organizaciones/${id}`)
     .then((response) => response.data)
     .catch((error) => {
       console.log(error)

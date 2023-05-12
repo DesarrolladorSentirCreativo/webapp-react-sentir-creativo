@@ -29,6 +29,7 @@ import useDialogButton from '../../hooks/useDialogButton'
 import { type CreateAudiencia, type IComentario } from '../../models'
 import audienciaService from '../../services/audiencia.service'
 import comentarioService from '../../services/comentario.service'
+import { ModalCrearOrganizacion, SkeletonAudiencia } from './components'
 
 const CreateFormAudiencia: React.FC = () => {
   const { estadoAudiencias, loadEstadoAudiencias } = useEstadoAudiencia()
@@ -50,8 +51,11 @@ const CreateFormAudiencia: React.FC = () => {
   const { open, handleOpen, handleClose } = useDialogButton()
   const { getSuccess, getError } = useNotification()
   const [messageError, setMessageError] = useState<string>('')
+  const [openModal, setOpenModal] = useState<boolean>(false)
+  const [loadingSkeleton, setLoadingSkeleton] = useState<boolean>(false)
 
   useEffect(() => {
+    setLoadingSkeleton(true)
     if (estadoAudiencias.length <= 0) loadEstadoAudiencias()
 
     if (organizaciones.length <= 0) loadOrganizaciones()
@@ -73,6 +77,7 @@ const CreateFormAudiencia: React.FC = () => {
     getUserId()
     // forzamos la validacion
     formik.validateForm()
+    setLoadingSkeleton(false)
   }, [])
 
   const formik = useFormik<CreateAudiencia>({
@@ -171,7 +176,9 @@ const CreateFormAudiencia: React.FC = () => {
 
   const handleSubmit = async (): Promise<void> => {
     if (formik.isValid) {
+      setLoadingSkeleton(true)
       await audienciaService.create(formik.values, comentarios)
+      setLoadingSkeleton(false)
       navigate('/audiencias')
     }
     setMessageError('Por favor complete el formulario correctamente')
@@ -191,6 +198,7 @@ const CreateFormAudiencia: React.FC = () => {
           comentarios.filter((comentario) => comentario.id !== comentarioId)
         )
         setComentarioId(0)
+        setComentario('')
         handleClose()
       })
       .catch((error) => {
@@ -217,6 +225,7 @@ const CreateFormAudiencia: React.FC = () => {
       .create(comentario, userId)
       .then((data) => {
         setComentarios([...comentarios, data])
+        setComentario('')
         getSuccess('Comentario creado exitosamente')
       })
       .catch((error) => {
@@ -244,6 +253,8 @@ const CreateFormAudiencia: React.FC = () => {
           }
         )
         setComentarios(updatedComentarios)
+        setComentario('')
+        setComentarioId(0)
         getSuccess('Se actualizó el comentario correctamente')
       })
       .catch((error) => {
@@ -270,432 +281,470 @@ const CreateFormAudiencia: React.FC = () => {
     setComentarioId(id)
     setEditing(true)
   }
-  return (
-    <Card title="Formulario">
-      <Typography variant="h5" sx={{ textAlign: 'center' }}>
-        Formulario para Creación de Audiencia
-      </Typography>
-      <Grid container spacing={2} padding={2}>
-        <Grid item xs={12}>
-          <Typography variant="h6">Datos Personales</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={6}>
-          <Autocomplete
-            disablePortal
-            fullWidth
-            size="small"
-            id="origen"
-            options={origenes}
-            getOptionLabel={(option) => option.nombre}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            onChange={(event, value) => {
-              formik.setFieldValue('origenId', value?.id ?? null)
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
+
+  const handleOpenModal = (): void => {
+    setOpenModal(true)
+  }
+
+  const handleCloseModal = (): void => {
+    loadOrganizaciones()
+    setOpenModal(false)
+  }
+
+  if (loadingSkeleton) {
+    return <SkeletonAudiencia />
+  } else {
+    return (
+      <>
+        <Card title="Formulario">
+          <Typography variant="h5" sx={{ textAlign: 'center' }}>
+            Formulario para Creación de Audiencia
+          </Typography>
+          <Grid container spacing={2} padding={2}>
+            <Grid item xs={12}>
+              <Typography variant="h6">Datos Personales</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <Autocomplete
+                disablePortal
                 fullWidth
-                label="Origen"
+                size="small"
+                id="origen"
+                options={origenes}
+                getOptionLabel={(option) => option.nombre}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                onChange={(event, value) => {
+                  formik.setFieldValue('origenId', value?.id ?? null)
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    label="Origen"
+                    required
+                    onChange={formik.handleChange}
+                    value={formik.values.origenId}
+                    error={!!formik.errors.origenId}
+                    helperText={formik.errors.origenId}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <Autocomplete
+                disablePortal
+                fullWidth
+                size="small"
+                id="estadoAudiencia"
+                options={estadoAudiencias}
+                onChange={(event, value) => {
+                  formik.setFieldValue('estadoAudienciaId', value?.id ?? null)
+                }}
+                getOptionLabel={(option) => option.nombre}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    label="Estado Audiencia"
+                    required
+                    value={formik.values.estadoAudienciaId}
+                    error={!!formik.errors.estadoAudienciaId}
+                    helperText={formik.errors.estadoAudienciaId}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Autocomplete
+                disablePortal
+                fullWidth
+                size="small"
+                id="Prefijo"
+                options={prefijos}
+                onChange={(event, value) => {
+                  formik.setFieldValue('prefijoId', value?.id ?? null)
+                }}
+                getOptionLabel={(option) => option.nombre}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    label="Prefijo"
+                    required
+                    value={formik.values.prefijoId}
+                    error={!!formik.errors.prefijoId}
+                    helperText={formik.errors.prefijoId}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <TextField
+                name="nombre"
+                label="Nombre"
+                fullWidth
                 required
+                size="small"
+                value={formik.values.nombre}
                 onChange={formik.handleChange}
-                value={formik.values.origenId}
-                error={!!formik.errors.origenId}
-                helperText={formik.errors.origenId}
+                error={
+                  formik.touched.nombre === true &&
+                  Boolean(formik.errors.nombre)
+                }
+                helperText={
+                  formik.touched.nombre === true && formik.errors.nombre
+                }
               />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={6}>
-          <Autocomplete
-            disablePortal
-            fullWidth
-            size="small"
-            id="estadoAudiencia"
-            options={estadoAudiencias}
-            onChange={(event, value) => {
-              formik.setFieldValue('estadoAudienciaId', value?.id ?? null)
-            }}
-            getOptionLabel={(option) => option.nombre}
-            renderInput={(params) => (
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
               <TextField
-                {...params}
+                name="apellido"
+                label="Apellido"
                 fullWidth
-                label="Estado Audiencia"
-                required
-                value={formik.values.estadoAudienciaId}
-                error={!!formik.errors.estadoAudienciaId}
-                helperText={formik.errors.estadoAudienciaId}
-              />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Autocomplete
-            disablePortal
-            fullWidth
-            size="small"
-            id="Prefijo"
-            options={prefijos}
-            onChange={(event, value) => {
-              formik.setFieldValue('prefijoId', value?.id ?? null)
-            }}
-            getOptionLabel={(option) => option.nombre}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                fullWidth
-                label="Prefijo"
-                required
-                value={formik.values.prefijoId}
-                error={!!formik.errors.prefijoId}
-                helperText={formik.errors.prefijoId}
-              />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <TextField
-            name="nombre"
-            label="Nombre"
-            fullWidth
-            required
-            size="small"
-            value={formik.values.nombre}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.nombre === true && Boolean(formik.errors.nombre)
-            }
-            helperText={formik.touched.nombre === true && formik.errors.nombre}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <TextField
-            name="apellido"
-            label="Apellido"
-            fullWidth
-            size="small"
-            value={formik.values.apellido}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.apellido === true &&
-              Boolean(formik.errors.apellido)
-            }
-            helperText={
-              formik.touched.apellido === true && formik.errors.apellido
-            }
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <TextField
-            name="documentoIdentidad"
-            label="Documento Identidad"
-            fullWidth
-            size="small"
-            value={formik.values.documentoIdentidad}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.documentoIdentidad === true &&
-              Boolean(formik.errors.documentoIdentidad)
-            }
-            helperText={
-              formik.touched.documentoIdentidad === true &&
-              formik.errors.documentoIdentidad
-            }
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <TextField
-            name="celular"
-            label="Teléfono"
-            fullWidth
-            size="small"
-            value={formik.values.celular}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.celular === true && Boolean(formik.errors.celular)
-            }
-            helperText={
-              formik.touched.celular === true && formik.errors.celular
-            }
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <TextField
-            name="email"
-            label="Email"
-            fullWidth
-            required
-            size="small"
-            value={formik.values.email}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.email === true && Boolean(formik.errors.email)
-            }
-            helperText={formik.touched.email === true && formik.errors.email}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <TextField
-            name="email2"
-            label="Email 2"
-            fullWidth
-            size="small"
-            value={formik.values.email2}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.email2 === true && Boolean(formik.errors.email2)
-            }
-            helperText={formik.touched.email2 === true && formik.errors.email2}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <TextField
-            name="profesion"
-            label="Profesión"
-            fullWidth
-            size="small"
-            value={formik.values.profesion}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.profesion === true &&
-              Boolean(formik.errors.profesion)
-            }
-            helperText={
-              formik.touched.profesion === true && formik.errors.profesion
-            }
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6">Datos Organización</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Autocomplete
-            multiple
-            disablePortal
-            fullWidth
-            size="small"
-            id="organizacionId"
-            options={organizaciones}
-            onChange={(event, value) => {
-              const newValues = value.map((option) => ({
-                organizacionId: option.id
-              }))
-              formik.setFieldValue('organizaciones', newValues)
-            }}
-            getOptionLabel={(option) => option.nombre}
-            renderInput={(params) => (
-              <TextField {...params} fullWidth label="Organizaciones" />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <TextField
-            name="cargo"
-            label="Cargo"
-            fullWidth
-            size="small"
-            value={formik.values.cargo}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.cargo === true && Boolean(formik.errors.cargo)
-            }
-            helperText={formik.touched.cargo === true && formik.errors.cargo}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <TextField
-            name="departamento"
-            label="Departamento"
-            fullWidth
-            size="small"
-            value={formik.values.departamento}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.departamento === true &&
-              Boolean(formik.errors.departamento)
-            }
-            helperText={
-              formik.touched.departamento === true && formik.errors.departamento
-            }
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6">Calificación</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Autocomplete
-            disablePortal
-            fullWidth
-            size="small"
-            id="antiguedad"
-            options={antiguedades}
-            getOptionLabel={(option) => option.nombre}
-            onChange={(event, value) => {
-              formik.setFieldValue('antiguedadId', value?.id ?? 0)
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                fullWidth
-                label="Antiguedad"
-                required
+                size="small"
+                value={formik.values.apellido}
                 onChange={formik.handleChange}
-                value={formik.values.antiguedadId}
-                error={!!formik.errors.antiguedadId}
-                helperText={formik.errors.antiguedadId}
+                error={
+                  formik.touched.apellido === true &&
+                  Boolean(formik.errors.apellido)
+                }
+                helperText={
+                  formik.touched.apellido === true && formik.errors.apellido
+                }
               />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Autocomplete
-            disablePortal
-            fullWidth
-            size="small"
-            id="cercania"
-            options={cercanias}
-            onChange={(event, value) => {
-              formik.setFieldValue('cercaniaId', value?.id ?? null)
-            }}
-            getOptionLabel={(option) => option.nombre}
-            renderInput={(params) => (
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
               <TextField
-                {...params}
+                name="documentoIdentidad"
+                label="Documento Identidad"
                 fullWidth
-                label="Cercania"
-                required
+                size="small"
+                value={formik.values.documentoIdentidad}
                 onChange={formik.handleChange}
-                value={formik.values.cercaniaId}
-                error={!!formik.errors.cercaniaId}
-                helperText={formik.errors.cercaniaId}
+                error={
+                  formik.touched.documentoIdentidad === true &&
+                  Boolean(formik.errors.documentoIdentidad)
+                }
+                helperText={
+                  formik.touched.documentoIdentidad === true &&
+                  formik.errors.documentoIdentidad
+                }
               />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Autocomplete
-            disablePortal
-            fullWidth
-            size="small"
-            id="motivacionId"
-            options={motivaciones}
-            getOptionLabel={(option) => option.nombre}
-            onChange={(event, value) => {
-              formik.setFieldValue('motivacionId', value?.id ?? null)
-            }}
-            renderInput={(params) => (
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
               <TextField
-                {...params}
+                name="celular"
+                label="Teléfono"
                 fullWidth
-                label="Motivación"
-                required
+                size="small"
+                value={formik.values.celular}
                 onChange={formik.handleChange}
-                value={formik.values.motivacionId}
-                error={!!formik.errors.motivacionId}
-                helperText={formik.errors.motivacionId}
+                error={
+                  formik.touched.celular === true &&
+                  Boolean(formik.errors.celular)
+                }
+                helperText={
+                  formik.touched.celular === true && formik.errors.celular
+                }
               />
-            )}
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <TextField
+                name="email"
+                label="Email"
+                fullWidth
+                required
+                size="small"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.email === true && Boolean(formik.errors.email)
+                }
+                helperText={
+                  formik.touched.email === true && formik.errors.email
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <TextField
+                name="email2"
+                label="Email 2"
+                fullWidth
+                size="small"
+                value={formik.values.email2}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.email2 === true &&
+                  Boolean(formik.errors.email2)
+                }
+                helperText={
+                  formik.touched.email2 === true && formik.errors.email2
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <TextField
+                name="profesion"
+                label="Profesión"
+                fullWidth
+                size="small"
+                value={formik.values.profesion}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.profesion === true &&
+                  Boolean(formik.errors.profesion)
+                }
+                helperText={
+                  formik.touched.profesion === true && formik.errors.profesion
+                }
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h6">Datos Organización</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6} md={2}>
+              <Autocomplete
+                multiple
+                disablePortal
+                fullWidth
+                size="small"
+                id="organizacionId"
+                options={organizaciones}
+                onChange={(event, value) => {
+                  const newValues = value.map((option) => ({
+                    organizacionId: option.id
+                  }))
+                  formik.setFieldValue('organizaciones', newValues)
+                }}
+                getOptionLabel={(option) => option.nombre}
+                renderInput={(params) => (
+                  <TextField {...params} fullWidth label="Organizaciones" />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={2}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleOpenModal}
+              >
+                Crear Organización
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                name="cargo"
+                label="Cargo"
+                fullWidth
+                size="small"
+                value={formik.values.cargo}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.cargo === true && Boolean(formik.errors.cargo)
+                }
+                helperText={
+                  formik.touched.cargo === true && formik.errors.cargo
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                name="departamento"
+                label="Departamento"
+                fullWidth
+                size="small"
+                value={formik.values.departamento}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.departamento === true &&
+                  Boolean(formik.errors.departamento)
+                }
+                helperText={
+                  formik.touched.departamento === true &&
+                  formik.errors.departamento
+                }
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h6">Calificación</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <Autocomplete
+                disablePortal
+                fullWidth
+                size="small"
+                id="antiguedad"
+                options={antiguedades}
+                getOptionLabel={(option) => option.nombre}
+                onChange={(event, value) => {
+                  formik.setFieldValue('antiguedadId', value?.id ?? 0)
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    label="Antiguedad"
+                    required
+                    onChange={formik.handleChange}
+                    value={formik.values.antiguedadId}
+                    error={!!formik.errors.antiguedadId}
+                    helperText={formik.errors.antiguedadId}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <Autocomplete
+                disablePortal
+                fullWidth
+                size="small"
+                id="cercania"
+                options={cercanias}
+                onChange={(event, value) => {
+                  formik.setFieldValue('cercaniaId', value?.id ?? null)
+                }}
+                getOptionLabel={(option) => option.nombre}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    label="Cercania"
+                    required
+                    onChange={formik.handleChange}
+                    value={formik.values.cercaniaId}
+                    error={!!formik.errors.cercaniaId}
+                    helperText={formik.errors.cercaniaId}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <Autocomplete
+                disablePortal
+                fullWidth
+                size="small"
+                id="motivacionId"
+                options={motivaciones}
+                getOptionLabel={(option) => option.nombre}
+                onChange={(event, value) => {
+                  formik.setFieldValue('motivacionId', value?.id ?? null)
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    label="Motivación"
+                    required
+                    onChange={formik.handleChange}
+                    value={formik.values.motivacionId}
+                    error={!!formik.errors.motivacionId}
+                    helperText={formik.errors.motivacionId}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h6">Marketing</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <Autocomplete
+                multiple
+                disablePortal
+                fullWidth
+                size="small"
+                id="difusion"
+                options={difusiones}
+                onChange={(event, value) => {
+                  const newValues = value.map((option) => ({
+                    difusionId: option.id
+                  }))
+                  formik.setFieldValue('difusiones', newValues)
+                }}
+                getOptionLabel={(option) => option.nombre}
+                renderInput={(params) => (
+                  <TextField {...params} fullWidth label="Difusión" />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <Autocomplete
+                multiple
+                disablePortal
+                fullWidth
+                size="small"
+                id="cuponDescuento"
+                options={cuponDescuentos}
+                onChange={(event, value) => {
+                  const newValues = value.map((option) => ({
+                    cuponDescuentoId: option.id
+                  }))
+                  formik.setFieldValue('cuponDescuentos', newValues)
+                }}
+                getOptionLabel={(option) => option.codigo}
+                renderInput={(params) => (
+                  <TextField {...params} fullWidth label="Cupon Descuento" />
+                )}
+              />
+            </Grid>
+          </Grid>
+          <Comentario
+            handleComentarioSave={handleComentarioSave}
+            handleSetComentario={handleSetComentario}
+            comentario={comentario}
+            loading={loading}
+            editing={editing}
+            handleSetEditing={handleSetEditing}
+            handlePrepareToEdit={handlePrepareToEdit}
+            comentarios={comentarios}
+            handleOpen={handleOpen}
+            handleSetComentarioId={handleSetComentarioId}
           />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6">Marketing</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={6}>
-          <Autocomplete
-            multiple
-            disablePortal
-            fullWidth
-            size="small"
-            id="difusion"
-            options={difusiones}
-            onChange={(event, value) => {
-              const newValues = value.map((option) => ({
-                difusionId: option.id
-              }))
-              formik.setFieldValue('difusiones', newValues)
-            }}
-            getOptionLabel={(option) => option.nombre}
-            renderInput={(params) => (
-              <TextField {...params} fullWidth label="Difusión" />
-            )}
+          <Grid item md={12}>
+            <Typography variant="body1" sx={{ color: 'red' }}>
+              {messageError}
+            </Typography>
+          </Grid>
+          <Grid container spacing={2} padding={2}>
+            <Grid item xs={12} sm={6} md={6}>
+              <Button
+                fullWidth
+                variant="contained"
+                type="button"
+                onClick={(e) => {
+                  handleSubmit()
+                }}
+              >
+                Guardar
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <Button
+                fullWidth
+                type="button"
+                variant="contained"
+                color="error"
+                onClick={() => {
+                  navigate('/audiencias')
+                }}
+              >
+                Cancelar
+              </Button>
+            </Grid>
+          </Grid>
+          <DialogButton
+            open={open}
+            onClose={handleClose}
+            title="Confirmación"
+            message="¿Estás seguro de que deseas eliminar este comentario?"
+            onConfirm={handleConfirm}
+            confirmButtonText="Confirmar"
+            cancelButtonText="Cancelar"
           />
-        </Grid>
-        <Grid item xs={12} sm={6} md={6}>
-          <Autocomplete
-            multiple
-            disablePortal
-            fullWidth
-            size="small"
-            id="cuponDescuento"
-            options={cuponDescuentos}
-            onChange={(event, value) => {
-              const newValues = value.map((option) => ({
-                cuponDescuentoId: option.id
-              }))
-              formik.setFieldValue('cuponDescuentos', newValues)
-            }}
-            getOptionLabel={(option) => option.codigo}
-            renderInput={(params) => (
-              <TextField {...params} fullWidth label="Cupon Descuento" />
-            )}
-          />
-        </Grid>
-      </Grid>
-      <Comentario
-        handleComentarioSave={handleComentarioSave}
-        handleSetComentario={handleSetComentario}
-        comentario={comentario}
-        loading={loading}
-        editing={editing}
-        handleSetEditing={handleSetEditing}
-        handlePrepareToEdit={handlePrepareToEdit}
-        comentarios={comentarios}
-        handleOpen={handleOpen}
-        handleSetComentarioId={handleSetComentarioId}
-      />
-      <Grid item md={12}>
-        <Typography variant="body1" sx={{ color: 'red' }}>
-          {messageError}
-        </Typography>
-      </Grid>
-      <Grid container spacing={2} padding={2}>
-        <Grid item xs={12} sm={6} md={6}>
-          <Button
-            fullWidth
-            variant="contained"
-            type="button"
-            onClick={(e) => {
-              handleSubmit()
-            }}
-          >
-            Guardar
-          </Button>
-        </Grid>
-        <Grid item xs={12} sm={6} md={6}>
-          <Button
-            fullWidth
-            type="button"
-            variant="contained"
-            color="error"
-            onClick={() => {
-              navigate('/audiencias')
-            }}
-          >
-            Cancelar
-          </Button>
-        </Grid>
-      </Grid>
-      <DialogButton
-        open={open}
-        onClose={handleClose}
-        title="Confirmación"
-        message="¿Estás seguro de que deseas eliminar este comentario?"
-        onConfirm={handleConfirm}
-        confirmButtonText="Confirmar"
-        cancelButtonText="Cancelar"
-      />
-    </Card>
-  )
+        </Card>
+        <ModalCrearOrganizacion open={openModal} onClose={handleCloseModal} />
+      </>
+    )
+  }
 }
 
 export default CreateFormAudiencia
