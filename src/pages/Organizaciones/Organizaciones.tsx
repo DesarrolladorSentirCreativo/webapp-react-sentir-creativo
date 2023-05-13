@@ -1,7 +1,10 @@
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import { Box, Button, IconButton } from '@mui/material'
-import MaterialReactTable, { type MRT_ColumnDef } from 'material-react-table'
+import MaterialReactTable, {
+  type MRT_ColumnDef,
+  type MRT_DensityState
+} from 'material-react-table'
 import { MRT_Localization_ES } from 'material-react-table/locales/es'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
@@ -9,6 +12,10 @@ import { useNavigate } from 'react-router-dom'
 
 import { Card, DialogButton } from '../../components/Controls'
 import { useNotification } from '../../context'
+import {
+  getLocalStorage,
+  setLocalStorage
+} from '../../helpers/localstorage.helper'
 import { useRubro } from '../../hooks'
 import { type IOrganizacion } from '../../models'
 import { setOrganizacionDataGrid } from '../../redux/states/organizacion'
@@ -23,10 +30,56 @@ const Organizaciones: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [open, setOpen] = useState<boolean>(false)
   const [comentarioId, setComentarioId] = useState<number>(0)
+  const [columnVisibility, setColumnVisibility] = useState(() => {
+    const organizacionesData = getLocalStorage('organizacionesData')
+    const result = organizacionesData ? JSON.parse(organizacionesData) : {}
+    return result.columnVisibility
+  })
+  const [density, setDensity] = useState<MRT_DensityState>(() => {
+    const organizacionesData = getLocalStorage('organizacionesData')
+    const result = organizacionesData
+      ? JSON.parse(organizacionesData)
+      : 'compact'
+    return result.density
+  })
 
   useEffect(() => {
+    const organizacionesData = getLocalStorage('organizacionesData')
+    const result = organizacionesData
+      ? JSON.parse(organizacionesData)
+      : 'compact'
+    setDensity(result.density)
+    setColumnVisibility(result.columnVisibility)
     load()
   }, [])
+
+  useEffect(() => {
+    const organizacionesData = getLocalStorage('organizacionesData')
+    const result = organizacionesData
+      ? JSON.parse(organizacionesData)
+      : 'compact'
+
+    if (result.columnVisibility !== columnVisibility) {
+      setLocalStorage('organizacionesData', {
+        density: result.density,
+        columnVisibility
+      })
+    }
+  }, [columnVisibility])
+
+  useEffect(() => {
+    const organizacionesData = getLocalStorage('organizacionesData')
+    const result = organizacionesData
+      ? JSON.parse(organizacionesData)
+      : 'compact'
+
+    if (result.density !== density) {
+      setLocalStorage('organizacionesData', {
+        density,
+        columnVisibility: result.columnVisibility
+      })
+    }
+  }, [density])
 
   const load = async (): Promise<void> => {
     setIsLoading(true)
@@ -34,12 +87,14 @@ const Organizaciones: React.FC = () => {
     await loadData()
     setIsLoading(false)
   }
+
   const columns = useMemo<Array<MRT_ColumnDef<IOrganizacion>>>(
     () => [
       {
         accessorKey: 'id',
-        enableHiding: false,
-        header: 'ID'
+        enableHiding: true,
+        header: 'ID',
+        size: 10
       },
       {
         accessorKey: 'nombre',
@@ -47,7 +102,7 @@ const Organizaciones: React.FC = () => {
       },
       {
         accessorKey: 'rubroId',
-        enableHiding: false,
+        enableHiding: true,
         header: 'Rubro',
         Cell: ({ cell, row }) => {
           const value = rubros.find(
@@ -119,6 +174,8 @@ const Organizaciones: React.FC = () => {
         <MaterialReactTable
           localization={MRT_Localization_ES}
           enableRowActions
+          onDensityChange={setDensity}
+          onColumnVisibilityChange={setColumnVisibility}
           renderTopToolbarCustomActions={() => (
             <Button
               color="secondary"
@@ -155,6 +212,11 @@ const Organizaciones: React.FC = () => {
           columns={columns}
           data={data}
           initialState={{ columnVisibility: { address: false } }}
+          state={{
+            isLoading,
+            columnVisibility,
+            density
+          }}
           muiTableProps={{
             sx: {
               width: '800px'
@@ -183,9 +245,6 @@ const Organizaciones: React.FC = () => {
               color: theme.palette.text.secondary,
               backgroundColor: theme.palette.background.paper
             })
-          }}
-          state={{
-            isLoading
           }}
         />
       </Box>
