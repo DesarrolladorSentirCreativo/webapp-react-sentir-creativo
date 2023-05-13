@@ -1,107 +1,76 @@
-import { DataGrid } from 'devextreme-react'
-import {
-  ColumnChooser,
-  Editing,
-  FilterRow,
-  Grouping,
-  GroupPanel,
-  HeaderFilter,
-  LoadPanel,
-  Pager,
-  Paging,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  Sorting,
-  Summary,
-  TotalItem
-} from 'devextreme-react/data-grid'
-import React, { type ReactNode } from 'react'
+import MaterialReactTable from 'material-react-table'
+import { MRT_Localization_ES } from 'material-react-table/locales/es'
+import React from 'react'
 
-interface Props {
-  dataStore: any
-  children: ReactNode
-  updating: any
-  deleting: any
-  addButton: any
-  pageSize: number
-  columnCount: string
-  adding: any
-  stateStoring: any
+export type DensityType = 'compact' | 'normal' | 'comfortable'
+
+interface IDataGridCustom {
+  enableRowActions?: boolean
+  onDensityChange: (density: any) => void
+  onColumnVisibilityChange: (visibility: object) => void
+  renderTopToolbarCustomActions?: () => JSX.Element
+  renderRowActions?: ({ row, table }: any) => JSX.Element
+  columns: any[]
+  data: any[]
+  initialState?: any
+  state: any
 }
 
-const DataGridCustom: React.FC<Props> = (props) => {
+const DataGridCustom: React.FC<IDataGridCustom> = (props: IDataGridCustom) => {
   const {
-    children,
-    dataStore,
-    updating,
-    deleting,
-    addButton,
-    pageSize,
-    columnCount,
-    adding,
-    stateStoring
+    enableRowActions,
+    onDensityChange,
+    onColumnVisibilityChange,
+    renderTopToolbarCustomActions,
+    renderRowActions,
+    columns,
+    data,
+    state,
+    initialState
   } = props
 
   return (
-    <DataGrid
-      id="grid"
-      dataSource={dataStore}
-      repaintChangesOnly={true}
-      showRowLines={true}
-      showBorders={true}
-      rowAlternationEnabled={true}
-      columnHidingEnabled={true}
-      columnAutoWidth={true}
-      allowColumnReordering={true}
-      onToolbarPreparing={(e) => {
-        e.toolbarOptions.items?.unshift(
-          {
-            location: 'before',
-            widget: 'dxButton',
-            options: {
-              type: 'default',
-              stylingMode: 'contained',
-              icon: 'refresh',
-              onClick: () => {
-                e.component.refresh()
-              }
-            }
-          },
-          !adding && addButton ? addButton : {}
-        )
+    <MaterialReactTable
+      localization={MRT_Localization_ES}
+      enableRowActions={enableRowActions}
+      onDensityChange={onDensityChange}
+      onColumnVisibilityChange={onColumnVisibilityChange}
+      renderTopToolbarCustomActions={renderTopToolbarCustomActions}
+      renderRowActions={renderRowActions}
+      columns={columns}
+      data={data}
+      initialState={initialState}
+      state={state}
+      muiTableProps={{
+        sx: {
+          width: '800px'
+        }
       }}
-      stateStoring={stateStoring}
-    >
-      <Grouping contextMenuEnabled={true} expandMode="rowClick" />
-      <GroupPanel visible={true} emptyPanelText="" />
-      <ColumnChooser enabled={true} mode="select" />
-      <LoadPanel enabled={true} />
-      <Selection mode="single" />
-      <Sorting mode="multiple" />
-      <FilterRow visible={true} applyFilter={'auto'} />
-      <HeaderFilter visible={true} />
-      <SearchPanel visible={true} width={240} />
-      <Editing
-        refreshMode="full"
-        mode="form"
-        allowAdding={adding}
-        allowUpdating={updating}
-        allowDeleting={deleting}
-      />
-      {children}
-      <Summary>
-        <TotalItem column={columnCount} summaryType="count" />
-      </Summary>
-      <Scrolling rowRenderingMode="virtual"></Scrolling>
-      <Paging defaultPageSize={pageSize} />
-      <Pager
-        visible={true}
-        displayMode={'full'}
-        showInfo={true}
-        showNavigationButtons={true}
-      />
-    </DataGrid>
+      muiTableFooterProps={{
+        sx: (theme) => ({
+          color: theme.palette.text.secondary,
+          backgroundColor: theme.palette.background.paper
+        })
+      }}
+      muiTableHeadCellColumnActionsButtonProps={{
+        sx: (theme) => ({
+          color: theme.palette.text.secondary,
+          backgroundColor: theme.palette.background.paper
+        })
+      }}
+      muiTableBodyCellProps={{
+        sx: (theme) => ({
+          color: theme.palette.text.secondary,
+          backgroundColor: theme.palette.background.paper
+        })
+      }}
+      muiTableHeadCellProps={{
+        sx: (theme) => ({
+          color: theme.palette.text.secondary,
+          backgroundColor: theme.palette.background.paper
+        })
+      }}
+    />
   )
 }
 

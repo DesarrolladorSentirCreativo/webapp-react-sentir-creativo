@@ -1,16 +1,12 @@
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import { Box, Button, IconButton } from '@mui/material'
-import MaterialReactTable, {
-  type MRT_ColumnDef,
-  type MRT_DensityState
-} from 'material-react-table'
-import { MRT_Localization_ES } from 'material-react-table/locales/es'
+import { type MRT_ColumnDef } from 'material-react-table'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
-import { Card, DialogButton } from '../../components/Controls'
+import { Card, DataGridCustom, DialogButton } from '../../components/Controls'
 import { useNotification } from '../../context'
 import {
   getLocalStorage,
@@ -35,7 +31,7 @@ const Organizaciones: React.FC = () => {
     const result = organizacionesData ? JSON.parse(organizacionesData) : {}
     return result.columnVisibility
   })
-  const [density, setDensity] = useState<MRT_DensityState>(() => {
+  const [density, setDensity] = useState(() => {
     const organizacionesData = getLocalStorage('organizacionesData')
     const result = organizacionesData
       ? JSON.parse(organizacionesData)
@@ -171,11 +167,12 @@ const Organizaciones: React.FC = () => {
   return (
     <Card title={'Listado de Organizaciones'}>
       <Box sx={{ width: '100%' }}>
-        <MaterialReactTable
-          localization={MRT_Localization_ES}
-          enableRowActions
-          onDensityChange={setDensity}
+        <DataGridCustom
+          data={data}
+          columns={columns}
+          enableRowActions={true}
           onColumnVisibilityChange={setColumnVisibility}
+          onDensityChange={setDensity}
           renderTopToolbarCustomActions={() => (
             <Button
               color="secondary"
@@ -209,42 +206,11 @@ const Organizaciones: React.FC = () => {
               </IconButton>
             </Box>
           )}
-          columns={columns}
-          data={data}
           initialState={{ columnVisibility: { address: false } }}
           state={{
             isLoading,
             columnVisibility,
             density
-          }}
-          muiTableProps={{
-            sx: {
-              width: '800px'
-            }
-          }}
-          muiTableFooterProps={{
-            sx: (theme) => ({
-              color: theme.palette.text.secondary,
-              backgroundColor: theme.palette.background.paper
-            })
-          }}
-          muiTableHeadCellColumnActionsButtonProps={{
-            sx: (theme) => ({
-              color: theme.palette.text.secondary,
-              backgroundColor: theme.palette.background.paper
-            })
-          }}
-          muiTableBodyCellProps={{
-            sx: (theme) => ({
-              color: theme.palette.text.secondary,
-              backgroundColor: theme.palette.background.paper
-            })
-          }}
-          muiTableHeadCellProps={{
-            sx: (theme) => ({
-              color: theme.palette.text.secondary,
-              backgroundColor: theme.palette.background.paper
-            })
           }}
         />
       </Box>
