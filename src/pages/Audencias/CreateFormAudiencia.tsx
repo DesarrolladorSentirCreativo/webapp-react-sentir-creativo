@@ -190,7 +190,7 @@ const CreateFormAudiencia: React.FC = () => {
     setUserId(user.userId)
   }
 
-  const handleConfirm = (): void => {
+  const handleConfirm = async (): Promise<void> => {
     comentarioService
       .deleteById(comentarioId)
       .then((data) => {

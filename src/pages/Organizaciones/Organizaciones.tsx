@@ -182,7 +182,7 @@ const Organizaciones: React.FC = () => {
               }}
               variant="contained"
             >
-              Crear nueva Organización
+              Crear Nuevo Registro
             </Button>
           )}
           renderRowActions={({ row, table }) => (

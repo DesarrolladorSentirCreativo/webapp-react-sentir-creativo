@@ -179,7 +179,7 @@ const Audiencias: React.FC = () => {
               }}
               variant="contained"
             >
-              Crear nuevo Registro
+              Crear Nuevo Registro
             </Button>
           )}
           renderRowActions={({ row, table }) => (
