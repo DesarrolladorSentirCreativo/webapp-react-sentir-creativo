@@ -146,11 +146,11 @@ const Organizaciones: React.FC = () => {
     }
   }
 
-  const deleteRegister = (): void => {
+  const deleteRegister = async (): Promise<void> => {
     try {
       organizacionService.deleteById(comentarioId)
       getSuccess('La organización fue eliminada correctamente')
-      load()
+      await load()
     } catch (error) {
       console.log('Mi error', error)
       getError('La organización no pudo ser eliminada')

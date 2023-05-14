@@ -33,6 +33,7 @@ const DataGridCustom: React.FC<IDataGridCustom> = (props: IDataGridCustom) => {
     <MaterialReactTable
       localization={MRT_Localization_ES}
       enableRowActions={enableRowActions}
+      enableColumnActions={false}
       onDensityChange={onDensityChange}
       onColumnVisibilityChange={onColumnVisibilityChange}
       renderTopToolbarCustomActions={renderTopToolbarCustomActions}

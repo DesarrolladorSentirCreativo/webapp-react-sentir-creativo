@@ -14,7 +14,7 @@ interface IDialogButton {
   message: string
   confirmButtonText?: string
   cancelButtonText?: string
-  onConfirm: () => void
+  onConfirm: () => Promise<void>
 }
 const DialogButton: React.FC<IDialogButton> = (props: IDialogButton) => {
   const {

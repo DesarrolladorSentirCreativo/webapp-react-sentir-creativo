@@ -40,6 +40,7 @@ export interface Audiencia {
   destacado?: boolean
   documentoIdentidad?: string
   activo: boolean
+  publishedAt: Date
 }
 
 export interface AudienciaData {

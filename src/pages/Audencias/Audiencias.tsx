@@ -1,10 +1,17 @@
-import { Box, Button } from '@mui/material'
-import MaterialReactTable, { type MRT_ColumnDef } from 'material-react-table'
-import { MRT_Localization_ES } from 'material-react-table/locales/es'
+import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+import { Box, Button, IconButton } from '@mui/material'
+import { type MRT_ColumnDef } from 'material-react-table'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { Card } from '../../components/Controls'
+import { Card, DataGridCustom, DialogButton } from '../../components/Controls'
+import { useNotification } from '../../context'
+import { formatDate } from '../../helpers/date.helper'
+import {
+  getLocalStorage,
+  setLocalStorage
+} from '../../helpers/localstorage.helper'
 import { useEstadoAudiencia } from '../../hooks'
 import { type Audiencia } from '../../models'
 import audienciaService from '../../services/audiencia.service'
@@ -12,15 +19,33 @@ import audienciaService from '../../services/audiencia.service'
 const Audiencias: React.FC = () => {
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
+  const { getError, getSuccess } = useNotification()
   const [data, setData] = useState<Audiencia[]>([])
   const { loadEstadoAudiencias, estadoAudiencias } = useEstadoAudiencia()
+  const [audienciaId, setAudienciaId] = useState<number>(0)
+  const [open, setOpen] = useState<boolean>(false)
+  const [columnVisibility, setColumnVisibility] = useState(() => {
+    const audienciasPreferences = getLocalStorage('audienciasPreferences')
+    const result = audienciasPreferences
+      ? JSON.parse(audienciasPreferences)
+      : {}
+    return result.columnVisibility
+  })
+  const [density, setDensity] = useState(() => {
+    const audienciasPreferences = getLocalStorage('audienciasPreferences')
+    const result = audienciasPreferences
+      ? JSON.parse(audienciasPreferences)
+      : 'compact'
+    return result.density
+  })
 
   const columns = useMemo<Array<MRT_ColumnDef<Audiencia>>>(
     () => [
       {
         accessorKey: 'id',
-        enableHiding: false,
-        header: 'ID'
+        enableHiding: true,
+        header: 'ID',
+        size: 10
       },
       {
         accessorKey: 'estadoId',
@@ -65,28 +90,86 @@ const Audiencias: React.FC = () => {
       {
         accessorKey: 'email',
         header: 'Email'
+      },
+      {
+        accessorKey: 'publishedAt',
+        header: 'Fecha Creación',
+        size: 200,
+        Cell: ({ cell, row }) => {
+          return (
+            <span
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              {formatDate(new Date(row.original.publishedAt))}
+            </span>
+          )
+        }
       }
     ],
     [data]
   )
 
   useEffect(() => {
-    loadEstadoAudiencias()
-    fetchData()
+    load()
   }, [])
 
+  const handleOpen = (): void => {
+    setOpen(true)
+  }
+
+  const handleClose = (): void => {
+    setOpen(false)
+  }
+
+  useEffect(() => {
+    const audienciasPreferences = getLocalStorage('audienciasPreferences')
+    const result = audienciasPreferences
+      ? JSON.parse(audienciasPreferences)
+      : 'compact'
+
+    if (result.columnVisibility !== columnVisibility) {
+      setLocalStorage('audienciasPreferences', {
+        density: result.density,
+        columnVisibility
+      })
+    }
+  }, [columnVisibility])
+
   const fetchData = async (): Promise<void> => {
-    setIsLoading(true)
     const result = await audienciaService.getAll()
     setData(result)
+  }
+
+  const load = async (): Promise<void> => {
+    setIsLoading(true)
+    await loadEstadoAudiencias()
+    await fetchData()
     setIsLoading(false)
   }
 
+  const deleteRegister = async (): Promise<void> => {
+    try {
+      await audienciaService.deleteById(audienciaId)
+      getSuccess('La audiencia fue eliminada correctamente')
+      await load()
+    } catch (error) {
+      console.log('Mi error', error)
+      getError('La audiencia no pudo ser eliminada')
+    }
+  }
   return (
     <Card title={'Listado de Audiencias'}>
       <Box width="100%" display="flex" flexDirection="column">
-        <MaterialReactTable
-          localization={MRT_Localization_ES}
+        <DataGridCustom
+          data={data}
+          columns={columns}
+          enableRowActions={true}
+          onColumnVisibilityChange={setColumnVisibility}
+          onDensityChange={setDensity}
           renderTopToolbarCustomActions={() => (
             <Button
               color="secondary"
@@ -96,41 +179,47 @@ const Audiencias: React.FC = () => {
               }}
               variant="contained"
             >
-              Crear nueva Audiencia
+              Crear nuevo Registro
             </Button>
           )}
-          columns={columns}
-          data={data}
-          initialState={{ columnVisibility: { address: false } }}
-          muiTableFooterProps={{
-            sx: (theme) => ({
-              color: theme.palette.text.secondary,
-              backgroundColor: theme.palette.background.paper
-            })
-          }}
-          muiTableHeadCellColumnActionsButtonProps={{
-            sx: (theme) => ({
-              color: theme.palette.text.secondary,
-              backgroundColor: theme.palette.background.paper
-            })
-          }}
-          muiTableBodyCellProps={{
-            sx: (theme) => ({
-              color: theme.palette.text.secondary,
-              backgroundColor: theme.palette.background.paper
-            })
-          }}
-          muiTableHeadCellProps={{
-            sx: (theme) => ({
-              color: theme.palette.text.secondary,
-              backgroundColor: theme.palette.background.paper
-            })
-          }}
+          renderRowActions={({ row, table }) => (
+            <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
+              <IconButton
+                color="secondary"
+                onClick={() => {
+                  navigate(`/audiencias/actualizar/${row.original.id}`)
+                }}
+              >
+                <EditIcon />
+              </IconButton>
+              <IconButton
+                color="error"
+                onClick={() => {
+                  setAudienciaId(row.original.id)
+                  handleOpen()
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Box>
+          )}
+          initialState={{}}
           state={{
-            isLoading
+            isLoading,
+            columnVisibility,
+            density
           }}
         />
       </Box>
+      <DialogButton
+        open={open}
+        onClose={handleClose}
+        title={'Eliminar Audiencia'}
+        message={'¿Está seguro que desea eliminar la audiencia?'}
+        confirmButtonText={'Eliminar'}
+        cancelButtonText={'Cancelar'}
+        onConfirm={deleteRegister}
+      />
     </Card>
   )
 }
