@@ -139,6 +139,20 @@ const Audiencias: React.FC = () => {
     }
   }, [columnVisibility])
 
+  useEffect(() => {
+    const audienciasPreferences = getLocalStorage('audienciasPreferences')
+    const result = audienciasPreferences
+      ? JSON.parse(audienciasPreferences)
+      : 'compact'
+
+    if (result.density !== density) {
+      setLocalStorage('audienciasPreferences', {
+        density,
+        columnVisibility: result.columnVisibility
+      })
+    }
+  }, [columnVisibility])
+
   const fetchData = async (): Promise<void> => {
     const result = await audienciaService.getAll()
     setData(result)
