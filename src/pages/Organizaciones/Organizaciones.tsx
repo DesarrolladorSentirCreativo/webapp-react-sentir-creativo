@@ -108,8 +108,7 @@ const Organizaciones: React.FC = () => {
             <span
               style={{
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
+                alignItems: 'left'
               }}
             >
               {value?.nombre}

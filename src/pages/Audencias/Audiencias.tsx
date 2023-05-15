@@ -66,7 +66,7 @@ const Audiencias: React.FC = () => {
                 padding: '2px',
                 borderRadius: '1px',
                 display: 'flex',
-                alignItems: 'center',
+                alignItems: 'left',
                 justifyContent: 'center'
               }}
             >
