@@ -131,24 +131,24 @@ const Audiencias: React.FC = () => {
       ? JSON.parse(audienciasPreferences)
       : 'compact'
 
-    if (result.columnVisibility !== columnVisibility) {
+    if (result.density !== density) {
       setLocalStorage('audienciasPreferences', {
-        density: result.density,
-        columnVisibility
+        columnVisibility: result.columnVisibility,
+        density
       })
     }
-  }, [columnVisibility])
+  }, [density])
 
   useEffect(() => {
     const audienciasPreferences = getLocalStorage('audienciasPreferences')
     const result = audienciasPreferences
       ? JSON.parse(audienciasPreferences)
-      : 'compact'
+      : {}
 
-    if (result.density !== density) {
+    if (result.columnVisibility !== columnVisibility) {
       setLocalStorage('audienciasPreferences', {
-        density,
-        columnVisibility: result.columnVisibility
+        density: result.density,
+        columnVisibility
       })
     }
   }, [columnVisibility])
