@@ -1,5 +1,6 @@
 export * from './antiguedad'
 export * from './AppButton'
+export * from './archivo'
 export * from './audiencia'
 export * from './cercania'
 export * from './comentario'

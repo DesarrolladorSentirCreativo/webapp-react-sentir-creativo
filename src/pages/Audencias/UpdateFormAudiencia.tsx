@@ -11,6 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import * as yup from 'yup'
 
 import { Comentario } from '../../components'
+import { Archivo } from '../../components/Archivos'
 import { Card, DialogButton } from '../../components/Controls'
 import { useNotification } from '../../context'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
@@ -26,7 +27,11 @@ import {
   usePrefijo
 } from '../../hooks'
 import useDialogButton from '../../hooks/useDialogButton'
-import { type IComentario, type UpdateAudiencia } from '../../models'
+import {
+  type IArchivo,
+  type IComentario,
+  type UpdateAudiencia
+} from '../../models'
 import audienciaService from '../../services/audiencia.service'
 import comentarioService from '../../services/comentario.service'
 import { ModalCrearOrganizacion, SkeletonAudiencia } from './components'
@@ -54,6 +59,7 @@ const UpdateFormAudiencia: React.FC = () => {
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [comentario, setComentario] = useState<string>('')
+  const [archivos, setArchivos] = useState<IArchivo[]>([])
 
   useEffect(() => {
     load(id)
@@ -93,6 +99,7 @@ const UpdateFormAudiencia: React.FC = () => {
         (comentario) => comentario !== null && comentario !== undefined
       ) as IComentario[]
       setComentarios(comentariosValidos)
+      setArchivos(data.archivos)
       loadAudienciaData(data)
     }
 
@@ -129,7 +136,8 @@ const UpdateFormAudiencia: React.FC = () => {
       documentoIdentidad: '',
       difusiones: [],
       cuponDescuentos: [],
-      comentarios: []
+      comentarios: [],
+      archivos: []
     },
     validationSchema: yup.object().shape({
       email: yup
@@ -227,7 +235,8 @@ const UpdateFormAudiencia: React.FC = () => {
       difusiones: audiencia.difusiones,
       cuponDescuentos: audiencia.cuponDescuentos,
       antiguedadId: audiencia.antiguedadId,
-      comentarios: audiencia.comentarios
+      comentarios: audiencia.comentarios,
+      archivos: audiencia.archivos
     })
   }
 
@@ -771,6 +780,7 @@ const UpdateFormAudiencia: React.FC = () => {
               />
             </Grid>
           </Grid>
+          <Archivo archivos={archivos} />
           <Comentario
             handleComentarioSave={handleComentarioSave}
             handleSetComentario={handleSetComentario}

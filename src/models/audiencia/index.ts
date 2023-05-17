@@ -1,3 +1,4 @@
+import { type IArchivo } from '../archivo'
 import { type IComentario } from '../comentario'
 
 export interface IListAudiencia {
@@ -69,6 +70,7 @@ export interface AudienciaData {
   difusiones: IDifusion[]
   cuponDescuentos: ICuponDescuento[]
   comentarios: IComentario[]
+  archivos: IArchivo[]
 }
 
 interface IDifusion {
@@ -81,7 +83,12 @@ interface ICuponDescuento {
 export interface CreateAudiencia
   extends Omit<
     AudienciaData,
-    'id' | 'activo' | 'destacado' | 'comentarios' | 'organizacionId'
+    | 'id'
+    | 'activo'
+    | 'destacado'
+    | 'comentarios'
+    | 'organizacionId'
+    | 'archivos'
   > {}
 
 export interface UpdateAudiencia
