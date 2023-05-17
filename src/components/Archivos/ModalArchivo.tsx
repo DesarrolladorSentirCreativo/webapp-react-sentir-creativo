@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Box,
   Button,
   Dialog,
@@ -28,12 +29,12 @@ interface IModalArchivo {
 }
 
 const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
-  const { archivo, isLoading, onClose, open } = props
-  const [maxWidth, setMaxWidth] = useState<DialogProps['maxWidth']>('xl')
+  const { archivo, isLoading, onClose, open, tipoArchivos } = props
+  const [maxWidth, setMaxWidth] = useState<DialogProps['maxWidth']>('md')
   const [title, setTitle] = useState<string>('')
 
   useEffect(() => {
-    setMaxWidth('xl')
+    setMaxWidth('md')
     if (archivo.id !== 0) {
       setTitle('Actualizar Archivo')
     } else {
@@ -58,7 +59,6 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
         .required('El nombre es obligatorio'),
       path: yup
         .string()
-        .trim()
         .max(200, 'El nombre no debe superar los 200 caracteres'),
       tipoArchivoId: yup
         .number()
@@ -106,6 +106,33 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
                   helperText={
                     formik.touched.nombre === true && formik.errors.nombre
                   }
+                />
+              </Grid>
+              <Grid item xs={12} sm={12} md={12}>
+                <Autocomplete
+                  disablePortal
+                  fullWidth
+                  size="small"
+                  id="tipoArchivo"
+                  options={tipoArchivos}
+                  getOptionLabel={(option) => option.nombre}
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  onChange={(event, value) => {
+                    formik.setFieldValue('tipoArchivoId', value?.id ?? null)
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      label="Tipo de Archivo"
+                      onChange={formik.handleChange}
+                      value={formik.values.tipoArchivoId}
+                      error={!!formik.errors.tipoArchivoId}
+                      helperText={formik.errors.tipoArchivoId}
+                    />
+                  )}
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
