@@ -4,7 +4,8 @@ import { type IComentario } from '../models'
 import {
   type Audiencia,
   type CreateAudiencia,
-  type IListAudiencia
+  type IListAudiencia,
+  type UpdateAudiencia
 } from '../models/audiencia'
 import { type IPagination } from '../models/pagination'
 
@@ -31,6 +32,16 @@ const getAll = async (): Promise<Audiencia[]> => {
     })
 }
 
+const getById = async (id: number): Promise<UpdateAudiencia> => {
+  return await axios
+    .get<UpdateAudiencia>(`/audiencias/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      throw new Error(error)
+    })
+}
+
 const deleteById = async (id: number): Promise<void> => {
   await axios
     .put(`/audiencias/${id}`)
@@ -54,4 +65,4 @@ const create = async (
   await axios.post('/audiencias', data)
 }
 
-export default { paginate, getAll, deleteById, create }
+export default { paginate, getAll, deleteById, create, getById }

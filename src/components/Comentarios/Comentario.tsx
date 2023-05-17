@@ -43,6 +43,7 @@ const Comentario: React.FC<IComentarioProps> = (props: IComentarioProps) => {
     handleOpen,
     handleSetComentarioId
   } = props
+
   return (
     <>
       <Grid
@@ -112,10 +113,10 @@ const Comentario: React.FC<IComentarioProps> = (props: IComentarioProps) => {
                     {x.descripcion}
                   </Typography>
                   <Typography variant="subtitle1" color="textSecondary">
-                    {formatDate(x.fechaCreacion, false) + ' '}
+                    {formatDate(x.publishedAt, false) + ' '}
                     &bull;
                     {' ' +
-                      new Date(x.fechaCreacion)
+                      new Date(x.publishedAt)
                         .toLocaleTimeString('es-CL')
                         .slice(0, 5)}
                   </Typography>
@@ -126,7 +127,10 @@ const Comentario: React.FC<IComentarioProps> = (props: IComentarioProps) => {
                 <CardActions disableSpacing>
                   <IconButton
                     onClick={() => {
-                      handlePrepareToEdit(x.descripcion, x.id)
+                      handlePrepareToEdit(
+                        x.descripcion !== null ? x.descripcion : '',
+                        x.id
+                      )
                     }}
                     disabled={loading}
                   >

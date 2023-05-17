@@ -2,9 +2,14 @@ import axios from 'axios'
 
 import { type IComentario } from '../models'
 
-const getById = async (id: number): Promise<IComentario> => {
-  const { data } = await axios.get<IComentario>(`/comentarios/${id}`)
-  return data
+const getById = async (id: number): Promise<IComentario | null> => {
+  try {
+    const { data } = await axios.get<IComentario>(`/comentarios/${id}`)
+    return data
+  } catch (e) {
+    console.log(e)
+    return null
+  }
 }
 
 const create = async (value: string, userId: number): Promise<IComentario> => {
@@ -12,7 +17,16 @@ const create = async (value: string, userId: number): Promise<IComentario> => {
     descripcion: value,
     userId
   })
-  return await getById(data)
+  const organizacion = await getById(data)
+
+  if (organizacion !== null) return organizacion
+
+  return {
+    id: 0,
+    descripcion: '',
+    publishedAt: new Date(),
+    usuario: 'Usuario'
+  }
 }
 
 const update = async (
@@ -25,7 +39,16 @@ const update = async (
     descripcion,
     userId
   })
-  return await getById(data)
+  const organizacion = await getById(data)
+
+  if (organizacion !== null) return organizacion
+
+  return {
+    id: 0,
+    descripcion: '',
+    publishedAt: new Date(),
+    usuario: 'Usuario'
+  }
 }
 
 const deleteById = async (id: number): Promise<void> => {

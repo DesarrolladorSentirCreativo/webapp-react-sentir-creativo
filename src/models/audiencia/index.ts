@@ -1,3 +1,5 @@
+import { type IComentario } from '../comentario'
+
 export interface IListAudiencia {
   id: number
   nombre: string
@@ -53,6 +55,7 @@ export interface AudienciaData {
   organizaciones: []
   departamento?: string
   cargo?: string
+  organizacionId: number
   antiguedadId: number
   cercaniaId: number
   prefijoId: number
@@ -63,9 +66,23 @@ export interface AudienciaData {
   destacado?: boolean
   documentoIdentidad?: string
   activo: boolean
-  difusiones: []
-  cuponDescuentos: []
+  difusiones: IDifusion[]
+  cuponDescuentos: ICuponDescuento[]
+  comentarios: IComentario[]
 }
 
+interface IDifusion {
+  difusionId: number
+}
+
+interface ICuponDescuento {
+  cuponDescuentoId: number
+}
 export interface CreateAudiencia
-  extends Omit<AudienciaData, 'id' | 'activo' | 'destacado' | 'comentarios'> {}
+  extends Omit<
+    AudienciaData,
+    'id' | 'activo' | 'destacado' | 'comentarios' | 'organizacionId'
+  > {}
+
+export interface UpdateAudiencia
+  extends Omit<AudienciaData, 'activo' | 'destacado' | 'organizacionId'> {}

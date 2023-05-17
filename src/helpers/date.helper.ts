@@ -25,8 +25,9 @@ interface DateTimeFormatOptions {
   timeZoneName?: 'short' | 'long'
 }
 
-export const formatDate = (date: Date, long = true): string =>
-  new Date(date).toLocaleString(
+export const formatDate = (date: Date, long = true): string => {
+  return new Date(date).toLocaleString(
     'es-CL',
     long ? longFormatOptions : shortFormatOptions
   )
+}
