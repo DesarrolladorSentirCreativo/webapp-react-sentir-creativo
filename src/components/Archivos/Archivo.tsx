@@ -50,7 +50,11 @@ const Archivo: React.FC<IArchivoProps> = (props: IArchivoProps) => {
   }
 
   const handleIsLoading = (): void => {
-    setIsLoading(!isLoading)
+    setIsLoading(true)
+  }
+
+  const handleCloseLoading = (): void => {
+    setIsLoading(false)
   }
   return (
     <>
@@ -90,6 +94,7 @@ const Archivo: React.FC<IArchivoProps> = (props: IArchivoProps) => {
         onClose={handleClose}
         handleIsLoading={handleIsLoading}
         audienciaId={audienciaId}
+        closeLoading={handleCloseLoading}
       />
     </>
   )

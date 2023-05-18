@@ -33,6 +33,7 @@ interface IModalArchivo {
   handleIsLoading: () => void
   audienciaId: number
   addArchivo: (archivo: IArchivo) => void
+  closeLoading: () => void
 }
 
 const handleCreateFiles = async (
@@ -68,7 +69,8 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
     tipoArchivos,
     audienciaId,
     addArchivo,
-    handleIsLoading
+    handleIsLoading,
+    closeLoading
   } = props
   const [maxWidth, setMaxWidth] = useState<DialogProps['maxWidth']>('md')
   const [title, setTitle] = useState<string>('')
@@ -81,6 +83,7 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
 
   useEffect(() => {
     setMaxWidth('md')
+    console.log(isLoading)
     if (archivo.id !== 0) {
       setTitle('Actualizar Archivo')
     } else {
@@ -138,8 +141,8 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
       } else {
         getError('No se pudo crear el archivo')
       }
+      closeLoading()
       onClose()
-      handleIsLoading()
     }
   })
 
