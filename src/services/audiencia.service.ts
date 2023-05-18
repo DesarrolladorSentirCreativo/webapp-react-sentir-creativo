@@ -82,7 +82,6 @@ const update = async (
     }
   })
 
-  console.log(typeof values.celular === 'number')
   const data = {
     ...values,
     comentarios: comentariosIds,

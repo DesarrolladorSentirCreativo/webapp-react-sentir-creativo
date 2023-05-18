@@ -362,6 +362,7 @@ const UpdateFormAudiencia: React.FC = () => {
   if (loadingSkeleton) {
     return <SkeletonAudiencia />
   } else {
+    console.log('data', formik.values)
     return (
       <>
         <Card title="Formulario">
@@ -586,14 +587,19 @@ const UpdateFormAudiencia: React.FC = () => {
             <Grid item xs={12}>
               <Typography variant="h6">Datos Organización</Typography>
             </Grid>
-            <Grid item xs={12} sm={6} md={2}>
+            <Grid item xs={12} sm={6} md={6}>
               <Autocomplete
                 multiple
                 disablePortal
                 fullWidth
                 size="small"
-                id="organizacionId"
+                id="organizacion"
                 options={organizaciones}
+                value={organizaciones.filter((organizacion) =>
+                  formik.values.organizaciones.some(
+                    (selected) => selected.organizacionId === organizacion.id
+                  )
+                )}
                 onChange={(event, value) => {
                   const newValues = value.map((option) => ({
                     organizacionId: option.id
@@ -602,11 +608,11 @@ const UpdateFormAudiencia: React.FC = () => {
                 }}
                 getOptionLabel={(option) => option.nombre}
                 renderInput={(params) => (
-                  <TextField {...params} fullWidth label="Organizaciones" />
+                  <TextField {...params} fullWidth label="Organizacion" />
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={2}>
+            <Grid item xs={12} sm={6} md={6}>
               <Button
                 variant="contained"
                 color="primary"
@@ -615,7 +621,7 @@ const UpdateFormAudiencia: React.FC = () => {
                 Crear Organización
               </Button>
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={6}>
               <TextField
                 name="cargo"
                 label="Cargo"
@@ -631,7 +637,7 @@ const UpdateFormAudiencia: React.FC = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={6}>
               <TextField
                 name="departamento"
                 label="Departamento"

@@ -53,7 +53,7 @@ export interface AudienciaData {
   profesion?: string
   email: string
   celular?: number | null
-  organizaciones: []
+  organizaciones: IOrganizacion[]
   departamento?: string
   cargo?: string
   organizacionId: number
@@ -80,6 +80,11 @@ interface IDifusion {
 interface ICuponDescuento {
   cuponDescuentoId: number
 }
+
+interface IOrganizacion {
+  organizacionId: number
+}
+
 export interface CreateAudiencia
   extends Omit<
     AudienciaData,
