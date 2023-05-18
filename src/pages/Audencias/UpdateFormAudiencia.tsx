@@ -35,7 +35,6 @@ import {
 import audienciaService from '../../services/audiencia.service'
 import comentarioService from '../../services/comentario.service'
 import { ModalCrearOrganizacion, SkeletonAudiencia } from './components'
-
 const UpdateFormAudiencia: React.FC = () => {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -119,6 +118,7 @@ const UpdateFormAudiencia: React.FC = () => {
   }
 
   const handleSubmit = async (): Promise<void> => {
+    setLoadingSkeleton(true)
     try {
       await audienciaService.update(
         formik.values,
@@ -127,9 +127,11 @@ const UpdateFormAudiencia: React.FC = () => {
         userId
       )
       getSuccess('La audiencia ha sido actualizada correctamente')
+      setLoadingSkeleton(true)
       navigate('/audiencias')
     } catch (error) {
       console.log(error)
+      setLoadingSkeleton(false)
       getError('No se pudo actualizar la audiencia')
     }
   }
@@ -362,7 +364,6 @@ const UpdateFormAudiencia: React.FC = () => {
   if (loadingSkeleton) {
     return <SkeletonAudiencia />
   } else {
-    console.log('data', formik.values)
     return (
       <>
         <Card title="Formulario">

@@ -2,7 +2,10 @@ import { Box, Card, Grid, Skeleton } from '@mui/material'
 
 const SkeletonAudiencia: React.FC = () => {
   return (
-    <Card title="Formulario">
+    <Card
+      title="Formulario"
+      sx={{ padding: '1.2rem', overflow: 'auto', margin: 5 }}
+    >
       <Box>
         <Skeleton
           animation="wave"
