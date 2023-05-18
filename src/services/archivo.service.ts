@@ -23,6 +23,29 @@ const create = async (
     })
 }
 
+const update = async (
+  id: number,
+  nombre: string,
+  path: string,
+  tipoArchivoId: number,
+  publico: boolean
+): Promise<number | null> => {
+  const data = {
+    id,
+    nombre,
+    path,
+    tipoArchivoId,
+    publico
+  }
+  return await axios
+    .put<number>('/archivos', data)
+    .then((res) => res.data)
+    .catch((err) => {
+      console.log(err)
+      return null
+    })
+}
+
 const getById = async (id: number): Promise<IArchivo | null> => {
   try {
     const { data } = await axios.get<IArchivo>(`/archivos/${id}`)
@@ -33,4 +56,4 @@ const getById = async (id: number): Promise<IArchivo | null> => {
   }
 }
 
-export default { create, getById }
+export default { create, getById, update }

@@ -12,6 +12,13 @@ import { type IArchivo } from '../../models'
 
 interface IArchivoCardProps {
   archivos: IArchivo[]
+  verArchivo: (
+    id: number,
+    nombre: string,
+    path: string,
+    tipoArchivoId: number | null,
+    publico: boolean
+  ) => void
 }
 
 const ArchivoCard: React.FC<IArchivoCardProps> = (props: IArchivoCardProps) => {
@@ -21,7 +28,7 @@ const ArchivoCard: React.FC<IArchivoCardProps> = (props: IArchivoCardProps) => {
   const handleLink = (path: string): void => {
     window.open(path, '_blank')
   }
-  const { archivos } = props
+  const { archivos, verArchivo } = props
   return (
     <>
       <Grid
@@ -67,7 +74,19 @@ const ArchivoCard: React.FC<IArchivoCardProps> = (props: IArchivoCardProps) => {
                   )}
                 </CardContent>
                 <CardActions>
-                  <Button size="small" color="primary">
+                  <Button
+                    size="small"
+                    color="primary"
+                    onClick={() => {
+                      verArchivo(
+                        x.id,
+                        x.nombre,
+                        x.path,
+                        x.tipoArchivoId,
+                        x.publico
+                      )
+                    }}
+                  >
                     Ver
                   </Button>
                   <Button

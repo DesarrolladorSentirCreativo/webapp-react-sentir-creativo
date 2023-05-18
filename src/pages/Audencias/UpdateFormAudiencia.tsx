@@ -109,7 +109,8 @@ const UpdateFormAudiencia: React.FC = () => {
   }
 
   const addArchivo = (archivo: IArchivo): void => {
-    setArchivos([...archivos, archivo])
+    const result = archivos.filter((item) => item.id !== archivo.id)
+    setArchivos([...result, archivo])
   }
   const getUserId = (): void => {
     const userData = getLocalStorage('user') || '{}'
@@ -134,6 +135,13 @@ const UpdateFormAudiencia: React.FC = () => {
       setLoadingSkeleton(false)
       getError('No se pudo actualizar la audiencia')
     }
+  }
+
+  const removeArchivo = (id: number): void => {
+    console.log(archivos)
+    const data = archivos.filter((archivo) => archivo.id !== id)
+    console.log('data', data)
+    setArchivos(data)
   }
 
   const formik = useFormik<UpdateAudiencia>({
@@ -808,6 +816,7 @@ const UpdateFormAudiencia: React.FC = () => {
             archivos={archivos}
             audienciaId={audienciaId}
             addArchivo={addArchivo}
+            removeArchivo={removeArchivo}
           />
           <Comentario
             handleComentarioSave={handleComentarioSave}

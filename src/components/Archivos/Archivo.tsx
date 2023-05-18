@@ -12,6 +12,7 @@ interface IArchivoProps {
   archivos: IArchivo[]
   audienciaId: number
   addArchivo: (archivo: IArchivo) => void
+  removeArchivo: (id: number) => void
 }
 
 const archivoForm: IArchivo = {
@@ -24,7 +25,7 @@ const archivoForm: IArchivo = {
   publico: false
 }
 const Archivo: React.FC<IArchivoProps> = (props: IArchivoProps) => {
-  const { archivos, audienciaId, addArchivo } = props
+  const { archivos, audienciaId, addArchivo, removeArchivo } = props
   const [open, setOpen] = useState<boolean>(false)
   const [archivo, setArchivo] = useState<IArchivo>(archivoForm)
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -42,6 +43,25 @@ const Archivo: React.FC<IArchivoProps> = (props: IArchivoProps) => {
   const handleOpen = (): void => {
     setOpen(true)
     setArchivo(archivoForm)
+  }
+
+  const verArchivo = (
+    id: number,
+    nombre: string,
+    path: string,
+    tipoArchivoId: number | null,
+    publico: boolean
+  ): void => {
+    setArchivo({
+      id,
+      nombre,
+      path,
+      tipoArchivoId,
+      publico,
+      publishedAt: new Date(),
+      tipoArchivo: ''
+    })
+    setOpen(true)
   }
 
   const handleClose = (): void => {
@@ -83,7 +103,7 @@ const Archivo: React.FC<IArchivoProps> = (props: IArchivoProps) => {
             <AddCircleIcon />
           </IconButton>
         </Tooltip>
-        <ArchivoCard archivos={archivos} />
+        <ArchivoCard archivos={archivos} verArchivo={verArchivo} />
       </Grid>
       <ModalArchivo
         addArchivo={addArchivo}
@@ -95,6 +115,7 @@ const Archivo: React.FC<IArchivoProps> = (props: IArchivoProps) => {
         handleIsLoading={handleIsLoading}
         audienciaId={audienciaId}
         closeLoading={handleCloseLoading}
+        removeArchivo={removeArchivo}
       />
     </>
   )

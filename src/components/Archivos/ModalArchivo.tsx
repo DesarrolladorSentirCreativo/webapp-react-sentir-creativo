@@ -34,23 +34,20 @@ interface IModalArchivo {
   audienciaId: number
   addArchivo: (archivo: IArchivo) => void
   closeLoading: () => void
+  removeArchivo: (id: number) => void
 }
 
 const handleCreateFiles = async (
   values: any,
   audienciaId: number
 ): Promise<string> => {
-  console.log('handleCreateFiles', values, audienciaId)
   const parentId = audienciaId.toString()
   if (!parentId) return ''
   if (!values.tipoArchivoId) throw new Error()
-
-  console.log(values.publico)
   const file = values.archivo
   const name = values.nombre
   const parent = 'audiencia'
   const publicFile = values.publico
-  console.log(file)
   return await uploadFileToS3({
     name,
     file,
@@ -76,6 +73,7 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
   const [title, setTitle] = useState<string>('')
   const [currentTab, setCurrentTab] = useState(0)
   const { getSuccess, getError } = useNotification()
+  const [tabArchivos, setTabArchivos] = useState<boolean>(false)
 
   const handleTabChange = (event: any, newValue: number): void => {
     setCurrentTab(newValue)
@@ -83,10 +81,21 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
 
   useEffect(() => {
     setMaxWidth('md')
-    console.log(isLoading)
     if (archivo.id !== 0) {
-      setTitle('Actualizar Archivo')
+      setTabArchivos(true)
+      setCurrentTab(1)
+      formik.setValues({
+        nombre: archivo.nombre,
+        tipoArchivoId: archivo.tipoArchivoId,
+        publico: archivo.publico,
+        id: archivo.id,
+        path: archivo.path,
+        archivo: null
+      })
+      setTitle('Actualizar archivo')
     } else {
+      setCurrentTab(0)
+      setTabArchivos(false)
       setTitle('Crear Archivo')
     }
   }, [open])
@@ -117,30 +126,48 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
     onSubmit: async (values) => {
       handleIsLoading()
       let data = null
-      if (values.path.length > 0) {
-        data = await archivoService.create(
+
+      if (values.id !== 0) {
+        data = await archivoService.update(
+          values.id,
           values.nombre,
           values.path,
           values.tipoArchivoId ?? 0,
           values.publico
         )
+        if (data !== null) {
+          getSuccess('Se actualizo el archivo correctamente el archivo')
+          const result = await archivoService.getById(data)
+          if (result !== null) addArchivo(result)
+        } else {
+          getError('No se pudo actualizar el archivo')
+        }
       } else {
-        const path = await handleCreateFiles(values, audienciaId)
-        data = await archivoService.create(
-          values.nombre,
-          path,
-          values.tipoArchivoId ?? 0,
-          values.publico
-        )
+        if (values.path.length > 0) {
+          data = await archivoService.create(
+            values.nombre,
+            values.path,
+            values.tipoArchivoId ?? 0,
+            values.publico
+          )
+        } else {
+          const path = await handleCreateFiles(values, audienciaId)
+          data = await archivoService.create(
+            values.nombre,
+            path,
+            values.tipoArchivoId ?? 0,
+            values.publico
+          )
+        }
+        if (data !== null) {
+          getSuccess('Se creo el archivo correctamente el archivo')
+          const result = await archivoService.getById(data)
+          if (result !== null) addArchivo(result)
+        } else {
+          getError('No se pudo crear el archivo')
+        }
       }
 
-      if (data !== null) {
-        getSuccess('Se creo correctamente el archivo')
-        const result = await archivoService.getById(data)
-        if (result !== null) addArchivo(result)
-      } else {
-        getError('No se pudo crear el archivo')
-      }
       closeLoading()
       onClose()
     }
@@ -226,7 +253,7 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
                 />
               </Grid>
               <Tabs value={currentTab} onChange={handleTabChange}>
-                <Tab label="Archivo" />
+                <Tab label="Archivo" disabled={tabArchivos} />
                 <Tab label="Path" />
               </Tabs>
               {currentTab === 1 && (
