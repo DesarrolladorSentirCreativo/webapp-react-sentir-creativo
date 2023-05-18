@@ -118,8 +118,20 @@ const UpdateFormAudiencia: React.FC = () => {
     setUserId(user.userId)
   }
 
-  const handleSubmit = (): void => {
-    console.log(formik.values, 'data')
+  const handleSubmit = async (): Promise<void> => {
+    try {
+      await audienciaService.update(
+        formik.values,
+        comentarios,
+        archivos,
+        userId
+      )
+      getSuccess('La audiencia ha sido actualizada correctamente')
+      navigate('/audiencias')
+    } catch (error) {
+      console.log(error)
+      getError('No se pudo actualizar la audiencia')
+    }
   }
 
   const formik = useFormik<UpdateAudiencia>({
@@ -214,8 +226,7 @@ const UpdateFormAudiencia: React.FC = () => {
     }),
     onSubmit: async (values) => {
       console.log('pasa')
-      console.log(values)
-      // await audienciaService.create(values, comentarios)
+      await audienciaService.update(values, comentarios, archivos, userId)
       navigate('/audiencias')
     }
   })
@@ -310,8 +321,6 @@ const UpdateFormAudiencia: React.FC = () => {
             return comentario.id === data.id ? data : comentario
           }
         )
-
-        console.log(updatedComentarios)
         setComentarios(updatedComentarios)
         setComentario('')
         setComentarioId(0)

@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { type IComentario } from '../models'
+import { type IArchivo, type IComentario } from '../models'
 import {
   type Audiencia,
   type CreateAudiencia,
@@ -65,4 +65,31 @@ const create = async (
   await axios.post('/audiencias', data)
 }
 
-export default { paginate, getAll, deleteById, create, getById }
+const update = async (
+  values: UpdateAudiencia,
+  comentarios: IComentario[],
+  archivos: IArchivo[],
+  user: number
+): Promise<void> => {
+  const comentariosIds = comentarios.map((item: IComentario) => {
+    return {
+      comentarioId: item.id
+    }
+  })
+  const archivosIds = archivos.map((item: IArchivo) => {
+    return {
+      archivoId: item.id
+    }
+  })
+
+  console.log(typeof values.celular === 'number')
+  const data = {
+    ...values,
+    comentarios: comentariosIds,
+    archivos: archivosIds,
+    userId: user
+  }
+  await axios.put('/audiencias', data)
+}
+
+export default { paginate, getAll, deleteById, create, getById, update }
