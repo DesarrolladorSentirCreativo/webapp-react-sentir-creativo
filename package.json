@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "3.332.0",
+    "@aws-sdk/util-base64-browser": "3.209.0",
     "@devexpress/dx-react-core": "4.0.3",
     "@devexpress/dx-react-grid": "4.0.3",
     "@devexpress/dx-react-grid-material-ui": "4.0.3",

@@ -10,6 +10,8 @@ import ModalArchivo from './ModalArchivo'
 
 interface IArchivoProps {
   archivos: IArchivo[]
+  audienciaId: number
+  addArchivo: (archivo: IArchivo) => void
 }
 
 const archivoForm: IArchivo = {
@@ -22,7 +24,7 @@ const archivoForm: IArchivo = {
   publico: false
 }
 const Archivo: React.FC<IArchivoProps> = (props: IArchivoProps) => {
-  const { archivos } = props
+  const { archivos, audienciaId, addArchivo } = props
   const [open, setOpen] = useState<boolean>(false)
   const [archivo, setArchivo] = useState<IArchivo>(archivoForm)
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -80,12 +82,14 @@ const Archivo: React.FC<IArchivoProps> = (props: IArchivoProps) => {
         <ArchivoCard archivos={archivos} />
       </Grid>
       <ModalArchivo
+        addArchivo={addArchivo}
         archivo={archivo}
         tipoArchivos={tipoArchivos}
         open={open}
         isLoading={isLoading}
         onClose={handleClose}
         handleIsLoading={handleIsLoading}
+        audienciaId={audienciaId}
       />
     </>
   )

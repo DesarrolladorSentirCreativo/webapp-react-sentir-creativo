@@ -9,14 +9,19 @@ import {
   FormControlLabel,
   Grid,
   Switch,
+  Tab,
+  Tabs,
   TextField
 } from '@mui/material'
 import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
 import * as yup from 'yup'
 
+import { useNotification } from '../../context'
+import { uploadFileToS3 } from '../../helpers/aws.helper'
 import { type IArchivo, type ICRUDArchivo } from '../../models'
 import { type ITipoArchivo } from '../../models/tipoArchivos'
+import archivoService from '../../services/archivo.service'
 import SkeletonFormArchivo from './SkeletonFormArchivo'
 
 interface IModalArchivo {
@@ -26,12 +31,53 @@ interface IModalArchivo {
   isLoading: boolean
   onClose: () => void
   handleIsLoading: () => void
+  audienciaId: number
+  addArchivo: (archivo: IArchivo) => void
+}
+
+const handleCreateFiles = async (
+  values: any,
+  audienciaId: number
+): Promise<string> => {
+  console.log('handleCreateFiles', values, audienciaId)
+  const parentId = audienciaId.toString()
+  if (!parentId) return ''
+  if (!values.tipoArchivoId) throw new Error()
+
+  console.log(values.publico)
+  const file = values.archivo
+  const name = values.nombre
+  const parent = 'audiencia'
+  const publicFile = values.publico
+  console.log(file)
+  return await uploadFileToS3({
+    name,
+    file,
+    parentId,
+    parent,
+    publicFile
+  })
 }
 
 const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
-  const { archivo, isLoading, onClose, open, tipoArchivos } = props
+  const {
+    archivo,
+    isLoading,
+    onClose,
+    open,
+    tipoArchivos,
+    audienciaId,
+    addArchivo,
+    handleIsLoading
+  } = props
   const [maxWidth, setMaxWidth] = useState<DialogProps['maxWidth']>('md')
   const [title, setTitle] = useState<string>('')
+  const [currentTab, setCurrentTab] = useState(0)
+  const { getSuccess, getError } = useNotification()
+
+  const handleTabChange = (event: any, newValue: number): void => {
+    setCurrentTab(newValue)
+  }
 
   useEffect(() => {
     setMaxWidth('md')
@@ -66,9 +112,34 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
         .required('El tipo de archivo es obligatorio')
     }),
     onSubmit: async (values) => {
-      console.log('pasa')
-      console.log(values)
-      // await audienciaService.create(values, comentarios)
+      handleIsLoading()
+      let data = null
+      if (values.path.length > 0) {
+        data = await archivoService.create(
+          values.nombre,
+          values.path,
+          values.tipoArchivoId ?? 0,
+          values.publico
+        )
+      } else {
+        const path = await handleCreateFiles(values, audienciaId)
+        data = await archivoService.create(
+          values.nombre,
+          path,
+          values.tipoArchivoId ?? 0,
+          values.publico
+        )
+      }
+
+      if (data !== null) {
+        getSuccess('Se creo correctamente el archivo')
+        const result = await archivoService.getById(data)
+        if (result !== null) addArchivo(result)
+      } else {
+        getError('No se pudo crear el archivo')
+      }
+      onClose()
+      handleIsLoading()
     }
   })
 
@@ -126,6 +197,7 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
                     <TextField
                       {...params}
                       fullWidth
+                      required
                       label="Tipo de Archivo"
                       onChange={formik.handleChange}
                       value={formik.values.tipoArchivoId}
@@ -133,23 +205,6 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
                       helperText={formik.errors.tipoArchivoId}
                     />
                   )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} md={12}>
-                <TextField
-                  name="path"
-                  label="Path"
-                  fullWidth
-                  required
-                  size="small"
-                  value={formik.values.nombre}
-                  onChange={formik.handleChange}
-                  error={
-                    formik.touched.path === true && Boolean(formik.errors.path)
-                  }
-                  helperText={
-                    formik.touched.path === true && formik.errors.path
-                  }
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
@@ -167,43 +222,68 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
                   label="Publico"
                 />
               </Grid>
-              <Grid item xs={12} sm={12} md={12}>
-                <TextField
-                  name="archivo"
-                  label="Archivo"
-                  type="file"
-                  fullWidth
-                  required
-                  size="small"
-                  inputProps={{
-                    accept:
-                      '.pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.gif,.tiff'
-                  }}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    const file =
-                      event.currentTarget.files && event.currentTarget.files[0]
-                    if (file && file.size > 16 * 1024 * 1024) {
-                      // El archivo excede los 16 megabytes
-                      // Puedes mostrar una advertencia, restablecer el valor, etc.
-                      console.log(
-                        'El archivo excede los 16 megabytes permitidos'
-                      )
-                    } else {
-                      // El archivo cumple con el tamaño máximo permitido
-                      formik.setFieldValue('archivo', file)
+              <Tabs value={currentTab} onChange={handleTabChange}>
+                <Tab label="Archivo" />
+                <Tab label="Path" />
+              </Tabs>
+              {currentTab === 1 && (
+                <Grid item xs={12} sm={12} md={12}>
+                  <TextField
+                    name="path"
+                    label="Path"
+                    fullWidth
+                    size="small"
+                    value={formik.values.path}
+                    onChange={formik.handleChange}
+                    error={
+                      formik.touched.path === true &&
+                      Boolean(formik.errors.path)
                     }
-                  }}
-                  value={undefined}
-                  error={
-                    formik.touched.archivo && Boolean(formik.errors.archivo)
-                  }
-                  helperText={
-                    formik.touched.archivo && formik.errors.archivo
-                      ? String(formik.errors.archivo)
-                      : ''
-                  }
-                />
-              </Grid>
+                    helperText={
+                      formik.touched.path === true && formik.errors.path
+                    }
+                  />
+                </Grid>
+              )}
+              {currentTab === 0 && (
+                <Grid item xs={12} sm={12} md={12}>
+                  <TextField
+                    name="archivo"
+                    label="Archivo"
+                    type="file"
+                    fullWidth
+                    size="small"
+                    inputProps={{
+                      accept:
+                        '.pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.gif,.tiff'
+                    }}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      const file =
+                        event.currentTarget.files &&
+                        event.currentTarget.files[0]
+                      if (file && file.size > 15 * 1024 * 1024) {
+                        // El archivo excede los 16 megabytes
+                        // Puedes mostrar una advertencia, restablecer el valor, etc.
+                        console.log(
+                          'El archivo excede los 16 megabytes permitidos'
+                        )
+                      } else {
+                        // El archivo cumple con el tamaño máximo permitido
+                        formik.setFieldValue('archivo', file)
+                      }
+                    }}
+                    value={undefined}
+                    error={
+                      formik.touched.archivo && Boolean(formik.errors.archivo)
+                    }
+                    helperText={
+                      formik.touched.archivo && formik.errors.archivo
+                        ? String(formik.errors.archivo)
+                        : ''
+                    }
+                  />
+                </Grid>
+              )}
             </Grid>
             <Grid container spacing={2} padding={2}>
               <Grid item xs={12} sm={6} md={6}>

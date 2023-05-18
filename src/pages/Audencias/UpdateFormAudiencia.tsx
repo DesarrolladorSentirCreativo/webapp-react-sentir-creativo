@@ -60,6 +60,7 @@ const UpdateFormAudiencia: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [comentario, setComentario] = useState<string>('')
   const [archivos, setArchivos] = useState<IArchivo[]>([])
+  const [audienciaId, setAudienciaId] = useState<number>(0)
 
   useEffect(() => {
     load(id)
@@ -88,6 +89,7 @@ const UpdateFormAudiencia: React.FC = () => {
     getUserId()
     if (id !== undefined) {
       const data = await audienciaService.getById(parseInt(id))
+      setAudienciaId(parseInt(id))
       const comentariosData = await Promise.all(
         data.comentarios.map(async (comentario) => {
           console.log(comentario.id)
@@ -107,13 +109,18 @@ const UpdateFormAudiencia: React.FC = () => {
     setLoadingSkeleton(false)
   }
 
+  const addArchivo = (archivo: IArchivo): void => {
+    setArchivos([...archivos, archivo])
+  }
   const getUserId = (): void => {
     const userData = getLocalStorage('user') || '{}'
     const user = JSON.parse(userData)
     setUserId(user.userId)
   }
 
-  const handleSubmit = (): void => {}
+  const handleSubmit = (): void => {
+    console.log(formik.values, 'data')
+  }
 
   const formik = useFormik<UpdateAudiencia>({
     initialValues: {
@@ -207,6 +214,7 @@ const UpdateFormAudiencia: React.FC = () => {
     }),
     onSubmit: async (values) => {
       console.log('pasa')
+      console.log(values)
       // await audienciaService.create(values, comentarios)
       navigate('/audiencias')
     }
@@ -780,7 +788,11 @@ const UpdateFormAudiencia: React.FC = () => {
               />
             </Grid>
           </Grid>
-          <Archivo archivos={archivos} />
+          <Archivo
+            archivos={archivos}
+            audienciaId={audienciaId}
+            addArchivo={addArchivo}
+          />
           <Comentario
             handleComentarioSave={handleComentarioSave}
             handleSetComentario={handleSetComentario}
