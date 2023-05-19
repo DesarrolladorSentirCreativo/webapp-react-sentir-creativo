@@ -44,6 +44,7 @@ export interface Audiencia {
   documentoIdentidad?: string
   activo: boolean
   publishedAt: Date
+  organizaciones: IOrganizacion[]
 }
 
 export interface AudienciaData {

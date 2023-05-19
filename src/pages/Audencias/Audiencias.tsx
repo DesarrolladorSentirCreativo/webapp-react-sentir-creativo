@@ -12,7 +12,7 @@ import {
   getLocalStorage,
   setLocalStorage
 } from '../../helpers/localstorage.helper'
-import { useEstadoAudiencia } from '../../hooks'
+import { useEstadoAudiencia, useOrganizacion } from '../../hooks'
 import { type Audiencia } from '../../models'
 import audienciaService from '../../services/audiencia.service'
 
@@ -22,6 +22,7 @@ const Audiencias: React.FC = () => {
   const { getError, getSuccess } = useNotification()
   const [data, setData] = useState<Audiencia[]>([])
   const { loadEstadoAudiencias, estadoAudiencias } = useEstadoAudiencia()
+  const { loadOrganizaciones, organizaciones } = useOrganizacion()
   const [audienciaId, setAudienciaId] = useState<number>(0)
   const [open, setOpen] = useState<boolean>(false)
   const [columnVisibility, setColumnVisibility] = useState(() => {
@@ -84,6 +85,28 @@ const Audiencias: React.FC = () => {
         header: 'Apellido'
       },
       {
+        accessorKey: 'organizaciones',
+        header: 'Organización',
+        Cell: ({ cell, row }) => {
+          const value = row.original.organizaciones[0]
+          const organizacion = organizaciones.find(
+            (item) => item.id === value.organizacionId
+          )
+          return (
+            <span
+              style={{
+                display: 'flex',
+                alignItems: 'left',
+                textAlign: 'left',
+                justifyContent: 'left'
+              }}
+            >
+              {organizacion?.nombre}
+            </span>
+          )
+        }
+      },
+      {
         accessorKey: 'celular',
         header: 'Telefono'
       },
@@ -100,7 +123,6 @@ const Audiencias: React.FC = () => {
             <span
               style={{
                 display: 'flex',
-                alignItems: 'center',
                 justifyContent: 'center'
               }}
             >

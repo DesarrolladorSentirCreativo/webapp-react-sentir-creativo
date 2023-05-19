@@ -125,53 +125,68 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
     }),
     onSubmit: async (values) => {
       handleIsLoading()
-      let data = null
-
       if (values.id !== 0) {
-        data = await archivoService.update(
-          values.id,
-          values.nombre,
-          values.path,
-          values.tipoArchivoId ?? 0,
-          values.publico
-        )
-        if (data !== null) {
-          getSuccess('Se actualizo el archivo correctamente el archivo')
-          const result = await archivoService.getById(data)
-          if (result !== null) addArchivo(result)
-        } else {
-          getError('No se pudo actualizar el archivo')
-        }
+        await handleUpdateArchivo(values)
       } else {
-        if (values.path.length > 0) {
-          data = await archivoService.create(
-            values.nombre,
-            values.path,
-            values.tipoArchivoId ?? 0,
-            values.publico
-          )
-        } else {
-          const path = await handleCreateFiles(values, audienciaId)
-          data = await archivoService.create(
-            values.nombre,
-            path,
-            values.tipoArchivoId ?? 0,
-            values.publico
-          )
-        }
-        if (data !== null) {
-          getSuccess('Se creo el archivo correctamente el archivo')
-          const result = await archivoService.getById(data)
-          if (result !== null) addArchivo(result)
-        } else {
-          getError('No se pudo crear el archivo')
-        }
+        await handleCreateArchivo(values, audienciaId)
       }
-
       closeLoading()
       onClose()
     }
   })
+
+  const handleUpdateArchivo = async (values: ICRUDArchivo): Promise<void> => {
+    let data = null
+
+    data = await archivoService.update(
+      values.id,
+      values.nombre,
+      values.path,
+      values.tipoArchivoId ?? 0,
+      values.publico
+    )
+
+    if (data !== null) {
+      getSuccess('Se actualizó el archivo correctamente')
+      const result = await archivoService.getById(data)
+      if (result !== null) {
+        addArchivo(result)
+      }
+    } else {
+      getError('No se pudo actualizar el archivo')
+    }
+  }
+
+  const handleCreateArchivo = async (
+    values: ICRUDArchivo,
+    audienciaId: number
+  ): Promise<void> => {
+    let data = null
+    let path = ''
+
+    if (values.path.length > 0) {
+      path = values.path
+    } else {
+      path = await handleCreateFiles(values, audienciaId)
+    }
+
+    data = await archivoService.create(
+      values.nombre,
+      path,
+      values.tipoArchivoId ?? 0,
+      values.publico
+    )
+
+    if (data !== null) {
+      getSuccess('Se creó el archivo correctamente')
+      const result = await archivoService.getById(data)
+      if (result !== null) {
+        addArchivo(result)
+      }
+    } else {
+      getError('No se pudo crear el archivo')
+    }
+  }
 
   return (
     <Dialog fullWidth open={open} onClose={onClose} maxWidth={maxWidth}>
