@@ -138,9 +138,7 @@ const UpdateFormAudiencia: React.FC = () => {
   }
 
   const removeArchivo = (id: number): void => {
-    console.log(archivos)
     const data = archivos.filter((archivo) => archivo.id !== id)
-    console.log('data', data)
     setArchivos(data)
   }
 

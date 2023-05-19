@@ -103,7 +103,11 @@ const Archivo: React.FC<IArchivoProps> = (props: IArchivoProps) => {
             <AddCircleIcon />
           </IconButton>
         </Tooltip>
-        <ArchivoCard archivos={archivos} verArchivo={verArchivo} />
+        <ArchivoCard
+          archivos={archivos}
+          verArchivo={verArchivo}
+          remove={removeArchivo}
+        />
       </Grid>
       <ModalArchivo
         addArchivo={addArchivo}

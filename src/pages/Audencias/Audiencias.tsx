@@ -68,7 +68,7 @@ const Audiencias: React.FC = () => {
                 borderRadius: '1px',
                 display: 'flex',
                 alignItems: 'left',
-                justifyContent: 'center'
+                justifyContent: 'left'
               }}
             >
               {value?.nombre}
@@ -123,7 +123,7 @@ const Audiencias: React.FC = () => {
             <span
               style={{
                 display: 'flex',
-                justifyContent: 'center'
+                justifyContent: 'left'
               }}
             >
               {formatDate(new Date(row.original.publishedAt))}
@@ -183,6 +183,7 @@ const Audiencias: React.FC = () => {
   const load = async (): Promise<void> => {
     setIsLoading(true)
     await loadEstadoAudiencias()
+    await loadOrganizaciones()
     await fetchData()
     setIsLoading(false)
   }

@@ -56,4 +56,13 @@ const getById = async (id: number): Promise<IArchivo | null> => {
   }
 }
 
-export default { create, getById, update }
+const deleteById = async (id: number): Promise<void> => {
+  await axios
+    .delete(`/archivos/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+    })
+}
+
+export default { create, getById, update, deleteById }

@@ -502,7 +502,7 @@ const CreateFormAudiencia: React.FC = () => {
             <Grid item xs={12}>
               <Typography variant="h6">Datos Organización</Typography>
             </Grid>
-            <Grid item xs={12} sm={6} md={2}>
+            <Grid item xs={12} sm={6} md={6}>
               <Autocomplete
                 multiple
                 disablePortal
@@ -522,7 +522,7 @@ const CreateFormAudiencia: React.FC = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={2}>
+            <Grid item xs={12} sm={6} md={6}>
               <Button
                 variant="contained"
                 color="primary"
@@ -531,7 +531,7 @@ const CreateFormAudiencia: React.FC = () => {
                 Crear Organización
               </Button>
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={6}>
               <TextField
                 name="cargo"
                 label="Cargo"
@@ -547,7 +547,7 @@ const CreateFormAudiencia: React.FC = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={6}>
               <TextField
                 name="departamento"
                 label="Departamento"
