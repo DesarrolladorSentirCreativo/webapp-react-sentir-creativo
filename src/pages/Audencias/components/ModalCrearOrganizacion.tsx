@@ -22,11 +22,12 @@ import { SkeletonFormOrganizacion } from '../../Organizaciones/components'
 interface IModalCrearOrganizacionProps {
   open: boolean
   onClose: () => void
+  addOrganizacionSelect: (id: number) => void
 }
 const ModalCrearOrganizacion: React.FC<IModalCrearOrganizacionProps> = (
   props: IModalCrearOrganizacionProps
 ) => {
-  const { open, onClose } = props
+  const { open, onClose, addOrganizacionSelect } = props
 
   const { rubros, loadRubros } = useRubro()
   const { paises, loadPaises, regiones, loadRegiones, ciudades, loadCiudades } =
@@ -108,9 +109,13 @@ const ModalCrearOrganizacion: React.FC<IModalCrearOrganizacionProps> = (
     onSubmit: async (values) => {
       setIsLoading(true)
       try {
-        await organizacionService.create(values)
+        const data = await organizacionService.create(values)
         getSuccess('La organización creada correctamente')
         setIsLoading(false)
+        if (data !== null) {
+          addOrganizacionSelect(data)
+        }
+        formik.resetForm()
         onClose()
       } catch (e) {
         console.log(e)
@@ -123,7 +128,7 @@ const ModalCrearOrganizacion: React.FC<IModalCrearOrganizacionProps> = (
 
   return (
     <Dialog fullWidth open={open} onClose={onClose} maxWidth={maxWidth}>
-      <DialogTitle>Crear Organiozacion</DialogTitle>
+      <DialogTitle>Crear Organización</DialogTitle>
       <DialogContent sx={{ width: '100%' }}>
         {isLoading ? (
           <SkeletonFormOrganizacion />
@@ -390,6 +395,7 @@ const ModalCrearOrganizacion: React.FC<IModalCrearOrganizacionProps> = (
                   variant="contained"
                   color="error"
                   onClick={() => {
+                    formik.resetForm()
                     onClose()
                   }}
                 >

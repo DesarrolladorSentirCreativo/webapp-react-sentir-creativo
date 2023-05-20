@@ -39,9 +39,14 @@ const getByDireccion = async (
     })
 }
 
-const create = async (values: CreateOrganizacion): Promise<void> => {
-  const { data } = await axios.post('/organizaciones', values)
-  return data
+const create = async (values: CreateOrganizacion): Promise<number | null> => {
+  return await axios
+    .post<number>('/organizaciones', values)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      return null
+    })
 }
 
 const update = async (values: UpdateOrganizacion): Promise<void> => {

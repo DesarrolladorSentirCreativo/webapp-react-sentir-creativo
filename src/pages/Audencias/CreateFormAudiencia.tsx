@@ -53,6 +53,7 @@ const CreateFormAudiencia: React.FC = () => {
   const [messageError, setMessageError] = useState<string>('')
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [loadingSkeleton, setLoadingSkeleton] = useState<boolean>(false)
+  const [idAdd, setIdAdd] = useState<number>(0)
 
   useEffect(() => {
     setLoadingSkeleton(true)
@@ -183,6 +184,27 @@ const CreateFormAudiencia: React.FC = () => {
     }
     setMessageError('Por favor complete el formulario correctamente')
   }
+
+  const addOrganizacionSelect = (id: number): void => {
+    setIdAdd(id)
+  }
+
+  useEffect(() => {
+    console.log(idAdd)
+    if (idAdd !== 0) {
+      const organizacion = organizaciones.find((x) => x.id === idAdd)
+      if (organizacion) {
+        console.log('si paso')
+        const organizacionesValues = [
+          ...formik.values.organizaciones,
+          {
+            organizacionId: organizacion.id
+          }
+        ]
+        formik.setFieldValue('organizaciones', organizacionesValues)
+      }
+    }
+  }, [organizaciones])
 
   const getUserId = (): void => {
     const userData = getLocalStorage('user') || '{}'
@@ -510,6 +532,11 @@ const CreateFormAudiencia: React.FC = () => {
                 size="small"
                 id="organizacionId"
                 options={organizaciones}
+                value={organizaciones.filter((organizacion) =>
+                  formik.values.organizaciones.some(
+                    (selected) => selected.organizacionId === organizacion.id
+                  )
+                )}
                 onChange={(event, value) => {
                   const newValues = value.map((option) => ({
                     organizacionId: option.id
@@ -741,7 +768,11 @@ const CreateFormAudiencia: React.FC = () => {
             cancelButtonText="Cancelar"
           />
         </Card>
-        <ModalCrearOrganizacion open={openModal} onClose={handleCloseModal} />
+        <ModalCrearOrganizacion
+          open={openModal}
+          onClose={handleCloseModal}
+          addOrganizacionSelect={addOrganizacionSelect}
+        />
       </>
     )
   }

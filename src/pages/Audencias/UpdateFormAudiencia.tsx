@@ -60,6 +60,7 @@ const UpdateFormAudiencia: React.FC = () => {
   const [comentario, setComentario] = useState<string>('')
   const [archivos, setArchivos] = useState<IArchivo[]>([])
   const [audienciaId, setAudienciaId] = useState<number>(0)
+  const [idAdd, setIdAdd] = useState<number>(0)
 
   useEffect(() => {
     load(id)
@@ -117,6 +118,25 @@ const UpdateFormAudiencia: React.FC = () => {
     const user = JSON.parse(userData)
     setUserId(user.userId)
   }
+
+  const addOrganizacionSelect = (id: number): void => {
+    setIdAdd(id)
+  }
+
+  useEffect(() => {
+    if (idAdd !== 0) {
+      const organizacion = organizaciones.find((x) => x.id === idAdd)
+      if (organizacion) {
+        const organizacionesValues = [
+          ...formik.values.organizaciones,
+          {
+            organizacionId: organizacion.id
+          }
+        ]
+        formik.setFieldValue('organizaciones', organizacionesValues)
+      }
+    }
+  }, [organizaciones])
 
   const handleSubmit = async (): Promise<void> => {
     setLoadingSkeleton(true)
@@ -870,7 +890,11 @@ const UpdateFormAudiencia: React.FC = () => {
             cancelButtonText="Cancelar"
           />
         </Card>
-        <ModalCrearOrganizacion open={openModal} onClose={handleCloseModal} />
+        <ModalCrearOrganizacion
+          open={openModal}
+          onClose={handleCloseModal}
+          addOrganizacionSelect={addOrganizacionSelect}
+        />
       </>
     )
   }
