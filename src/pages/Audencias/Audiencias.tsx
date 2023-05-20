@@ -63,7 +63,7 @@ const Audiencias: React.FC = () => {
             <span
               style={{
                 backgroundColor: value?.color ?? '#fff',
-                color: '#fff',
+                color: value?.color !== null ? '#fff' : '#000',
                 padding: '2px',
                 borderRadius: '1px',
                 display: 'flex',

@@ -61,7 +61,7 @@ const create = async (
       comentarioId: item.id
     }
   })
-  const data = { ...values, comentariosIds }
+  const data = { ...values, comentarios: comentariosIds }
   await axios.post('/audiencias', data)
 }
 
