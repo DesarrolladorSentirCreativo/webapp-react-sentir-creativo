@@ -9,8 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.332.0",
+    "@aws-sdk/client-s3": "^3.335.0",
+    "@aws-sdk/credential-providers": "^3.335.0",
+    "@aws-sdk/hash-node": "^3.329.0",
+    "@aws-sdk/protocol-http": "^3.329.0",
+    "@aws-sdk/s3-request-presigner": "^3.335.0",
+    "@aws-sdk/url-parser": "^3.329.0",
     "@aws-sdk/util-base64-browser": "3.209.0",
+    "@aws-sdk/util-format-url": "^3.329.0",
     "@devexpress/dx-react-core": "4.0.3",
     "@devexpress/dx-react-grid": "4.0.3",
     "@devexpress/dx-react-grid-material-ui": "4.0.3",

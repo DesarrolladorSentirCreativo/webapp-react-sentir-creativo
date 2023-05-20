@@ -803,7 +803,7 @@ const UpdateFormAudiencia: React.FC = () => {
                   }))
                   formik.setFieldValue('cuponDescuentos', newValues)
                 }}
-                getOptionLabel={(option) => option.codigo}
+                getOptionLabel={(option) => option?.codigo}
                 renderInput={(params) => (
                   <TextField {...params} fullWidth label="Cupon Descuento" />
                 )}

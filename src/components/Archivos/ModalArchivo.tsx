@@ -92,6 +92,9 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
         path: archivo.path,
         archivo: null
       })
+      if (archivo.tipoArchivoId) {
+        formik.setFieldValue('tipoArchivoId', archivo.tipoArchivoId)
+      }
       setTitle('Actualizar archivo')
     } else {
       setCurrentTab(0)
@@ -232,12 +235,15 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
                   id="tipoArchivo"
                   options={tipoArchivos}
                   getOptionLabel={(option) => option.nombre}
-                  isOptionEqualToValue={(option, value) =>
-                    option.id === value.id
-                  }
                   onChange={(event, value) => {
-                    formik.setFieldValue('tipoArchivoId', value?.id ?? null)
+                    formik.setFieldValue('tipoArchivoId', value?.id)
                   }}
+                  value={
+                    tipoArchivos.find(
+                      (tipoArchivo) =>
+                        tipoArchivo.id === formik.values.tipoArchivoId
+                    ) ?? null
+                  }
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -245,8 +251,8 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
                       required
                       label="Tipo de Archivo"
                       onChange={formik.handleChange}
-                      value={formik.values.tipoArchivoId}
                       error={!!formik.errors.tipoArchivoId}
+                      value={formik.values.tipoArchivoId}
                       helperText={formik.errors.tipoArchivoId}
                     />
                   )}
@@ -343,6 +349,7 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
                   variant="contained"
                   color="error"
                   onClick={() => {
+                    formik.resetForm()
                     onClose()
                   }}
                 >

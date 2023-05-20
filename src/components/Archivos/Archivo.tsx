@@ -40,6 +40,7 @@ const Archivo: React.FC<IArchivoProps> = (props: IArchivoProps) => {
     setTipoArchivos(data)
   }
 
+  useEffect(() => {}, [archivos])
   const handleOpen = (): void => {
     setOpen(true)
     setArchivo(archivoForm)

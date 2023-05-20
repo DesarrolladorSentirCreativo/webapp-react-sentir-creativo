@@ -5,6 +5,7 @@ import {
   PutObjectCommand,
   S3Client
 } from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 const BucketName = 'sentircreativo'
 
@@ -120,6 +121,22 @@ export async function getFileFromS3(
     return url
   } catch (error) {
     console.error(error)
+    throw error
+  }
+}
+
+export async function signS3Url(url: string): Promise<string> {
+  try {
+    const command = new GetObjectCommand({
+      Bucket: 'sentircreativo',
+      Key: getFileNameFromUrl(url)
+    })
+    const signedUrl = await getSignedUrl(client, command, { expiresIn: 3600 })
+
+    console.log(signedUrl)
+    return signedUrl
+  } catch (error) {
+    console.error('Error al firmar la URL:', error)
     throw error
   }
 }

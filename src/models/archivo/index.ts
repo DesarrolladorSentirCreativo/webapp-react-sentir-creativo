@@ -6,6 +6,7 @@ export interface IArchivo {
   tipoArchivo: string | null
   tipoArchivoId: number | null
   publico: boolean
+  imagePath?: string
 }
 
 export interface ICRUDArchivo

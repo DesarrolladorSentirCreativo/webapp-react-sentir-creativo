@@ -7,9 +7,10 @@ import {
   Grid,
   Typography
 } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useNotification } from '../../context'
+import { signS3Url } from '../../helpers/aws.helper'
 import { type IArchivo } from '../../models'
 import archivoService from '../../services/archivo.service'
 import DialogButton from './../Controls/Buttons/DialogButton/DialogButton'
@@ -32,11 +33,21 @@ const ArchivoCard: React.FC<IArchivoCardProps> = (props: IArchivoCardProps) => {
   const [open, setOpen] = useState<boolean>(false)
   const [idArchivo, setIdArchivo] = useState<number>(0)
   const { getSuccess, getError } = useNotification()
+  const [loadedArchivos, setLoadedArchivos] = useState<IArchivo[]>([])
+  const { archivos, verArchivo, remove } = props
+
+  useEffect(() => {
+    const fetchArchivos = async (): Promise<void> => {
+      const archivosData = await loadImages(archivos)
+      setLoadedArchivos(archivosData)
+    }
+
+    fetchArchivos()
+  }, [archivos])
 
   const handleLink = (path: string): void => {
     window.open(path, '_blank')
   }
-  const { archivos, verArchivo, remove } = props
 
   const deleteArchivo = async (): Promise<void> => {
     try {
@@ -57,6 +68,22 @@ const ArchivoCard: React.FC<IArchivoCardProps> = (props: IArchivoCardProps) => {
     setOpen(false)
   }
 
+  const loadImages = async (archivos: IArchivo[]): Promise<IArchivo[]> => {
+    const isFromS3 = (path: string): boolean =>
+      path.includes('sentircreativo.s3')
+    const loadedArchivos = await Promise.all(
+      archivos.map(async (x) => {
+        const imagePath = x.publico
+          ? x.path
+          : isFromS3(x.path)
+          ? await signS3Url(x.path)
+          : x.path
+        return { ...x, imagePath }
+      })
+    )
+    return loadedArchivos
+  }
+
   return (
     <>
       <Grid
@@ -67,24 +94,31 @@ const ArchivoCard: React.FC<IArchivoCardProps> = (props: IArchivoCardProps) => {
         padding={2}
       >
         <Grid container spacing={4}>
-          {archivos?.map((x: IArchivo) => (
-            <Grid item md={3} xs={6} sm={4} lg={2} key={x.id}>
+          {loadedArchivos?.map((x: IArchivo) => (
+            <Grid item md={3} xs={12} sm={4} lg={3} key={x.id}>
               <Card
                 key={x.id}
                 style={{
-                  maxWidth: 180,
+                  maxWidth: 300,
                   margin: 8,
-                  height: '250px',
-                  minHeight: '250px',
-                  maxHeight: '250px'
+                  height: '350px',
+                  minHeight: '350px',
+                  maxHeight: '350px'
                 }}
               >
                 {isImage(x.path) && (
                   <CardMedia
                     component="img"
                     alt="file"
-                    height="120"
-                    image={x.path}
+                    height="200"
+                    image={x.publico ? x.path : x.imagePath}
+                    src={x.path ? x.path : x.imagePath}
+                    sx={{
+                      width: '100%',
+                      height: '150px',
+                      maxHeight: '200px',
+                      objectFit: 'cover'
+                    }}
                   />
                 )}
                 <CardContent>
@@ -114,10 +148,14 @@ const ArchivoCard: React.FC<IArchivoCardProps> = (props: IArchivoCardProps) => {
                         size="small"
                         color="primary"
                         onClick={() => {
+                          const path =
+                            x.publico !== null && !x.publico
+                              ? x.path
+                              : x.imagePath
                           verArchivo(
                             x.id,
                             x.nombre,
-                            x.path,
+                            path ?? '',
                             x.tipoArchivoId,
                             x.publico
                           )
@@ -137,7 +175,12 @@ const ArchivoCard: React.FC<IArchivoCardProps> = (props: IArchivoCardProps) => {
                         size="small"
                         color="primary"
                         onClick={() => {
-                          handleLink(x.path)
+                          const path = x.publico
+                            ? x.path
+                            : x.imagePath
+                            ? x.imagePath
+                            : ''
+                          handleLink(path)
                         }}
                       >
                         Abrir Link
