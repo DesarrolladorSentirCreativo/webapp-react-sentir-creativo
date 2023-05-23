@@ -6,6 +6,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { Card, DataGridCustom } from '../../components/Controls'
+import { useNotification } from '../../context'
 import {
   getLocalStorage,
   setLocalStorage
@@ -13,11 +14,15 @@ import {
 import { useDireccion } from '../../hooks'
 import { type ISucursalDataGrid } from '../../models/sucursal'
 import sucursalService from '../../services/sucursal.service'
+import DialogButton from './../../components/Controls/Buttons/DialogButton/DialogButton'
 
 const Sucursales: React.FC = () => {
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [data, setData] = useState<ISucursalDataGrid[]>([])
+  const [sucursalId, setSucursalId] = useState<number>(0)
+  const { getSuccess, getError } = useNotification()
+  const [open, setOpen] = useState<boolean>(false)
   const [columnVisibility, setColumnVisibility] = useState(() => {
     const sucursalesPreferences = getLocalStorage('sucursalesPreferences')
     const result = sucursalesPreferences
@@ -169,6 +174,25 @@ const Sucursales: React.FC = () => {
     }
   }, [columnVisibility])
 
+  const handleClose = (): void => {
+    setOpen(false)
+  }
+
+  const handleOpen = (): void => {
+    setOpen(true)
+  }
+
+  const deleteRegister = async (): Promise<void> => {
+    try {
+      await sucursalService.deleteById(sucursalId)
+      getSuccess('La audiencia fue eliminada correctamente')
+      await load()
+    } catch (error) {
+      console.log('Mi error', error)
+      getError('La audiencia no pudo ser eliminada')
+    }
+  }
+
   const fetchData = async (): Promise<void> => {
     const result = await sucursalService.getAll()
     await loadCiudades()
@@ -217,7 +241,8 @@ const Sucursales: React.FC = () => {
               <IconButton
                 color="error"
                 onClick={() => {
-                  console.log('error')
+                  setSucursalId(row.original.id)
+                  handleOpen()
                 }}
               >
                 <DeleteIcon />
@@ -232,6 +257,15 @@ const Sucursales: React.FC = () => {
           }}
         />
       </Box>
+      <DialogButton
+        open={open}
+        onClose={handleClose}
+        title={'Eliminar Sucursal'}
+        message={'¿Está seguro que desea eliminar la sucursal?'}
+        confirmButtonText={'Eliminar'}
+        cancelButtonText={'Cancelar'}
+        onConfirm={deleteRegister}
+      />
     </Card>
   )
 }

@@ -12,4 +12,14 @@ const getAll = async (): Promise<ISucursalDataGrid[]> => {
     })
 }
 
-export default { getAll }
+const deleteById = async (id: number): Promise<void> => {
+  await axios
+    .put(`/sucursales/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      throw new Error(error)
+    })
+}
+
+export default { getAll, deleteById }
