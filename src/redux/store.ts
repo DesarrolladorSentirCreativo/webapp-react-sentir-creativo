@@ -11,6 +11,7 @@ import organizacionReducer from './states/organizacion'
 import origenReducer from './states/origen'
 import prefijoReducer from './states/prefijo'
 import rubroReducer from './states/rubro'
+import sucursalReducer from './states/sucursal'
 
 const store = configureStore({
   reducer: {
@@ -24,7 +25,8 @@ const store = configureStore({
     origen: origenReducer,
     prefijo: prefijoReducer,
     rubro: rubroReducer,
-    direccion: direccionReducer
+    direccion: direccionReducer,
+    sucursal: sucursalReducer
   }
 })
 
