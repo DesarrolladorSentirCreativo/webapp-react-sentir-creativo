@@ -4,8 +4,8 @@ interface RouteType {
   id: string
   title: string
   icon?: ReactNode
-  path: string
-  children: []
+  path?: string
+  children?: RouteType[]
 }
 
 export type { RouteType }

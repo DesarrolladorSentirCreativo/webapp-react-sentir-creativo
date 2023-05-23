@@ -20,7 +20,8 @@ interface Props {
 const MenuSidebarMultilevel: React.FC<Props> = ({ item }) => {
   // const [open, setOpen] = useState<boolean>(false)
 
-  const { state, handleMenuClose, handleMenuOpen, setExpandedMenu } = useContext(MenuContext)
+  const { state, handleMenuClose, handleMenuOpen, setExpandedMenu } =
+    useContext(MenuContext)
   const handleClick = (id: string): void => {
     if (id !== undefined) {
       setExpandedMenu(state.expandedMenu === id ? null : id)
@@ -33,33 +34,48 @@ const MenuSidebarMultilevel: React.FC<Props> = ({ item }) => {
     }
   }
   return (
-      <React.Fragment key={item.id}>
-        <ListItemButton
-            onClick={() => { handleClick(item.id) }}
-            sx={{
-              py: '2px',
-              px: 3,
-              color: themePallete.CONTRAST_TEXT
-            }}
+    <React.Fragment key={item.id}>
+      <ListItemButton
+        onClick={() => {
+          handleClick(item.id)
+        }}
+        sx={{
+          py: '2px',
+          display: 'flex', // Hace que el botón sea un contenedor de flexbox
+          alignItems: 'center',
+          color: themePallete.CONTRAST_TEXT
+        }}
+      >
+        <ListItemIcon
+          sx={{ color: themePallete.CONTRAST_TEXT, minWidth: 24, pr: 2 }}
         >
-          <ListItemIcon sx={{ color: themePallete.CONTRAST_TEXT, minWidth: 24 }}>
-              {item.icon}
-          </ListItemIcon>
-          <ListItemText primary={item.title} />
-          {state.expandedMenu === item.id ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse
-            in={item.id === undefined ? state.isMenuOpen : state.expandedMenu === item.id}
-            timeout="auto"
-            unmountOnExit
+          {item.icon}
+        </ListItemIcon>
+        <ListItemText primary={item.title} />
+        {state.expandedMenu === item.id ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+      <Collapse
+        in={
+          item.id === undefined
+            ? state.isMenuOpen
+            : state.expandedMenu === item.id
+        }
+        timeout="auto"
+        unmountOnExit
+      >
+        <List
+          sx={{
+            pl: 2,
+            backgroundColor: themePallete.SIDEBAR_BG,
+            color: themePallete.CONTRAST_TEXT
+          }}
         >
-          <List sx={{ pl: 2, backgroundColor: themePallete.SIDEBAR_BG, color: themePallete.CONTRAST_TEXT }}>
-            {item.children.map((child, key) => (
-                <MenuItemSidebar key={key} item={child} />
-            ))}
-          </List>
-        </Collapse>
-      </React.Fragment>
+          {item.children?.map((child, key) => (
+            <MenuItemSidebar key={key} item={child} />
+          ))}
+        </List>
+      </Collapse>
+    </React.Fragment>
   )
 }
 

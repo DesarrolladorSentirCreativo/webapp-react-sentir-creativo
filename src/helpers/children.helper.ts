@@ -1,5 +1,7 @@
-const hasChildren = (item: any): boolean => {
-  const { items: children } = item
+import { type RouteType } from '../models'
+
+const hasChildren = (item: RouteType): boolean => {
+  const { children } = item
 
   if (children === undefined) {
     return false
