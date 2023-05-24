@@ -8,28 +8,29 @@ import {
 } from '@mui/material'
 import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import * as yup from 'yup'
 
+import { Card } from '../../components/Controls'
 import { useNotification } from '../../context'
 import { useDireccion } from '../../hooks'
 import { type SelectCiudad } from '../../models'
-import { type ICreateSucursal } from '../../models/sucursal'
+import { type ISucursal, type IUpdateSucursal } from '../../models/sucursal'
 import sucursalService from '../../services/sucursal.service'
 import { SkeletonFormOrganizacion } from '../Organizaciones/components'
-import Card from './../../components/Controls/Card/Card'
 
-const CreateFormSucursal: React.FC = () => {
+const UpdateFormSucursal: React.FC = () => {
+  const { id } = useParams()
+  const navigate = useNavigate()
   const { paises, loadPaises, regiones, loadRegiones, ciudades, loadCiudades } =
     useDireccion()
-  const navigate = useNavigate()
   const [ciudad, setCiudad] = useState<SelectCiudad[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { getSuccess, getError } = useNotification()
 
   useEffect(() => {
     setIsLoading(true)
-
+    loadData(id)
     if (paises.length <= 0) loadPaises()
 
     if (regiones.length <= 0) loadRegiones()
@@ -38,14 +39,40 @@ const CreateFormSucursal: React.FC = () => {
     setIsLoading(false)
   }, [])
 
-  const formik = useFormik<ICreateSucursal>({
+  const searchCiudades = (value: number): void => {
+    const result = ciudades.filter((c) => c.regionId === value)
+    if (result) {
+      setCiudad(result)
+    }
+  }
+
+  const loadSucursalData = async (sucursal: ISucursal): Promise<void> => {
+    searchCiudades(sucursal.regionId)
+    formik.setValues({
+      id: sucursal.id,
+      nombre: sucursal.nombre,
+      ciudadId: sucursal.ciudadId,
+      paisId: sucursal.paisId,
+      regionId: sucursal.regionId,
+      direccion: sucursal.direccion,
+      descripcion: sucursal.descripcion
+    })
+  }
+
+  const loadData = async (id: string | undefined): Promise<void> => {
+    const sucursal = await sucursalService.getById(parseInt(id ?? '0'))
+    await loadSucursalData(sucursal)
+  }
+
+  const formik = useFormik<IUpdateSucursal>({
     initialValues: {
+      id: 0,
       nombre: '',
       ciudadId: 0,
-      regionId: 0,
-      paisId: 0,
       direccion: '',
-      descripcion: ''
+      regionId: 0,
+      descripcion: '',
+      paisId: 0
     },
     validationSchema: yup.object().shape({
       nombre: yup
@@ -72,22 +99,16 @@ const CreateFormSucursal: React.FC = () => {
     onSubmit: async (values) => {
       setIsLoading(true)
       try {
-        await sucursalService.create(values)
-        getSuccess('La sucursal fue creada correctamente')
+        await sucursalService.update(values)
+        getSuccess('La sucursal se actualizó correctamente')
         navigate('/sucursales')
       } catch (e) {
         console.log(e)
-        getError('La sucursal no pudo ser creada')
+        getError('La sucursal no se actualizó correctamente')
         setIsLoading(false)
       }
     }
   })
-
-  const searchCiudades = (value: number): void => {
-    const result = ciudades.filter((c) => c.regionId === value)
-    setCiudad(result)
-  }
-
   if (isLoading) {
     return <SkeletonFormOrganizacion />
   } else {
@@ -95,7 +116,7 @@ const CreateFormSucursal: React.FC = () => {
       <Card title="Formulario">
         <Box component="form" onSubmit={formik.handleSubmit}>
           <Typography variant="h5" sx={{ textAlign: 'center' }}>
-            Formulario para Creación de Sucursal
+            Formulario para Actualización de Sucursal
           </Typography>
           <Grid container spacing={2} padding={2}>
             <Grid item xs={12} sm={6} md={4}>
@@ -159,6 +180,10 @@ const CreateFormSucursal: React.FC = () => {
                 size="small"
                 id="pais"
                 options={paises}
+                value={
+                  paises.find((pais) => pais.id === formik.values.paisId) ??
+                  null
+                }
                 onChange={(event, value) => {
                   formik.setFieldValue('paisId', value?.id ?? null)
                 }}
@@ -183,7 +208,13 @@ const CreateFormSucursal: React.FC = () => {
                 size="small"
                 id="region"
                 options={regiones}
+                value={
+                  regiones.find(
+                    (region) => region.id === formik.values.regionId
+                  ) ?? null
+                }
                 onChange={(event, value) => {
+                  console.log('region', value)
                   formik.setFieldValue('regionId', value?.id ?? null)
                   if (value !== undefined || value !== null) {
                     searchCiudades(value !== null ? value.id : 0)
@@ -210,7 +241,13 @@ const CreateFormSucursal: React.FC = () => {
                 size="small"
                 id="ciudad"
                 options={ciudad}
+                value={
+                  ciudades.find(
+                    (ciudad) => ciudad.id === formik.values.ciudadId
+                  ) ?? null
+                }
                 onChange={(event, value) => {
+                  console.log('value', value)
                   formik.setFieldValue('ciudadId', value?.id ?? null)
                 }}
                 getOptionLabel={(option) =>
@@ -254,4 +291,4 @@ const CreateFormSucursal: React.FC = () => {
   }
 }
 
-export default CreateFormSucursal
+export default UpdateFormSucursal

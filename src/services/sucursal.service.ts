@@ -2,7 +2,8 @@ import axios from 'axios'
 
 import {
   type ICreateSucursal,
-  type ISucursalDataGrid
+  type ISucursalDataGrid,
+  type IUpdateSucursal
 } from '../models/sucursal'
 
 const getAll = async (): Promise<ISucursalDataGrid[]> => {
@@ -35,4 +36,19 @@ const create = async (values: ICreateSucursal): Promise<number | null> => {
     })
 }
 
-export default { getAll, deleteById, create }
+const getById = async (id: number): Promise<IUpdateSucursal> => {
+  return await axios
+    .get<IUpdateSucursal>(`/sucursales/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      throw new Error(error)
+    })
+}
+
+const update = async (values: IUpdateSucursal): Promise<void> => {
+  const { data } = await axios.put('/sucursales', values)
+  return data
+}
+
+export default { getAll, deleteById, create, getById, update }

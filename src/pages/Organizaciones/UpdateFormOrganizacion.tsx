@@ -169,7 +169,7 @@ const UpdateFormOrganizacion: React.FC = () => {
       <Card title="Formulario">
         <Box component="form" onSubmit={formik.handleSubmit}>
           <Typography variant="h5" sx={{ textAlign: 'center' }}>
-            Formulario para Creación de Organización
+            Formulario para Actualización de Organización
           </Typography>
           <Grid container spacing={2} padding={2}>
             <Grid item xs={12} sm={6} md={4}>
