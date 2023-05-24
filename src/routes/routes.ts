@@ -2,6 +2,7 @@ import {
   Audiencias,
   CreateFormAudiencia,
   CreateFormOrganizacion,
+  CreateFormSucursal,
   Home,
   Organizaciones,
   Sucursales,
@@ -41,6 +42,10 @@ const routes = [
   {
     path: '/sucursales',
     component: Sucursales
+  },
+  {
+    path: '/sucursales/nuevo',
+    component: CreateFormSucursal
   }
 ]
 

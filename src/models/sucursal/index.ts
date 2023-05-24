@@ -9,3 +9,4 @@ export interface ISucursal {
 }
 
 export interface ISucursalDataGrid extends Omit<ISucursal, 'descripcion'> {}
+export interface ICreateSucursal extends Omit<ISucursal, 'id'> {}
