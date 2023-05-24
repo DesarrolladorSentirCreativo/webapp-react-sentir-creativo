@@ -118,24 +118,6 @@ const CreateFormSucursal: React.FC = () => {
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
               <TextField
-                name="direccion"
-                label="Dirección"
-                fullWidth
-                required
-                size="small"
-                value={formik.values.direccion}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.direccion === true &&
-                  Boolean(formik.errors.direccion)
-                }
-                helperText={
-                  formik.touched.direccion === true && formik.errors.direccion
-                }
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <TextField
                 name="descripcion"
                 label="Descripción"
                 fullWidth
@@ -149,6 +131,24 @@ const CreateFormSucursal: React.FC = () => {
                 helperText={
                   formik.touched.descripcion === true &&
                   formik.errors.descripcion
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                name="direccion"
+                label="Dirección"
+                fullWidth
+                required
+                size="small"
+                value={formik.values.direccion}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.direccion === true &&
+                  Boolean(formik.errors.direccion)
+                }
+                helperText={
+                  formik.touched.direccion === true && formik.errors.direccion
                 }
               />
             </Grid>
