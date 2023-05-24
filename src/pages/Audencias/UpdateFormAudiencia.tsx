@@ -149,6 +149,7 @@ const UpdateFormAudiencia: React.FC = () => {
       )
       getSuccess('La audiencia ha sido actualizada correctamente')
       setLoadingSkeleton(true)
+      setMessageError('')
       navigate('/audiencias')
     } catch (error) {
       console.log(error)
@@ -249,7 +250,6 @@ const UpdateFormAudiencia: React.FC = () => {
       documentoIdentidad: yup
         .string()
         .trim()
-        .required('El documento de identidad es obligatorio')
         .max(30, 'El documentoIdentidad no debe superar los 30 caracteres')
     }),
     onSubmit: async (values) => {

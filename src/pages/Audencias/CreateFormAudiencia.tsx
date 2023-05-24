@@ -165,7 +165,6 @@ const CreateFormAudiencia: React.FC = () => {
       documentoIdentidad: yup
         .string()
         .trim()
-        .required('El documento de identidad es obligatorio')
         .max(30, 'El documentoIdentidad no debe superar los 30 caracteres')
     }),
     onSubmit: async (values) => {
@@ -438,7 +437,6 @@ const CreateFormAudiencia: React.FC = () => {
             <Grid item xs={12} sm={6} md={3}>
               <TextField
                 name="documentoIdentidad"
-                required
                 label="Documento Identidad"
                 fullWidth
                 size="small"
