@@ -1,5 +1,6 @@
 import {
   Audiencias,
+  CategoriasPrivilegios,
   CreateFormAudiencia,
   CreateFormOrganizacion,
   CreateFormSucursal,
@@ -51,6 +52,10 @@ const routes = [
   {
     path: '/sucursales/actualizar/:id',
     component: UpdateFormSucursal
+  },
+  {
+    path: '/categorias-privilegios',
+    component: CategoriasPrivilegios
   }
 ]
 

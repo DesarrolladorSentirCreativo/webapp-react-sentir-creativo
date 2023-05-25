@@ -31,10 +31,17 @@ const menu: RouteType[] = [
     icon: <PersonIcon />,
     children: [
       {
-        id: 'surusales',
+        id: 'sucursales',
         title: 'Sucursales',
         icon: <ArrowRightIcon />,
         path: '/sucursales',
+        children: []
+      },
+      {
+        id: 'categoriasPrivilegios',
+        title: 'Categorías de Privilegios',
+        icon: <ArrowRightIcon />,
+        path: '/categorias-privilegios',
         children: []
       }
     ]

@@ -44,7 +44,7 @@ const DataGridCustom: React.FC<IDataGridCustom> = (props: IDataGridCustom) => {
       state={state}
       muiTableProps={{
         sx: {
-          width: '800px'
+          width: '100%'
         }
       }}
       muiTableFooterProps={{

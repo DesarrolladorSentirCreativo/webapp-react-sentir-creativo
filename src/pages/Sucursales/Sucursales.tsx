@@ -185,11 +185,11 @@ const Sucursales: React.FC = () => {
   const deleteRegister = async (): Promise<void> => {
     try {
       await sucursalService.deleteById(sucursalId)
-      getSuccess('La audiencia fue eliminada correctamente')
+      getSuccess('La sucursal fue eliminada correctamente')
       await load()
     } catch (error) {
       console.log('Mi error', error)
-      getError('La audiencia no pudo ser eliminada')
+      getError('La sucursal no pudo ser eliminada')
     }
   }
 

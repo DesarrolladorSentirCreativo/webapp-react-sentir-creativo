@@ -1,4 +1,5 @@
 export * from './Audencias'
+export * from './CategoriasPrivilegios'
 export * from './Home'
 export * from './Login'
 export * from './Organizaciones'
