@@ -1,6 +1,9 @@
 import axios from 'axios'
 
-import { type ICategoriaPrivilegio } from '../models'
+import {
+  type ICategoriaPrivilegio,
+  type ICreateCategoriaPrivilegio
+} from '../models'
 
 const getAll = async (): Promise<ICategoriaPrivilegio[]> => {
   return await axios
@@ -22,4 +25,15 @@ const deleteById = async (id: number): Promise<void> => {
     })
 }
 
-export default { getAll, deleteById }
+const create = async (
+  values: ICreateCategoriaPrivilegio,
+  userId: number
+): Promise<void> => {
+  const data = {
+    ...values,
+    userId
+  }
+  await axios.post('/categorias-privilegios', data)
+}
+
+export default { getAll, deleteById, create }

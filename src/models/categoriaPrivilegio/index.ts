@@ -3,3 +3,6 @@ export interface ICategoriaPrivilegio {
   nombre: string
   descripcion?: string
 }
+
+export interface ICreateCategoriaPrivilegio
+  extends Omit<ICategoriaPrivilegio, 'id'> {}

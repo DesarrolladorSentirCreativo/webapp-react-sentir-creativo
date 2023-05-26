@@ -2,6 +2,7 @@ import {
   Audiencias,
   CategoriasPrivilegios,
   CreateFormAudiencia,
+  CreateFormCategoriaPrivilegio,
   CreateFormOrganizacion,
   CreateFormSucursal,
   Home,
@@ -56,6 +57,10 @@ const routes = [
   {
     path: '/categorias-privilegios',
     component: CategoriasPrivilegios
+  },
+  {
+    path: '/categorias-privilegios/nuevo',
+    component: CreateFormCategoriaPrivilegio
   }
 ]
 
