@@ -36,4 +36,26 @@ const create = async (
   await axios.post('/categorias-privilegios', data)
 }
 
-export default { getAll, deleteById, create }
+const getById = async (id: number): Promise<ICategoriaPrivilegio> => {
+  return await axios
+    .get<ICategoriaPrivilegio>(`/categorias-privilegios/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      throw new Error(error)
+    })
+}
+
+const update = async (
+  values: ICategoriaPrivilegio,
+  userId: number
+): Promise<void> => {
+  const dataValues = {
+    ...values,
+    userId
+  }
+  const { data } = await axios.put('/categorias-privilegios', dataValues)
+  return data
+}
+
+export default { getAll, deleteById, create, update, getById }

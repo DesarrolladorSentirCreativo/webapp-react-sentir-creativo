@@ -9,6 +9,7 @@ import {
   Organizaciones,
   Sucursales,
   UpdateFormAudiencia,
+  UpdateFormCategoriaPrivilegio,
   UpdateFormOrganizacion,
   UpdateFormSucursal
 } from '../pages'
@@ -61,6 +62,10 @@ const routes = [
   {
     path: '/categorias-privilegios/nuevo',
     component: CreateFormCategoriaPrivilegio
+  },
+  {
+    path: '/categorias-privilegios/actualizar/:id',
+    component: UpdateFormCategoriaPrivilegio
   }
 ]
 
