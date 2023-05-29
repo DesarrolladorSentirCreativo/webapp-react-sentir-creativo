@@ -13,6 +13,7 @@ import {
   UpdateFormOrganizacion,
   UpdateFormSucursal
 } from '../pages'
+import { Modulos } from '../pages/Modulos'
 
 const routes = [
   {
@@ -66,6 +67,10 @@ const routes = [
   {
     path: '/categorias-privilegios/actualizar/:id',
     component: UpdateFormCategoriaPrivilegio
+  },
+  {
+    path: '/modulos',
+    component: Modulos
   }
 ]
 

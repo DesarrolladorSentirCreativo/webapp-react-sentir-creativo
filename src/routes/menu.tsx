@@ -31,17 +31,24 @@ const menu: RouteType[] = [
     icon: <PersonIcon />,
     children: [
       {
-        id: 'sucursales',
-        title: 'Sucursales',
-        icon: <ArrowRightIcon />,
-        path: '/sucursales',
-        children: []
-      },
-      {
         id: 'categoriasPrivilegios',
         title: 'Categorías de Privilegios',
         icon: <ArrowRightIcon />,
         path: '/categorias-privilegios',
+        children: []
+      },
+      {
+        id: 'mmodulos',
+        title: 'Modulos',
+        icon: <ArrowRightIcon />,
+        path: '/modulos',
+        children: []
+      },
+      {
+        id: 'sucursales',
+        title: 'Sucursales',
+        icon: <ArrowRightIcon />,
+        path: '/sucursales',
         children: []
       }
     ]
