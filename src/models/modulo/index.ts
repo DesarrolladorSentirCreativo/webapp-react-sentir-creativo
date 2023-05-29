@@ -1,6 +1,7 @@
 export interface IModulo {
   id: number
   nombre: string
-  direccion: string
   descripcion: string
 }
+
+export interface ICreateModulo extends Omit<IModulo, 'id'> {}

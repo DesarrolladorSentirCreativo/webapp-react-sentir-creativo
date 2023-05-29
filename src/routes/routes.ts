@@ -3,9 +3,11 @@ import {
   CategoriasPrivilegios,
   CreateFormAudiencia,
   CreateFormCategoriaPrivilegio,
+  CreateFormModulo,
   CreateFormOrganizacion,
   CreateFormSucursal,
   Home,
+  Modulos,
   Organizaciones,
   Sucursales,
   UpdateFormAudiencia,
@@ -13,7 +15,6 @@ import {
   UpdateFormOrganizacion,
   UpdateFormSucursal
 } from '../pages'
-import { Modulos } from '../pages/Modulos'
 
 const routes = [
   {
@@ -71,6 +72,10 @@ const routes = [
   {
     path: '/modulos',
     component: Modulos
+  },
+  {
+    path: '/modulos/nuevo',
+    component: CreateFormModulo
   }
 ]
 
