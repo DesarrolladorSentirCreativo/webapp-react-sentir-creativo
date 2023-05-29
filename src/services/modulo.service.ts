@@ -30,4 +30,23 @@ const create = async (values: ICreateModulo, userId: number): Promise<void> => {
   await axios.post('/modulos', data)
 }
 
-export default { getAll, deleteById, create }
+const getById = async (id: number): Promise<IModulo> => {
+  return await axios
+    .get<IModulo>(`/modulos/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      throw new Error(error)
+    })
+}
+
+const update = async (values: IModulo, userId: number): Promise<void> => {
+  const dataValues = {
+    ...values,
+    userId
+  }
+  const { data } = await axios.put('/modulos', dataValues)
+  return data
+}
+
+export default { getAll, deleteById, create, getById, update }
