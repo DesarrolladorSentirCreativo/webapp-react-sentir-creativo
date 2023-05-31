@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { type ICreateModulo, type IModulo } from '../models'
+import { type ICreateModulo, type IModulo, type ISelectModulo } from '../models'
 
 const getAll = async (): Promise<IModulo[]> => {
   return await axios
@@ -49,4 +49,14 @@ const update = async (values: IModulo, userId: number): Promise<void> => {
   return data
 }
 
-export default { getAll, deleteById, create, getById, update }
+const select = async (): Promise<ISelectModulo[]> => {
+  return await axios
+    .get<ISelectModulo[]>('/modulos/select')
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      return []
+    })
+}
+
+export default { getAll, deleteById, create, getById, update, select }
