@@ -38,6 +38,13 @@ const menu: RouteType[] = [
         children: []
       },
       {
+        id: 'colecciones',
+        title: 'Colecciones',
+        icon: <ArrowRightIcon />,
+        path: '/colecciones',
+        children: []
+      },
+      {
         id: 'mmodulos',
         title: 'Modulos',
         icon: <ArrowRightIcon />,

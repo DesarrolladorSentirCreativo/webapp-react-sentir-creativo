@@ -1,6 +1,7 @@
 import {
   Audiencias,
   CategoriasPrivilegios,
+  ColeccionesUserAdmin,
   CreateFormAudiencia,
   CreateFormCategoriaPrivilegio,
   CreateFormModulo,
@@ -81,6 +82,10 @@ const routes = [
   {
     path: '/modulos/actualizar/:id',
     component: UpdateFormModulo
+  },
+  {
+    path: '/colecciones',
+    component: ColeccionesUserAdmin
   }
 ]
 
