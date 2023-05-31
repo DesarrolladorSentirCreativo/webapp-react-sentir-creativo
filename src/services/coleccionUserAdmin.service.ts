@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 import {
+  type IColeccionUserAdmin,
   type IColeccionUserAdminDataGrid,
   type ICreateColeccionUserAdmin
 } from '../models'
@@ -36,4 +37,26 @@ const create = async (
   await axios.post('/colecciones-admin', data)
 }
 
-export default { getAll, deleteById, create }
+const getById = async (id: number): Promise<IColeccionUserAdmin> => {
+  return await axios
+    .get<IColeccionUserAdmin>(`/colecciones-admin/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      throw new Error(error)
+    })
+}
+
+const update = async (
+  values: IColeccionUserAdmin,
+  userId: number
+): Promise<void> => {
+  const dataValues = {
+    ...values,
+    userId
+  }
+  const { data } = await axios.put('/colecciones-admin', dataValues)
+  return data
+}
+
+export default { getAll, deleteById, create, getById, update }

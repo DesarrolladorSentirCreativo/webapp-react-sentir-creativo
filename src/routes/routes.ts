@@ -14,6 +14,7 @@ import {
   Sucursales,
   UpdateFormAudiencia,
   UpdateFormCategoriaPrivilegio,
+  UpdateFormColeccionUserAdmin,
   UpdateFormModulo,
   UpdateFormOrganizacion,
   UpdateFormSucursal
@@ -91,6 +92,10 @@ const routes = [
   {
     path: '/colecciones/nuevo',
     component: CreateFormColeccionUserAdmin
+  },
+  {
+    path: '/colecciones/actualizar/:id',
+    component: UpdateFormColeccionUserAdmin
   }
 ]
 
