@@ -1,6 +1,9 @@
 import axios from 'axios'
 
-import { type IColeccionUserAdminDataGrid } from '../models'
+import {
+  type IColeccionUserAdminDataGrid,
+  type ICreateColeccionUserAdmin
+} from '../models'
 
 const getAll = async (): Promise<IColeccionUserAdminDataGrid[]> => {
   return await axios
@@ -22,4 +25,15 @@ const deleteById = async (id: number): Promise<void> => {
     })
 }
 
-export default { getAll, deleteById }
+const create = async (
+  values: ICreateColeccionUserAdmin,
+  userId: number
+): Promise<void> => {
+  const data = {
+    ...values,
+    userId
+  }
+  await axios.post('/colecciones-admin', data)
+}
+
+export default { getAll, deleteById, create }

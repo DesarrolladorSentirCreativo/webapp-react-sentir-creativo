@@ -9,3 +9,6 @@ export interface IColeccionUserAdminDataGrid
   extends Omit<IColeccionUserAdmin, 'moduloId'> {
   modulo: string
 }
+
+export interface ICreateColeccionUserAdmin
+  extends Omit<IColeccionUserAdmin, 'id'> {}

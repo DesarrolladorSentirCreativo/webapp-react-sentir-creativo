@@ -4,6 +4,7 @@ import {
   ColeccionesUserAdmin,
   CreateFormAudiencia,
   CreateFormCategoriaPrivilegio,
+  CreateFormColeccionUserAdmin,
   CreateFormModulo,
   CreateFormOrganizacion,
   CreateFormSucursal,
@@ -86,6 +87,10 @@ const routes = [
   {
     path: '/colecciones',
     component: ColeccionesUserAdmin
+  },
+  {
+    path: '/colecciones/nuevo',
+    component: CreateFormColeccionUserAdmin
   }
 ]
 
