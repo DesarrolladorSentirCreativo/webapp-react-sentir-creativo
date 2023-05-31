@@ -11,6 +11,7 @@ import {
   getLocalStorage,
   setLocalStorage
 } from '../../helpers/localstorage.helper'
+import useModulo from '../../hooks/useModulo'
 import { type IColeccionUserAdminDataGrid } from '../../models'
 import coleccionUserAdminService from '../../services/coleccionUserAdmin.service'
 
@@ -21,6 +22,7 @@ const ColeccionesUserAdmin: FC = () => {
   const [sucursalId, setSucursalId] = useState<number>(0)
   const { getSuccess, getError } = useNotification()
   const [open, setOpen] = useState<boolean>(false)
+  const { loadModulos, modulos } = useModulo()
   const [columnVisibility, setColumnVisibility] = useState(() => {
     const coleccionesUserAdminPreferences = getLocalStorage(
       'coleccionesUserAdminPreferences'
@@ -53,8 +55,24 @@ const ColeccionesUserAdmin: FC = () => {
         header: 'Nombre'
       },
       {
-        accessorKey: 'modulo',
-        header: 'Modulo'
+        accessorKey: 'moduloId',
+        header: 'Modulo',
+        Cell: ({ cell, row }) => {
+          const value = row.original.moduloId
+          const modulo = modulos.find((item) => item.id === value)
+          return (
+            <span
+              style={{
+                display: 'flex',
+                alignItems: 'left',
+                textAlign: 'left',
+                justifyContent: 'left'
+              }}
+            >
+              {modulo?.nombre}
+            </span>
+          )
+        }
       },
       {
         accessorKey: 'descripcion',
@@ -126,6 +144,7 @@ const ColeccionesUserAdmin: FC = () => {
 
   const load = async (): Promise<void> => {
     setIsLoading(true)
+    loadModulos()
     await fetchData()
     setIsLoading(false)
   }

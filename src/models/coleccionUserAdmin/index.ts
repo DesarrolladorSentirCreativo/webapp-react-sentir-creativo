@@ -5,10 +5,7 @@ export interface IColeccionUserAdmin {
   descripcion?: string
 }
 
-export interface IColeccionUserAdminDataGrid
-  extends Omit<IColeccionUserAdmin, 'moduloId'> {
-  modulo: string
-}
+export interface IColeccionUserAdminDataGrid extends IColeccionUserAdmin {}
 
 export interface ICreateColeccionUserAdmin
   extends Omit<IColeccionUserAdmin, 'id'> {}
