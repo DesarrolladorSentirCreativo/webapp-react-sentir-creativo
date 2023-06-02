@@ -7,5 +7,8 @@ export interface IColeccionUserAdmin {
 
 export interface IColeccionUserAdminDataGrid extends IColeccionUserAdmin {}
 
+export interface IColeccionUserAdminSelect
+  extends Omit<IColeccionUserAdmin, 'moduloId' | 'descripcion'> {}
+
 export interface ICreateColeccionUserAdmin
   extends Omit<IColeccionUserAdmin, 'id'> {}

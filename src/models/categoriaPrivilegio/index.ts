@@ -4,5 +4,7 @@ export interface ICategoriaPrivilegio {
   descripcion?: string
 }
 
+export interface ICategoriaPrivilegioSelect
+  extends Omit<ICategoriaPrivilegio, 'descripcion'> {}
 export interface ICreateCategoriaPrivilegio
   extends Omit<ICategoriaPrivilegio, 'id'> {}

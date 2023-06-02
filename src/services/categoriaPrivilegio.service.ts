@@ -2,6 +2,7 @@ import axios from 'axios'
 
 import {
   type ICategoriaPrivilegio,
+  type ICategoriaPrivilegioSelect,
   type ICreateCategoriaPrivilegio
 } from '../models'
 
@@ -58,4 +59,14 @@ const update = async (
   return data
 }
 
-export default { getAll, deleteById, create, update, getById }
+const select = async (): Promise<ICategoriaPrivilegioSelect[]> => {
+  return await axios
+    .get<ICategoriaPrivilegioSelect[]>('/categorias-privilegios/select')
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      return []
+    })
+}
+
+export default { getAll, deleteById, create, update, getById, select }

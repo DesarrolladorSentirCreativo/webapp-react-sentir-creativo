@@ -3,6 +3,7 @@ import axios from 'axios'
 import {
   type IColeccionUserAdmin,
   type IColeccionUserAdminDataGrid,
+  type IColeccionUserAdminSelect,
   type ICreateColeccionUserAdmin
 } from '../models'
 
@@ -59,4 +60,14 @@ const update = async (
   return data
 }
 
-export default { getAll, deleteById, create, getById, update }
+const select = async (): Promise<IColeccionUserAdminSelect[]> => {
+  return await axios
+    .get<IColeccionUserAdminSelect[]>('/colecciones-admin/select')
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      return []
+    })
+}
+
+export default { getAll, deleteById, create, getById, update, select }

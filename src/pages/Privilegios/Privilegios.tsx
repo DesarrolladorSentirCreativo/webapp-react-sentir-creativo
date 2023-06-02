@@ -11,6 +11,7 @@ import {
   getLocalStorage,
   setLocalStorage
 } from '../../helpers/localstorage.helper'
+import useCategoriPrivilegio from '../../hooks/useCategoriaPrivilegio'
 import { type IPrivilegio } from '../../models'
 import privilegioService from '../../services/privilegio.service'
 
@@ -21,6 +22,8 @@ export const Privilegios: FC = () => {
   const [sucursalId, setSucursalId] = useState<number>(0)
   const { getSuccess, getError } = useNotification()
   const [open, setOpen] = useState<boolean>(false)
+  const { categoriaPrivilegios, loadCategoriaPrivilegios } =
+    useCategoriPrivilegio()
   const [columnVisibility, setColumnVisibility] = useState(() => {
     const privilegiosPreferences = getLocalStorage('privilegiosPreferences')
     const result = privilegiosPreferences
@@ -41,6 +44,26 @@ export const Privilegios: FC = () => {
       {
         accessorKey: 'nombre',
         header: 'Nombre'
+      },
+      {
+        accessorKey: 'categoriaId',
+        header: 'Categoría',
+        Cell: ({ cell, row }) => {
+          const value = row.original.categoriaId
+          const modulo = categoriaPrivilegios.find((item) => item.id === value)
+          return (
+            <span
+              style={{
+                display: 'flex',
+                alignItems: 'left',
+                textAlign: 'left',
+                justifyContent: 'left'
+              }}
+            >
+              {modulo?.nombre}
+            </span>
+          )
+        }
       },
       {
         accessorKey: 'descripcion',
@@ -109,6 +132,7 @@ export const Privilegios: FC = () => {
   const load = async (): Promise<void> => {
     setIsLoading(true)
     await fetchData()
+    await loadCategoriaPrivilegios()
     setIsLoading(false)
   }
 
