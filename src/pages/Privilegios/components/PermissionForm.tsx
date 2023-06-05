@@ -5,7 +5,7 @@ import {
   FormGroup,
   Typography
 } from '@mui/material'
-import { type ChangeEvent, type FC, useState } from 'react'
+import { type ChangeEvent, type FC } from 'react'
 
 import { type IModuloCheckBox } from '../../../models'
 
@@ -14,36 +14,22 @@ interface PermissionFormProps {
 }
 
 const PermissionForm: FC<PermissionFormProps> = ({ data }) => {
-  const [selectAll, setSelectAll] = useState<boolean>(false)
-
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>): void => {
     // Lógica para manejar los cambios en los checkboxes
   }
 
-  const handleSelectAllChange = (
-    event: ChangeEvent<HTMLInputElement>
-  ): void => {
-    setSelectAll(event.target.checked)
-  }
-
   return (
     <>
-      <Typography variant="body1" gutterBottom>
-        Permisos
-      </Typography>
-
       {data.map((module) => (
-        <Box key={module.id} sx={{ marginLeft: 3, padding: 3 }}>
+        <Box key={module.id} sx={{ marginLeft: 1, padding: 1 }}>
           <Typography variant="overline" display="block" gutterBottom>
             {module.nombre}
           </Typography>
-
           {module.colecciones.map((collection) => (
-            <Box key={collection.id} sx={{ marginLeft: 5, padding: 3 }}>
+            <Box key={collection.id} sx={{ marginLeft: 1, padding: 1 }}>
               <Typography variant="body2" gutterBottom>
                 {collection.nombre}
               </Typography>
-
               <FormGroup>
                 <div style={{ display: 'flex' }}>
                   <div style={{ marginRight: '20px' }}>

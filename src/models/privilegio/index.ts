@@ -4,3 +4,5 @@ export interface IPrivilegio {
   categoriaId: number
   descripcion?: string
 }
+
+export interface ICreatePrivilegio extends Omit<IPrivilegio, 'id'> {}
