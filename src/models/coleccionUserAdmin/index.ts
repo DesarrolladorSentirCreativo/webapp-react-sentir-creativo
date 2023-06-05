@@ -12,3 +12,6 @@ export interface IColeccionUserAdminSelect
 
 export interface ICreateColeccionUserAdmin
   extends Omit<IColeccionUserAdmin, 'id'> {}
+
+export interface IColeccionUserAdminCheckBox
+  extends Omit<IColeccionUserAdmin, 'descripcion' | 'moduloId'> {}

@@ -1,6 +1,11 @@
 import axios from 'axios'
 
-import { type ICreateModulo, type IModulo, type ISelectModulo } from '../models'
+import {
+  type ICreateModulo,
+  type IModulo,
+  type IModuloCheckBox,
+  type ISelectModulo
+} from '../models'
 
 const getAll = async (): Promise<IModulo[]> => {
   return await axios
@@ -59,4 +64,22 @@ const select = async (): Promise<ISelectModulo[]> => {
     })
 }
 
-export default { getAll, deleteById, create, getById, update, select }
+const getColecciones = async (): Promise<IModuloCheckBox[]> => {
+  return await axios
+    .get<IModuloCheckBox[]>('/modulos/with-colecciones')
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      return []
+    })
+}
+
+export default {
+  getAll,
+  deleteById,
+  create,
+  getById,
+  update,
+  select,
+  getColecciones
+}
