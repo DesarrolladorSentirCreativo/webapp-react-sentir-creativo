@@ -151,24 +151,6 @@ const CreateFormPrivilegio: FC = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
-                <TextField
-                  name="descripcion"
-                  label="Descripción"
-                  fullWidth
-                  size="small"
-                  value={formik.values.descripcion}
-                  onChange={formik.handleChange}
-                  error={
-                    formik.touched.descripcion === true &&
-                    Boolean(formik.errors.descripcion)
-                  }
-                  helperText={
-                    formik.touched.descripcion === true &&
-                    formik.errors.descripcion
-                  }
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={6}>
                 <Accordion
                   expanded={expanded === 'panel1'}
                   onChange={handleAccordionChange('panel1')}
@@ -189,6 +171,24 @@ const CreateFormPrivilegio: FC = () => {
                     <PermissionForm data={permission} />
                   </AccordionDetails>
                 </Accordion>
+              </Grid>
+              <Grid item xs={12} sm={6} md={6}>
+                <TextField
+                  name="descripcion"
+                  label="Descripción"
+                  fullWidth
+                  size="small"
+                  value={formik.values.descripcion}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.descripcion === true &&
+                    Boolean(formik.errors.descripcion)
+                  }
+                  helperText={
+                    formik.touched.descripcion === true &&
+                    formik.errors.descripcion
+                  }
+                />
               </Grid>
             </Grid>
             <Grid container spacing={2} padding={2}>

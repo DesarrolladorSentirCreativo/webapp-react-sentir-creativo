@@ -21,42 +21,38 @@ const PermissionForm: FC<PermissionFormProps> = ({ data }) => {
   return (
     <>
       {data.map((module) => (
-        <Box key={module.id} sx={{ marginLeft: 1, padding: 1 }}>
-          <Typography variant="overline" display="block" gutterBottom>
+        <Box key={module.id} sx={{ marginBottom: '24px' }}>
+          <Typography variant="h6" gutterBottom>
             {module.nombre}
           </Typography>
           {module.colecciones.map((collection) => (
-            <Box key={collection.id} sx={{ marginLeft: 1, padding: 1 }}>
-              <Typography variant="body2" gutterBottom>
-                {collection.nombre}
+            <Box key={collection.id} sx={{ marginBottom: '16px' }}>
+              <Typography variant="subtitle1" gutterBottom>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span style={{ flexGrow: 1 }}> {collection.nombre}</span>
+                  <FormControlLabel
+                    control={<Checkbox onChange={handleCheckboxChange} />}
+                    label="Seleccionar todo"
+                  />
+                </div>
               </Typography>
               <FormGroup>
-                <div style={{ display: 'flex' }}>
-                  <div style={{ marginRight: '20px' }}>
-                    <FormControlLabel
-                      control={<Checkbox onChange={handleCheckboxChange} />}
-                      label="Crear"
-                    />
-                    <FormControlLabel
-                      control={<Checkbox onChange={handleCheckboxChange} />}
-                      label="Ver"
-                    />
-                    <FormControlLabel
-                      control={<Checkbox onChange={handleCheckboxChange} />}
-                      label="Eliminar"
-                    />
-                  </div>
-                  <div>
-                    <FormControlLabel
-                      control={<Checkbox onChange={handleCheckboxChange} />}
-                      label="Listar"
-                    />
-                    <FormControlLabel
-                      control={<Checkbox onChange={handleCheckboxChange} />}
-                      label="Actualizar"
-                    />
-                  </div>
-                </div>
+                <FormControlLabel
+                  control={<Checkbox onChange={handleCheckboxChange} />}
+                  label="Crear"
+                />
+                <FormControlLabel
+                  control={<Checkbox onChange={handleCheckboxChange} />}
+                  label="Ver"
+                />
+                <FormControlLabel
+                  control={<Checkbox onChange={handleCheckboxChange} />}
+                  label="Actualizar"
+                />
+                <FormControlLabel
+                  control={<Checkbox onChange={handleCheckboxChange} />}
+                  label="Eliminar"
+                />
               </FormGroup>
             </Box>
           ))}
