@@ -5,50 +5,46 @@ import {
   FormGroup,
   Typography
 } from '@mui/material'
-import { type FC, useEffect, useState } from 'react'
+import { type Dispatch, type FC, type SetStateAction, useEffect } from 'react'
 
 import {
+  type IAccesos,
   type IColeccionUserAdminCheckBox,
   type IModuloCheckBox
 } from '../../../models'
 
 interface PermissionFormProps {
   data: IModuloCheckBox[]
+  selectedAccesos: Record<number, IAccesos>
+  setSelectedAccesos: Dispatch<SetStateAction<Record<number, IAccesos>>>
 }
 
-interface Privileges {
-  crear: boolean
-  ver: boolean
-  actualizar: boolean
-  eliminar: boolean
-}
-
-const PermissionForm: FC<PermissionFormProps> = ({ data }) => {
-  const [selectedPrivileges, setSelectedPrivileges] = useState<
-    Record<number, Privileges>
-  >({})
-
+const PermissionForm: FC<PermissionFormProps> = ({
+  data,
+  selectedAccesos,
+  setSelectedAccesos
+}) => {
   const handleSelectAll = (collectionId: number): void => {
-    const currentPrivileges = selectedPrivileges[collectionId] || {}
-    const allPrivilegesSelected = Object.values(currentPrivileges).every(
+    const currentAccesos = selectedAccesos[collectionId] || {}
+    const allAccesosSelected = Object.values(currentAccesos).every(
       (selected) => selected === true
     )
 
-    const updatedPrivileges: Privileges = {
-      crear: !allPrivilegesSelected,
-      ver: !allPrivilegesSelected,
-      actualizar: !allPrivilegesSelected,
-      eliminar: !allPrivilegesSelected
+    const updatedAccesos: IAccesos = {
+      crear: !allAccesosSelected,
+      ver: !allAccesosSelected,
+      actualizar: !allAccesosSelected,
+      eliminar: !allAccesosSelected
     }
 
-    setSelectedPrivileges((prevState) => ({
+    setSelectedAccesos((prevState) => ({
       ...prevState,
-      [collectionId]: updatedPrivileges
+      [collectionId]: updatedAccesos
     }))
   }
 
   useEffect(() => {
-    const initialValues: Record<string, Privileges> = {}
+    const initialValues: Record<string, IAccesos> = {}
     data.forEach((modulo) => {
       modulo.colecciones.forEach((coleccion) => {
         initialValues[coleccion.id] = {
@@ -59,18 +55,19 @@ const PermissionForm: FC<PermissionFormProps> = ({ data }) => {
         }
       })
     })
-    setSelectedPrivileges(initialValues)
+    setSelectedAccesos(initialValues)
   }, [data])
 
-  const handlePrivilegeChange = (
+  console.log(selectedAccesos)
+  const handleAccesoChange = (
     collectionId: number,
-    privilegeKey: keyof Privileges
+    accesoKey: keyof IAccesos
   ): void => {
-    setSelectedPrivileges((prevState) => ({
+    setSelectedAccesos((prevState) => ({
       ...prevState,
       [collectionId]: {
         ...prevState[collectionId],
-        [privilegeKey]: !prevState[collectionId][privilegeKey]
+        [accesoKey]: !prevState[collectionId][accesoKey]
       }
     }))
   }
@@ -93,7 +90,7 @@ const PermissionForm: FC<PermissionFormProps> = ({ data }) => {
                           handleSelectAll(collection.id)
                         }}
                         checked={Object.values(
-                          selectedPrivileges[collection.id] || {}
+                          selectedAccesos[collection.id] || {}
                         ).every((selected) => selected === true)}
                       />
                     }
@@ -106,11 +103,9 @@ const PermissionForm: FC<PermissionFormProps> = ({ data }) => {
                   control={
                     <Checkbox
                       onChange={() => {
-                        handlePrivilegeChange(collection.id, 'crear')
+                        handleAccesoChange(collection.id, 'crear')
                       }}
-                      checked={
-                        selectedPrivileges[collection.id]?.crear || false
-                      }
+                      checked={selectedAccesos[collection.id]?.crear || false}
                     />
                   }
                   label="Crear"
@@ -119,9 +114,9 @@ const PermissionForm: FC<PermissionFormProps> = ({ data }) => {
                   control={
                     <Checkbox
                       onChange={() => {
-                        handlePrivilegeChange(collection.id, 'ver')
+                        handleAccesoChange(collection.id, 'ver')
                       }}
-                      checked={selectedPrivileges[collection.id]?.ver || false}
+                      checked={selectedAccesos[collection.id]?.ver || false}
                     />
                   }
                   label="Ver"
@@ -130,10 +125,10 @@ const PermissionForm: FC<PermissionFormProps> = ({ data }) => {
                   control={
                     <Checkbox
                       onChange={() => {
-                        handlePrivilegeChange(collection.id, 'actualizar')
+                        handleAccesoChange(collection.id, 'actualizar')
                       }}
                       checked={
-                        selectedPrivileges[collection.id]?.actualizar || false
+                        selectedAccesos[collection.id]?.actualizar || false
                       }
                     />
                   }
@@ -143,10 +138,10 @@ const PermissionForm: FC<PermissionFormProps> = ({ data }) => {
                   control={
                     <Checkbox
                       onChange={() => {
-                        handlePrivilegeChange(collection.id, 'eliminar')
+                        handleAccesoChange(collection.id, 'eliminar')
                       }}
                       checked={
-                        selectedPrivileges[collection.id]?.eliminar || false
+                        selectedAccesos[collection.id]?.eliminar || false
                       }
                     />
                   }

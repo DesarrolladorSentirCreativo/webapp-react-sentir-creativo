@@ -18,7 +18,11 @@ import * as yup from 'yup'
 import { useNotification } from '../../context'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
 import useCategoriPrivilegio from '../../hooks/useCategoriaPrivilegio'
-import { type ICreatePrivilegio, type IModuloCheckBox } from '../../models'
+import {
+  type IAccesos,
+  type ICreatePrivilegio,
+  type IModuloCheckBox
+} from '../../models'
 import moduloService from '../../services/modulo.service'
 import privilegioService from '../../services/privilegio.service'
 import Card from './../../components/Controls/Card/Card'
@@ -33,6 +37,9 @@ const CreateFormPrivilegio: FC = () => {
   const [expanded, setExpanded] = useState<string | false>(false)
   const { loadCategoriaPrivilegios, categoriaPrivilegios } =
     useCategoriPrivilegio()
+  const [selectedAccesos, setSelectedAccesos] = useState<
+    Record<number, IAccesos>
+  >({})
 
   useEffect(() => {
     loadPages()
@@ -86,7 +93,7 @@ const CreateFormPrivilegio: FC = () => {
     onSubmit: async (values) => {
       setLoading(true)
       try {
-        await privilegioService.create(values, userId)
+        await privilegioService.create(values, userId, selectedAccesos)
         getSuccess('El privilegio fue creado correctamente')
         navigate('/privilegios')
       } catch (e) {
@@ -168,7 +175,11 @@ const CreateFormPrivilegio: FC = () => {
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <PermissionForm data={permission} />
+                    <PermissionForm
+                      data={permission}
+                      selectedAccesos={selectedAccesos}
+                      setSelectedAccesos={setSelectedAccesos}
+                    />
                   </AccordionDetails>
                 </Accordion>
               </Grid>

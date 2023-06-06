@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { type ICreatePrivilegio } from '../models'
+import { type IAccesos, type ICreatePrivilegio } from '../models'
 
 const getAll = async (): Promise<any> => {
   return await axios
@@ -23,8 +23,25 @@ const deleteById = async (id: number): Promise<void> => {
 }
 
 const create = async (
-  value: ICreatePrivilegio,
-  userId: number
-): Promise<void> => {}
+  values: ICreatePrivilegio,
+  userId: number,
+  accesos: Record<number, IAccesos>
+): Promise<void> => {
+  const result = Object.entries(accesos).map(([coleccionId, attributes]) => ({
+    coleccionId: parseInt(coleccionId),
+    crear: attributes.crear,
+    actualizar: attributes.actualizar,
+    eliminar: attributes.eliminar,
+    ver: attributes.ver,
+    listar: attributes.ver
+  }))
+  const data = {
+    ...values,
+    userId,
+    accesos: result
+  }
+
+  await axios.post('/privilegios', data)
+}
 
 export default { getAll, deleteById, create }
