@@ -208,7 +208,7 @@ const CreateFormPrivilegio: FC = () => {
                   Guardar
                 </Button>
               </Grid>
-              <Grid item xs={12} sm={6} md={6}>
+              <Grid item xs={12} sm={12} md={6}>
                 <Button
                   fullWidth
                   type="button"
