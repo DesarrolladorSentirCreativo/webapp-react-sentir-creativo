@@ -189,11 +189,9 @@ const CreateFormAudiencia: React.FC = () => {
   }
 
   useEffect(() => {
-    console.log(idAdd)
     if (idAdd !== 0) {
       const organizacion = organizaciones.find((x) => x.id === idAdd)
       if (organizacion) {
-        console.log('si paso')
         const organizacionesValues = [
           ...formik.values.organizaciones,
           {

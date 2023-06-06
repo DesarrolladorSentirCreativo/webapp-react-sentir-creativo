@@ -4,6 +4,7 @@ export interface IAcceso {
   ver: boolean
   actualizar: boolean
   eliminar: boolean
+  coleccionId: number
 }
 
-export interface IAccesos extends Omit<IAcceso, 'id'> {}
+export interface IAccesos extends Omit<IAcceso, 'id' | 'coleccionId'> {}

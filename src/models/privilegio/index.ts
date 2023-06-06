@@ -1,3 +1,5 @@
+import { type IAcceso } from '../acceso'
+
 export interface IPrivilegio {
   id: string
   nombre: string
@@ -6,3 +8,9 @@ export interface IPrivilegio {
 }
 
 export interface ICreatePrivilegio extends Omit<IPrivilegio, 'id'> {}
+
+export interface IUpdatePrivilegio extends IPrivilegio {}
+
+export interface IGetByIdPrivilegio extends IPrivilegio {
+  accesos: IAcceso[]
+}

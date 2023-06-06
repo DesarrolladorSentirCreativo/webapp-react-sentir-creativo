@@ -162,7 +162,7 @@ export const Privilegios: FC = () => {
               <IconButton
                 color="secondary"
                 onClick={() => {
-                  navigate(`/modulos/actualizar/${row.original.id}`)
+                  navigate(`/privilegios/actualizar/${row.original.id}`)
                 }}
               >
                 <EditIcon />

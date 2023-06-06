@@ -44,21 +44,22 @@ const PermissionForm: FC<PermissionFormProps> = ({
   }
 
   useEffect(() => {
-    const initialValues: Record<string, IAccesos> = {}
-    data.forEach((modulo) => {
-      modulo.colecciones.forEach((coleccion) => {
-        initialValues[coleccion.id] = {
-          crear: false,
-          ver: false,
-          actualizar: false,
-          eliminar: false
-        }
+    if (Object.keys(selectedAccesos).length <= 0) {
+      const initialValues: Record<string, IAccesos> = {}
+      data.forEach((modulo) => {
+        modulo.colecciones.forEach((coleccion) => {
+          initialValues[coleccion.id] = {
+            crear: false,
+            ver: false,
+            actualizar: false,
+            eliminar: false
+          }
+        })
       })
-    })
-    setSelectedAccesos(initialValues)
+      setSelectedAccesos(initialValues)
+    }
   }, [data])
 
-  console.log(selectedAccesos)
   const handleAccesoChange = (
     collectionId: number,
     accesoKey: keyof IAccesos
