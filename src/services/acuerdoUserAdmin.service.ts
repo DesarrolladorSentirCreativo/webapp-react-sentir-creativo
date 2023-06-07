@@ -47,4 +47,26 @@ const select = async (): Promise<ISelectAcuerdoUserAdmin[]> => {
     })
 }
 
-export default { getAll, deleteById, create, select }
+const getById = async (id: number): Promise<IAcuerdoUserAdmin> => {
+  return await axios
+    .get<IAcuerdoUserAdmin>(`/acuerdos-admin/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      throw new Error(error)
+    })
+}
+
+const update = async (
+  values: IAcuerdoUserAdmin,
+  userId: number
+): Promise<void> => {
+  const dataValues = {
+    ...values,
+    userId
+  }
+  const { data } = await axios.put('/acuerdos-admin', dataValues)
+  return data
+}
+
+export default { getAll, deleteById, create, select, getById, update }
