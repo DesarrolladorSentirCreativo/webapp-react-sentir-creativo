@@ -1,3 +1,4 @@
+export * from './AcuerdosUserAdmin'
 export * from './Audencias'
 export * from './CategoriasPrivilegios'
 export * from './ColeccionesUserAdmin'

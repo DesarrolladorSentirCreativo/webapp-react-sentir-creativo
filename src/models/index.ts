@@ -1,4 +1,5 @@
 export * from './acceso'
+export * from './acuerdoUserAdmin'
 export * from './antiguedad'
 export * from './AppButton'
 export * from './archivo'

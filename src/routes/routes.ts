@@ -1,4 +1,5 @@
 import {
+  AcuerdosUserAdmin,
   Audiencias,
   CategoriasPrivilegios,
   ColeccionesUserAdmin,
@@ -111,6 +112,10 @@ const routes = [
   {
     path: '/privilegios/actualizar/:id',
     component: UpdateFormPrivilegio
+  },
+  {
+    path: '/acuerdos',
+    component: AcuerdosUserAdmin
   }
 ]
 

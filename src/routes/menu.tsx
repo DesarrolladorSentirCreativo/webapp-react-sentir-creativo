@@ -31,6 +31,13 @@ const menu: RouteType[] = [
     icon: <PersonIcon />,
     children: [
       {
+        id: 'acuerdos',
+        title: 'Acuerdos',
+        icon: <ArrowRightIcon />,
+        path: '/acuerdos',
+        children: []
+      },
+      {
         id: 'categoriasPrivilegios',
         title: 'Categorías de Privilegios',
         icon: <ArrowRightIcon />,
