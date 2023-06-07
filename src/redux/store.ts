@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 
+import acuerdoUserAdminReducer from './states/acuerdoUserAdmin'
 import antiguedadReducer from './states/antiguedad'
 import categoriaPrivilegioReducer from './states/categoriaPrivilegio'
 import cercaniaReducer from './states/cercania'
@@ -30,7 +31,8 @@ const store = configureStore({
     direccion: direccionReducer,
     sucursal: sucursalReducer,
     categoriaPrivilegio: categoriaPrivilegioReducer,
-    coleccionUserAdmin: coleccionUserAdminReducer
+    coleccionUserAdmin: coleccionUserAdminReducer,
+    acuerdoUserAdmin: acuerdoUserAdminReducer
   }
 })
 

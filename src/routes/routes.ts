@@ -3,6 +3,7 @@ import {
   Audiencias,
   CategoriasPrivilegios,
   ColeccionesUserAdmin,
+  CreateFormAcuerdoUserAdmin,
   CreateFormAudiencia,
   CreateFormCategoriaPrivilegio,
   CreateFormColeccionUserAdmin,
@@ -116,6 +117,10 @@ const routes = [
   {
     path: '/acuerdos',
     component: AcuerdosUserAdmin
+  },
+  {
+    path: '/acuerdos/nuevo',
+    component: CreateFormAcuerdoUserAdmin
   }
 ]
 

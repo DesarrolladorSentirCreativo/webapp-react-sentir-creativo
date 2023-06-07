@@ -1,6 +1,10 @@
 import axios from 'axios'
 
-import { type IAcuerdoUserAdmin } from '../models'
+import {
+  type IAcuerdoUserAdmin,
+  type ICreateAcuerdoUserAdmin,
+  type ISelectAcuerdoUserAdmin
+} from '../models'
 
 const getAll = async (): Promise<IAcuerdoUserAdmin[]> => {
   return await axios
@@ -22,4 +26,25 @@ const deleteById = async (id: number): Promise<void> => {
     })
 }
 
-export default { getAll, deleteById }
+const create = async (
+  values: ICreateAcuerdoUserAdmin,
+  userId: number
+): Promise<void> => {
+  const data = {
+    ...values,
+    userId
+  }
+  await axios.post('/acuerdos-admin', data)
+}
+
+const select = async (): Promise<ISelectAcuerdoUserAdmin[]> => {
+  return await axios
+    .get<ISelectAcuerdoUserAdmin[]>('/acuerdos-admin/select')
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      return []
+    })
+}
+
+export default { getAll, deleteById, create, select }
