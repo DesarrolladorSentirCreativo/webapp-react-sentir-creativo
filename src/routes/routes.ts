@@ -15,6 +15,7 @@ import {
   Modulos,
   Organizaciones,
   Privilegios,
+  Roles,
   Sucursales,
   UpdateFormAcuerdoUserAdmin,
   UpdateFormAudiencia,
@@ -126,6 +127,10 @@ const routes = [
   {
     path: '/acuerdos/actualizar/:id',
     component: UpdateFormAcuerdoUserAdmin
+  },
+  {
+    path: '/roles',
+    component: Roles
   }
 ]
 

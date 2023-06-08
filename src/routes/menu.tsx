@@ -66,6 +66,13 @@ const menu: RouteType[] = [
         children: []
       },
       {
+        id: 'roles',
+        title: 'Roles',
+        icon: <ArrowRightIcon />,
+        path: '/roles',
+        children: []
+      },
+      {
         id: 'sucursales',
         title: 'Sucursales',
         icon: <ArrowRightIcon />,

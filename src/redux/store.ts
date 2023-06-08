@@ -13,6 +13,7 @@ import motivacionReducer from './states/motivacion'
 import organizacionReducer from './states/organizacion'
 import origenReducer from './states/origen'
 import prefijoReducer from './states/prefijo'
+import rolReducer from './states/rol'
 import rubroReducer from './states/rubro'
 import sucursalReducer from './states/sucursal'
 
@@ -32,7 +33,8 @@ const store = configureStore({
     sucursal: sucursalReducer,
     categoriaPrivilegio: categoriaPrivilegioReducer,
     coleccionUserAdmin: coleccionUserAdminReducer,
-    acuerdoUserAdmin: acuerdoUserAdminReducer
+    acuerdoUserAdmin: acuerdoUserAdminReducer,
+    rol: rolReducer
   }
 })
 
