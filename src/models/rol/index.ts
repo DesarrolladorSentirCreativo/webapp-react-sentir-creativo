@@ -18,3 +18,8 @@ export interface ICreateRol extends Omit<IRol, 'id'> {
   acuerdos: IAcuerdo[]
   privilegios: IPrivilegio[]
 }
+
+export interface IUpdateRol extends IRol {
+  acuerdos: IAcuerdo[]
+  privilegios: IPrivilegio[]
+}

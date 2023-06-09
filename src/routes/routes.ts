@@ -25,6 +25,7 @@ import {
   UpdateFormModulo,
   UpdateFormOrganizacion,
   UpdateFormPrivilegio,
+  UpdateFormRol,
   UpdateFormSucursal
 } from '../pages'
 
@@ -136,6 +137,10 @@ const routes = [
   {
     path: '/roles/nuevo',
     component: CreateFormRol
+  },
+  {
+    path: '/roles/actualizar/:id',
+    component: UpdateFormRol
   }
 ]
 

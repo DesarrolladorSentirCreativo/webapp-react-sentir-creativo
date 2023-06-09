@@ -1,6 +1,11 @@
 import axios from 'axios'
 
-import { type ICreateRol, type IRol, type IRolSelect } from '../models/rol'
+import {
+  type ICreateRol,
+  type IRol,
+  type IRolSelect,
+  type IUpdateRol
+} from '../models/rol'
 
 const getAll = async (): Promise<IRol[]> => {
   return await axios
@@ -40,4 +45,23 @@ const create = async (values: ICreateRol, userId: number): Promise<void> => {
   await axios.post('/roles', data)
 }
 
-export default { getAll, deleteById, select, create }
+const getById = async (id: number): Promise<IUpdateRol> => {
+  return await axios
+    .get<IUpdateRol>(`/roles/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      throw new Error(error)
+    })
+}
+
+const update = async (values: IUpdateRol, userId: number): Promise<void> => {
+  const dataValues = {
+    ...values,
+    userId
+  }
+  const { data } = await axios.put('/roles', dataValues)
+  return data
+}
+
+export default { getAll, deleteById, select, create, update, getById }
