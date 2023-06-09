@@ -14,3 +14,6 @@ export interface IUpdatePrivilegio extends IPrivilegio {}
 export interface IGetByIdPrivilegio extends IPrivilegio {
   accesos: IAcceso[]
 }
+
+export interface ISelectPriviilegio
+  extends Omit<IPrivilegio, 'categoriaId' | 'descripcion'> {}

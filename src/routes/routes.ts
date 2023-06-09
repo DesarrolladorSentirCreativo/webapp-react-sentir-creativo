@@ -10,6 +10,7 @@ import {
   CreateFormModulo,
   CreateFormOrganizacion,
   CreateFormPrivilegio,
+  CreateFormRol,
   CreateFormSucursal,
   Home,
   Modulos,
@@ -131,6 +132,10 @@ const routes = [
   {
     path: '/roles',
     component: Roles
+  },
+  {
+    path: '/roles/nuevo',
+    component: CreateFormRol
   }
 ]
 

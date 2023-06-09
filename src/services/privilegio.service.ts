@@ -4,6 +4,7 @@ import {
   type IAccesos,
   type ICreatePrivilegio,
   type IGetByIdPrivilegio,
+  type ISelectPriviilegio,
   type IUpdatePrivilegio
 } from '../models'
 
@@ -80,4 +81,14 @@ const update = async (
   await axios.put('/privilegios', data)
 }
 
-export default { getAll, deleteById, create, getById, update }
+const select = async (): Promise<ISelectPriviilegio[]> => {
+  return await axios
+    .get<ISelectPriviilegio[]>('/privilegios/select')
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      return []
+    })
+}
+
+export default { getAll, deleteById, create, getById, update, select }
