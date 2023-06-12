@@ -45,6 +45,13 @@ const menu: RouteType[] = [
         children: []
       },
       {
+        id: 'categoriasUserAdmins',
+        title: 'Categorías de Usuarios',
+        icon: <ArrowRightIcon />,
+        path: '/categorias-usuarios',
+        children: []
+      },
+      {
         id: 'colecciones',
         title: 'Colecciones',
         icon: <ArrowRightIcon />,

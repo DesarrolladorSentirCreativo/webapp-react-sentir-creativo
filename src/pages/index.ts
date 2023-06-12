@@ -1,6 +1,7 @@
 export * from './AcuerdosUserAdmin'
 export * from './Audencias'
 export * from './CategoriasPrivilegios'
+export * from './CategoriaUserAdmins'
 export * from './ColeccionesUserAdmin'
 export * from './Home'
 export * from './Login'

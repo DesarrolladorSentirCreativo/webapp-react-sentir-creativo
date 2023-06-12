@@ -2,10 +2,12 @@ import {
   AcuerdosUserAdmin,
   Audiencias,
   CategoriasPrivilegios,
+  CategoriaUserAdmins,
   ColeccionesUserAdmin,
   CreateFormAcuerdoUserAdmin,
   CreateFormAudiencia,
   CreateFormCategoriaPrivilegio,
+  CreateFormCategoriaUserAdmin,
   CreateFormColeccionUserAdmin,
   CreateFormModulo,
   CreateFormOrganizacion,
@@ -21,6 +23,7 @@ import {
   UpdateFormAcuerdoUserAdmin,
   UpdateFormAudiencia,
   UpdateFormCategoriaPrivilegio,
+  UpdateFormCategoriaUserAdmin,
   UpdateFormColeccionUserAdmin,
   UpdateFormModulo,
   UpdateFormOrganizacion,
@@ -141,6 +144,18 @@ const routes = [
   {
     path: '/roles/actualizar/:id',
     component: UpdateFormRol
+  },
+  {
+    path: '/categorias-usuarios',
+    component: CategoriaUserAdmins
+  },
+  {
+    path: '/categorias-usuarios/nuevo',
+    component: CreateFormCategoriaUserAdmin
+  },
+  {
+    path: '/categorias-usuarios/actualizar/:id',
+    component: UpdateFormCategoriaUserAdmin
   }
 ]
 
