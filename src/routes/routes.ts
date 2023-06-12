@@ -1,10 +1,12 @@
 import {
   AcuerdosUserAdmin,
+  Afp,
   Audiencias,
   CategoriasPrivilegios,
   CategoriaUserAdmins,
   ColeccionesUserAdmin,
   CreateFormAcuerdoUserAdmin,
+  CreateFormAfp,
   CreateFormAudiencia,
   CreateFormCategoriaPrivilegio,
   CreateFormCategoriaUserAdmin,
@@ -21,6 +23,7 @@ import {
   Roles,
   Sucursales,
   UpdateFormAcuerdoUserAdmin,
+  UpdateFormAfp,
   UpdateFormAudiencia,
   UpdateFormCategoriaPrivilegio,
   UpdateFormCategoriaUserAdmin,
@@ -156,6 +159,18 @@ const routes = [
   {
     path: '/categorias-usuarios/actualizar/:id',
     component: UpdateFormCategoriaUserAdmin
+  },
+  {
+    path: '/afp',
+    component: Afp
+  },
+  {
+    path: '/afp/nuevo',
+    component: CreateFormAfp
+  },
+  {
+    path: '/afp/actualizar/:id',
+    component: UpdateFormAfp
   }
 ]
 

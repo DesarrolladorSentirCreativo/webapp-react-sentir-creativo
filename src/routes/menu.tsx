@@ -38,6 +38,13 @@ const menu: RouteType[] = [
         children: []
       },
       {
+        id: 'afp',
+        title: 'AFP',
+        icon: <ArrowRightIcon />,
+        path: '/afp',
+        children: []
+      },
+      {
         id: 'categoriasPrivilegios',
         title: 'Categorías de Privilegios',
         icon: <ArrowRightIcon />,

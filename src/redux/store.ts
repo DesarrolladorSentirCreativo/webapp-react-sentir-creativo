@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import acuerdoUserAdminReducer from './states/acuerdoUserAdmin'
+import afpReducer from './states/afp'
 import antiguedadReducer from './states/antiguedad'
 import categoriaPrivilegioReducer from './states/categoriaPrivilegio'
 import categoriaUserAdminReducer from './states/categoriaUserAdmin'
@@ -36,7 +37,8 @@ const store = configureStore({
     coleccionUserAdmin: coleccionUserAdminReducer,
     acuerdoUserAdmin: acuerdoUserAdminReducer,
     rol: rolReducer,
-    categoriaUserAdmin: categoriaUserAdminReducer
+    categoriaUserAdmin: categoriaUserAdminReducer,
+    afp: afpReducer
   }
 })
 

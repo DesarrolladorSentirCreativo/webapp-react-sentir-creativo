@@ -1,4 +1,5 @@
 export * from './AcuerdosUserAdmin'
+export * from './Afp'
 export * from './Audencias'
 export * from './CategoriasPrivilegios'
 export * from './CategoriaUserAdmins'
