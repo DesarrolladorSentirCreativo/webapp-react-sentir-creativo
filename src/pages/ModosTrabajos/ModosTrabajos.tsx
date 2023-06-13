@@ -22,14 +22,14 @@ const ModosTrabajos: FC = () => {
   const { getSuccess, getError } = useNotification()
   const [open, setOpen] = useState<boolean>(false)
   const [columnVisibility, setColumnVisibility] = useState(() => {
-    const modoTrabajosPreferences = getLocalStorage('modoTrabajosPreferences')
+    const modoTrabajosPreferences = getLocalStorage('modoTrabajoPreferences')
     const result = modoTrabajosPreferences
       ? JSON.parse(modoTrabajosPreferences)
       : {}
     return result.columnVisibility
   })
   const [density, setDensity] = useState(() => {
-    const modoTrabajosPreferences = getLocalStorage('modoTrabajosPreferences')
+    const modoTrabajosPreferences = getLocalStorage('modoTrabajoPreferences')
     const result = modoTrabajosPreferences
       ? JSON.parse(modoTrabajosPreferences)
       : 'compact'
