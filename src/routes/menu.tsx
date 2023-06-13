@@ -73,6 +73,13 @@ const menu: RouteType[] = [
         children: []
       },
       {
+        id: 'modo',
+        title: 'Modos de Trabajos',
+        icon: <ArrowRightIcon />,
+        path: '/modos-trabajos',
+        children: []
+      },
+      {
         id: 'modulos',
         title: 'Modulos',
         icon: <ArrowRightIcon />,

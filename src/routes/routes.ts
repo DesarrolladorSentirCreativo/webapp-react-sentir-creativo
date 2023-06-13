@@ -11,12 +11,14 @@ import {
   CreateFormCategoriaPrivilegio,
   CreateFormCategoriaUserAdmin,
   CreateFormColeccionUserAdmin,
+  CreateFormModoTrabajo,
   CreateFormModulo,
   CreateFormOrganizacion,
   CreateFormPrivilegio,
   CreateFormRol,
   CreateFormSucursal,
   Home,
+  ModosTrabajos,
   Modulos,
   Organizaciones,
   Privilegios,
@@ -28,6 +30,7 @@ import {
   UpdateFormCategoriaPrivilegio,
   UpdateFormCategoriaUserAdmin,
   UpdateFormColeccionUserAdmin,
+  UpdateFormModoTrabajo,
   UpdateFormModulo,
   UpdateFormOrganizacion,
   UpdateFormPrivilegio,
@@ -171,6 +174,18 @@ const routes = [
   {
     path: '/afp/actualizar/:id',
     component: UpdateFormAfp
+  },
+  {
+    path: '/modos-trabajos',
+    component: ModosTrabajos
+  },
+  {
+    path: '/modos-trabajos/nuevo',
+    component: CreateFormModoTrabajo
+  },
+  {
+    path: '/modos-trabajos/actualizar/:id',
+    component: UpdateFormModoTrabajo
   }
 ]
 
