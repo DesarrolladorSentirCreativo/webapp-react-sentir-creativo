@@ -14,6 +14,7 @@ import {
   CreateFormModoTrabajo,
   CreateFormModulo,
   CreateFormOrganizacion,
+  CreateFormPrevision,
   CreateFormPrivilegio,
   CreateFormRol,
   CreateFormSucursal,
@@ -21,6 +22,7 @@ import {
   ModosTrabajos,
   Modulos,
   Organizaciones,
+  Previsiones,
   Privilegios,
   Roles,
   Sucursales,
@@ -33,6 +35,7 @@ import {
   UpdateFormModoTrabajo,
   UpdateFormModulo,
   UpdateFormOrganizacion,
+  UpdateFormPrevision,
   UpdateFormPrivilegio,
   UpdateFormRol,
   UpdateFormSucursal
@@ -186,6 +189,18 @@ const routes = [
   {
     path: '/modos-trabajos/actualizar/:id',
     component: UpdateFormModoTrabajo
+  },
+  {
+    path: '/previsiones',
+    component: Previsiones
+  },
+  {
+    path: '/previsiones/nuevo',
+    component: CreateFormPrevision
+  },
+  {
+    path: '/previsiones/actualizar/:id',
+    component: UpdateFormPrevision
   }
 ]
 
