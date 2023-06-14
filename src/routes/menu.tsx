@@ -66,6 +66,13 @@ const menu: RouteType[] = [
         children: []
       },
       {
+        id: 'estadosUserAdmins',
+        title: 'Estados de Usuarios',
+        icon: <ArrowRightIcon />,
+        path: '/estados-useradmins',
+        children: []
+      },
+      {
         id: 'previsiones',
         title: 'Previsiones de Salud',
         icon: <ArrowRightIcon />,

@@ -11,6 +11,7 @@ import {
   CreateFormCategoriaPrivilegio,
   CreateFormCategoriaUserAdmin,
   CreateFormColeccionUserAdmin,
+  CreateFormEstadoUserAdmin,
   CreateFormModoTrabajo,
   CreateFormModulo,
   CreateFormOrganizacion,
@@ -18,6 +19,7 @@ import {
   CreateFormPrivilegio,
   CreateFormRol,
   CreateFormSucursal,
+  EstadosUserAdmins,
   Home,
   ModosTrabajos,
   Modulos,
@@ -32,6 +34,7 @@ import {
   UpdateFormCategoriaPrivilegio,
   UpdateFormCategoriaUserAdmin,
   UpdateFormColeccionUserAdmin,
+  UpdateFormEstadoUserAdmin,
   UpdateFormModoTrabajo,
   UpdateFormModulo,
   UpdateFormOrganizacion,
@@ -201,6 +204,18 @@ const routes = [
   {
     path: '/previsiones/actualizar/:id',
     component: UpdateFormPrevision
+  },
+  {
+    path: '/estados-useradmins',
+    component: EstadosUserAdmins
+  },
+  {
+    path: '/estados-useradmins/nuevo',
+    component: CreateFormEstadoUserAdmin
+  },
+  {
+    path: '/estados-useradmins/actualizar/:id',
+    component: UpdateFormEstadoUserAdmin
   }
 ]
 
