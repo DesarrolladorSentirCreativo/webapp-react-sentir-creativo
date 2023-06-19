@@ -41,7 +41,8 @@ import {
   UpdateFormPrevision,
   UpdateFormPrivilegio,
   UpdateFormRol,
-  UpdateFormSucursal
+  UpdateFormSucursal,
+  UsuariosAdmin
 } from '../pages'
 
 const routes = [
@@ -216,6 +217,10 @@ const routes = [
   {
     path: '/estados-useradmins/actualizar/:id',
     component: UpdateFormEstadoUserAdmin
+  },
+  {
+    path: '/usuarios',
+    component: UsuariosAdmin
   }
 ]
 
