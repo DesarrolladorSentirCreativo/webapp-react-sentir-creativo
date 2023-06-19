@@ -19,6 +19,7 @@ import {
   CreateFormPrivilegio,
   CreateFormRol,
   CreateFormSucursal,
+  CreateFormUsuarioAdmin,
   EstadosUserAdmins,
   Home,
   ModosTrabajos,
@@ -221,6 +222,10 @@ const routes = [
   {
     path: '/usuarios',
     component: UsuariosAdmin
+  },
+  {
+    path: '/usuarios/nuevo',
+    component: CreateFormUsuarioAdmin
   }
 ]
 
