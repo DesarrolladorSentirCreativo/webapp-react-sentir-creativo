@@ -12,7 +12,7 @@ interface IPrivilegio {
   privilegioId: string
 }
 
-export interface IRolSelect extends Omit<IRol, 'id' | 'descripcion'> {}
+export interface IRolSelect extends Omit<IRol, 'descripcion'> {}
 
 export interface ICreateRol extends Omit<IRol, 'id'> {
   acuerdos: IAcuerdo[]

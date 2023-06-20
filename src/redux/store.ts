@@ -15,6 +15,7 @@ import motivacionReducer from './states/motivacion'
 import organizacionReducer from './states/organizacion'
 import origenReducer from './states/origen'
 import prefijoReducer from './states/prefijo'
+import previsionReducer from './states/prevision'
 import rolReducer from './states/rol'
 import rubroReducer from './states/rubro'
 import sucursalReducer from './states/sucursal'
@@ -38,7 +39,8 @@ const store = configureStore({
     acuerdoUserAdmin: acuerdoUserAdminReducer,
     rol: rolReducer,
     categoriaUserAdmin: categoriaUserAdminReducer,
-    afp: afpReducer
+    afp: afpReducer,
+    prevision: previsionReducer
   }
 })
 

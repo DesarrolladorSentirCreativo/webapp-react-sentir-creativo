@@ -35,6 +35,11 @@ export interface ICreateUsuarioAdmin extends Omit<IUsuarioAdmin, 'id'> {
   acuerdos: IAcuerdo[]
   privilegios: IPrivilegio[]
   sucursales: ISucursal[]
+  alias: string
+  repeatPassword: string
+  tipoCuenta: string
+  numCuenta: string
+  banco: string
 }
 
 interface IRol {

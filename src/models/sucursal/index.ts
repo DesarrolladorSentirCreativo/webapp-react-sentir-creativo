@@ -11,3 +11,8 @@ export interface ISucursal {
 export interface ISucursalDataGrid extends Omit<ISucursal, 'descripcion'> {}
 export interface ICreateSucursal extends Omit<ISucursal, 'id'> {}
 export interface IUpdateSucursal extends ISucursal {}
+export interface ISelectSucursal
+  extends Omit<
+    ISucursal,
+    'descripcion' | 'paisId' | 'regionId' | 'ciudadId' | 'direccion'
+  > {}

@@ -35,18 +35,20 @@ interface IModalArchivo {
   addArchivo: (archivo: IArchivo) => void
   closeLoading: () => void
   removeArchivo: (id: number) => void
+  contexto: string
 }
 
 const handleCreateFiles = async (
   values: any,
-  audienciaId: number
+  audienciaId: number,
+  contexto: string
 ): Promise<string> => {
   const parentId = audienciaId.toString()
   if (!parentId) return ''
   if (!values.tipoArchivoId) throw new Error()
   const file = values.archivo
   const name = values.nombre
-  const parent = 'audiencia'
+  const parent = contexto
   const publicFile = values.publico
   return await uploadFileToS3({
     name,
@@ -67,7 +69,8 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
     audienciaId,
     addArchivo,
     handleIsLoading,
-    closeLoading
+    closeLoading,
+    contexto
   } = props
   const [maxWidth, setMaxWidth] = useState<DialogProps['maxWidth']>('md')
   const [title, setTitle] = useState<string>('')
@@ -131,7 +134,7 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
       if (values.id !== 0) {
         await handleUpdateArchivo(values)
       } else {
-        await handleCreateArchivo(values, audienciaId)
+        await handleCreateArchivo(values, audienciaId, contexto)
       }
       closeLoading()
       onClose()
@@ -162,7 +165,8 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
 
   const handleCreateArchivo = async (
     values: ICRUDArchivo,
-    audienciaId: number
+    audienciaId: number,
+    contexto: string
   ): Promise<void> => {
     let data = null
     let path = ''
@@ -170,7 +174,7 @@ const ModalArchivo: React.FC<IModalArchivo> = (props: IModalArchivo) => {
     if (values.path.length > 0) {
       path = values.path
     } else {
-      path = await handleCreateFiles(values, audienciaId)
+      path = await handleCreateFiles(values, audienciaId, contexto)
     }
 
     data = await archivoService.create(

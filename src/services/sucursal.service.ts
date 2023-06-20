@@ -2,6 +2,7 @@ import axios from 'axios'
 
 import {
   type ICreateSucursal,
+  type ISelectSucursal,
   type ISucursalDataGrid,
   type IUpdateSucursal
 } from '../models/sucursal'
@@ -51,4 +52,14 @@ const update = async (values: IUpdateSucursal): Promise<void> => {
   return data
 }
 
-export default { getAll, deleteById, create, getById, update }
+const select = async (): Promise<ISelectSucursal[]> => {
+  return await axios
+    .get<ISelectSucursal[]>('/sucursales/select')
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      return []
+    })
+}
+
+export default { getAll, deleteById, create, getById, update, select }

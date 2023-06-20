@@ -121,6 +121,7 @@ const Archivo: React.FC<IArchivoProps> = (props: IArchivoProps) => {
         audienciaId={audienciaId}
         closeLoading={handleCloseLoading}
         removeArchivo={removeArchivo}
+        contexto={'audiencia'}
       />
     </>
   )
