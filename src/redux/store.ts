@@ -11,6 +11,7 @@ import cuponDescuentoReducer from './states/cuponDescuento'
 import difusionReducer from './states/difusion'
 import direccionReducer from './states/direccion'
 import estadoAudienciaReducer from './states/estadoAudiencia'
+import modoTrabajoReducer from './states/modoTrabajo'
 import motivacionReducer from './states/motivacion'
 import organizacionReducer from './states/organizacion'
 import origenReducer from './states/origen'
@@ -40,7 +41,8 @@ const store = configureStore({
     rol: rolReducer,
     categoriaUserAdmin: categoriaUserAdminReducer,
     afp: afpReducer,
-    prevision: previsionReducer
+    prevision: previsionReducer,
+    modoTrabajo: modoTrabajoReducer
   }
 })
 

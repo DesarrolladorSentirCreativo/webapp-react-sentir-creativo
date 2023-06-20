@@ -9,17 +9,19 @@ import {
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Switch from '@mui/material/Switch'
 import { useFormik } from 'formik'
-import { type FC, useEffect, useState } from 'react'
+import { type FC, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 
 import { Card, DialogButton } from '../../components/Controls'
 import { useNotification } from '../../context'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
+import { calcularDigitoVerificador } from '../../helpers/rut.helper'
 import { useDireccion, usePrefijo } from '../../hooks'
 import useAcuerdoUserAdmin from '../../hooks/useAcuerdoUserAdmin'
 import useCategoriUserAdmin from '../../hooks/useCategoriaUserAdmin'
 import useDialogButton from '../../hooks/useDialogButton'
+import useModoTrabajo from '../../hooks/useModoTrabajo'
 import usePrevision from '../../hooks/usePrevision'
 import usePrivilegio from '../../hooks/usePrivilegio'
 import useRol from '../../hooks/useRol'
@@ -69,6 +71,9 @@ const CreateFormUsuarioAdmin: FC = () => {
   const [userId, setUserId] = useState<number>(0)
   const { categoriaUserAdmins, loadCategoriaUserAdmins } =
     useCategoriUserAdmin()
+  const { modosTrabajos, loadModosTrabajos } = useModoTrabajo()
+  const [digitoVerificadorError, setDigitoVerificadorError] =
+    useState<string>('')
 
   useEffect(() => {
     loadData()
@@ -92,6 +97,7 @@ const CreateFormUsuarioAdmin: FC = () => {
     await loadSucursales()
     await loadAcuerdoUserAdmins()
     await loadCategoriaUserAdmins()
+    await loadModosTrabajos()
     setIsLoading(false)
   }
   const formik = useFormik<ICreateUsuarioAdmin>({
@@ -135,8 +141,13 @@ const CreateFormUsuarioAdmin: FC = () => {
       nombre: yup
         .string()
         .trim()
-        .max(200, 'El nombre no debe superar los 255 caracteres')
+        .max(200, 'El nombre no debe superar los 80 caracteres')
         .required('El nombre es obligatorio'),
+      apellidos: yup
+        .string()
+        .trim()
+        .max(200, 'El nombre no debe superar los 80 caracteres')
+        .required('Los apellidos son obligatorio'),
       email: yup
         .string()
         .trim()
@@ -145,6 +156,10 @@ const CreateFormUsuarioAdmin: FC = () => {
       ciudadId: yup.number().required('La ciudad es obligatoria'),
       paisId: yup.number().required('El pais es obligatorio'),
       regionId: yup.number().required('La region es obligatorio'),
+      afpId: yup.number().required('El afp es obligatoria'),
+      previsionId: yup.number().required('La prevision es obligatoria'),
+      categoriaId: yup.number().required('La categoria es obligatoria'),
+      modoId: yup.number().required('El modo es obligatorio'),
       roles: yup
         .array()
         .test('arrayVacio', 'Los roles son obligatorios', function (value) {
@@ -153,6 +168,7 @@ const CreateFormUsuarioAdmin: FC = () => {
       direccion: yup
         .string()
         .trim()
+        .required('La direccion es obligatoria')
         .max(255, 'La direccion no debe superar los 1024 caracteres'),
       emailPersonal: yup
         .string()
@@ -163,11 +179,11 @@ const CreateFormUsuarioAdmin: FC = () => {
       setIsLoading(true)
       try {
         //  await sucursalService.create(values)
-        getSuccess('La sucursal fue creada correctamente')
+        getSuccess('El usuario fue creado correctamente')
         navigate('/sucursales')
       } catch (e) {
         console.log(e)
-        getError('La sucursal no pudo ser creada')
+        getError('El usuario no pudo ser creado')
         setIsLoading(false)
       }
     }
@@ -193,6 +209,50 @@ const CreateFormUsuarioAdmin: FC = () => {
         console.log(error)
       })
   }
+
+  const rutInputRef = useRef<HTMLInputElement>(null)
+  const rutActualRef = useRef<string>(formik.values.numDocumento)
+
+  useEffect(() => {
+    rutActualRef.current = formik.values.numDocumento
+  }, [formik.values.numDocumento])
+
+  const handleRutChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const rut: string = event.target.value
+    const rutLimpio: string = rut.replace(/[^0-9kK]/g, '')
+    const digitoVerificadorIngresado: string = rutLimpio.charAt(
+      rutLimpio.length - 1
+    )
+
+    if (!/^[0-9kK]$/.test(digitoVerificadorIngresado)) {
+      setDigitoVerificadorError('Dígito verificador inválido')
+    } else {
+      setDigitoVerificadorError('')
+
+      const digitoVerificadorCalculado: string = calcularDigitoVerificador(
+        rutLimpio.slice(0, -1)
+      )
+      setDigitoVerificadorError(
+        digitoVerificadorIngresado.toLowerCase() !==
+          digitoVerificadorCalculado.toLowerCase()
+          ? 'Dígito verificador incorrecto'
+          : ''
+      )
+    }
+
+    formik.handleChange(event)
+  }
+
+  useEffect(() => {
+    if (
+      rutInputRef.current &&
+      rutActualRef.current !== formik.values.numDocumento
+    ) {
+      rutInputRef.current.value = formik.values.numDocumento
+    }
+  }, [formik.values.numDocumento])
 
   const handleSetComentario = (value: string): void => {
     setComentario(value)
@@ -388,29 +448,56 @@ const CreateFormUsuarioAdmin: FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
-              <TextField
-                name="numDocumento"
-                label="Numero de Documento"
-                fullWidth
-                required
-                size="small"
-                value={formik.values.numDocumento}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.nombre === true &&
-                  Boolean(formik.errors.numDocumento)
-                }
-                helperText={
-                  formik.touched.numDocumento === true &&
-                  formik.errors.numDocumento
-                }
-              />
+              {formik.values.validaDocumento ? (
+                <TextField
+                  name="numDocumento"
+                  label="Numero de Documento"
+                  fullWidth
+                  required
+                  size="small"
+                  value={formik.values.numDocumento}
+                  onChange={handleRutChange}
+                  inputRef={rutInputRef}
+                  error={
+                    (formik.touched.numDocumento ??
+                      digitoVerificadorError !== '') &&
+                    Boolean(formik.errors.numDocumento)
+                  }
+                  helperText={
+                    <>
+                      {formik.touched.numDocumento === true &&
+                        formik.errors.numDocumento}
+                      {digitoVerificadorError && digitoVerificadorError}
+                    </>
+                  }
+                />
+              ) : (
+                <TextField
+                  name="numDocumento"
+                  label="Numero de Documento"
+                  fullWidth
+                  required
+                  size="small"
+                  value={formik.values.numDocumento}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.numDocumento === true &&
+                    Boolean(formik.errors.numDocumento)
+                  }
+                  helperText={
+                    formik.touched.numDocumento === true &&
+                    formik.errors.numDocumento
+                  }
+                />
+              )}
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
               <TextField
                 name="emailPersonal"
                 label="Email Personal"
                 fullWidth
+                type="email"
+                required
                 size="small"
                 value={formik.values.emailPersonal}
                 onChange={formik.handleChange}
@@ -535,7 +622,53 @@ const CreateFormUsuarioAdmin: FC = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="h6">Datos Previsionales</Typography>
+              <Typography variant="h6">Datos Laborales</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                name="fechaIngreso"
+                label="Fecha de Inicio"
+                fullWidth
+                type="date"
+                required
+                size="small"
+                value={formik.values.fechaInicio}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.fechaInicio === true &&
+                  Boolean(formik.errors.fechaInicio)
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                name="fechaFin"
+                label="Fecha de Fin"
+                fullWidth
+                type="date"
+                size="small"
+                value={formik.values.fechaFin}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.fechaFin === true &&
+                  Boolean(formik.errors.fechaFin)
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                name="fechaPago"
+                label="Fecha de Pago"
+                fullWidth
+                type="date"
+                size="small"
+                value={formik.values.fechaPago}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.fechaPago === true &&
+                  Boolean(formik.errors.fechaPago)
+                }
+              />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
               <TextField
@@ -555,6 +688,30 @@ const CreateFormUsuarioAdmin: FC = () => {
                   formik.touched.sueldoBruto === true &&
                   formik.errors.sueldoBruto
                 }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <Autocomplete
+                disablePortal
+                fullWidth
+                size="small"
+                id="modo"
+                options={modosTrabajos}
+                onChange={(event, value) => {
+                  formik.setFieldValue('modoId', value?.id ?? null)
+                }}
+                getOptionLabel={(option) =>
+                  option.nombre !== undefined ? option.nombre : ''
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    label="Modo de Trabajo"
+                    required
+                    value={formik.values.modoId}
+                  />
+                )}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
@@ -694,7 +851,7 @@ const CreateFormUsuarioAdmin: FC = () => {
                 label="Email"
                 fullWidth
                 required
-                type="text"
+                type="email"
                 size="small"
                 value={formik.values.email}
                 onChange={formik.handleChange}
