@@ -15,6 +15,7 @@ import * as yup from 'yup'
 
 import { Card, DialogButton } from '../../components/Controls'
 import { useNotification } from '../../context'
+import { formatDateInput } from '../../helpers/date.helper'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
 import { calcularDigitoVerificador } from '../../helpers/rut.helper'
 import { useDireccion, usePrefijo } from '../../hooks'
@@ -32,6 +33,7 @@ import {
   type SelectCiudad
 } from '../../models'
 import comentarioService from '../../services/comentario.service'
+import userAdminService from '../../services/userAdmin.service'
 import { SkeletonFormOrganizacion } from '../Organizaciones/components'
 import Comentario from './../../components/Comentarios/Comentario'
 import useAfp from './../../hooks/useAfp'
@@ -153,6 +155,16 @@ const CreateFormUsuarioAdmin: FC = () => {
         .trim()
         .max(256, 'El email no debe superar los 256 caracteres')
         .required('el email es obligatorio'),
+      numDocumento: yup
+        .string()
+        .trim()
+        .max(30, 'El numero de documento no debe superar los 30 caracteres')
+        .required('el numero de documento es obligatorio'),
+      alias: yup
+        .string()
+        .trim()
+        .max(50, 'El alias no debe superar los 50 caracteres')
+        .required('el alias es obligatorio'),
       ciudadId: yup.number().required('La ciudad es obligatoria'),
       paisId: yup.number().required('El pais es obligatorio'),
       regionId: yup.number().required('La region es obligatorio'),
@@ -160,6 +172,9 @@ const CreateFormUsuarioAdmin: FC = () => {
       previsionId: yup.number().required('La prevision es obligatoria'),
       categoriaId: yup.number().required('La categoria es obligatoria'),
       modoId: yup.number().required('El modo es obligatorio'),
+      tipoDocumento: yup
+        .string()
+        .required('El tipo de documento es obligatorio'),
       roles: yup
         .array()
         .test('arrayVacio', 'Los roles son obligatorios', function (value) {
@@ -173,14 +188,19 @@ const CreateFormUsuarioAdmin: FC = () => {
       emailPersonal: yup
         .string()
         .trim()
-        .max(256, 'El email personal no debe superar los 256 caracteres')
+        .max(256, 'El email personal no debe superar los 256 caracteres'),
+      sueldoBruto: yup.number().required('El sueldo bruto es obligatorio'),
+      telefono: yup
+        .string()
+        .trim()
+        .max(30, 'El telefono no debe superar los 30 caracteres')
     }),
     onSubmit: async (values) => {
       setIsLoading(true)
       try {
-        //  await sucursalService.create(values)
+        await userAdminService.create(values, comentarios)
         getSuccess('El usuario fue creado correctamente')
-        navigate('/sucursales')
+        navigate('/usuarios')
       } catch (e) {
         console.log(e)
         getError('El usuario no pudo ser creado')
@@ -632,10 +652,17 @@ const CreateFormUsuarioAdmin: FC = () => {
                 type="date"
                 required
                 size="small"
-                value={formik.values.fechaInicio}
-                onChange={formik.handleChange}
+                value={
+                  formik.values.fechaInicio
+                    ? formatDateInput(formik.values.fechaInicio)
+                    : ''
+                }
+                onChange={(e) => {
+                  const selectedDate = new Date(e.target.value)
+                  formik.setFieldValue('fechaInicio', selectedDate)
+                }}
                 error={
-                  formik.touched.fechaInicio === true &&
+                  formik.touched.fechaInicio &&
                   Boolean(formik.errors.fechaInicio)
                 }
               />
@@ -647,11 +674,17 @@ const CreateFormUsuarioAdmin: FC = () => {
                 fullWidth
                 type="date"
                 size="small"
-                value={formik.values.fechaFin}
-                onChange={formik.handleChange}
+                value={
+                  formik.values.fechaFin
+                    ? formatDateInput(formik.values.fechaFin)
+                    : ''
+                }
+                onChange={(e) => {
+                  const selectedDate = new Date(e.target.value)
+                  formik.setFieldValue('fechaFin', selectedDate)
+                }}
                 error={
-                  formik.touched.fechaFin === true &&
-                  Boolean(formik.errors.fechaFin)
+                  formik.touched.fechaFin && Boolean(formik.errors.fechaFin)
                 }
               />
             </Grid>
@@ -662,11 +695,17 @@ const CreateFormUsuarioAdmin: FC = () => {
                 fullWidth
                 type="date"
                 size="small"
-                value={formik.values.fechaPago}
-                onChange={formik.handleChange}
+                value={
+                  formik.values.fechaPago
+                    ? formatDateInput(formik.values.fechaPago)
+                    : ''
+                }
+                onChange={(e) => {
+                  const selectedDate = new Date(e.target.value)
+                  formik.setFieldValue('fechaPago', selectedDate)
+                }}
                 error={
-                  formik.touched.fechaPago === true &&
-                  Boolean(formik.errors.fechaPago)
+                  formik.touched.fechaPago && Boolean(formik.errors.fechaPago)
                 }
               />
             </Grid>

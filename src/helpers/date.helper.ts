@@ -31,3 +31,14 @@ export const formatDate = (date: Date, long = true): string => {
     long ? longFormatOptions : shortFormatOptions
   )
 }
+
+export const formatDateInput = (date: Date): string => {
+  if (!date) return ''
+  const adjustedDate = new Date(
+    date.getTime() + date.getTimezoneOffset() * 60000
+  )
+  const year = adjustedDate.getFullYear()
+  const month = (adjustedDate.getMonth() + 1).toString().padStart(2, '0')
+  const day = adjustedDate.getDate().toString().padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
