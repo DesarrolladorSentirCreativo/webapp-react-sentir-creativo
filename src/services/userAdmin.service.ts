@@ -1,8 +1,9 @@
 import axios from 'axios'
 
-import { type IComentario } from '../models'
+import { type IArchivo, type IComentario } from '../models'
 import {
   type ICreateUsuarioAdmin,
+  type IUpdateUsuarioAdmin,
   type IUsuarioAdmin
 } from '../models/usuarioAdmin'
 
@@ -28,15 +29,53 @@ const deleteById = async (id: number): Promise<void> => {
 
 const create = async (
   values: ICreateUsuarioAdmin,
-  comentarios: IComentario[]
+  comentarios: IComentario[],
+  user: number
 ): Promise<void> => {
   const comentariosIds = comentarios.map((item: IComentario) => {
     return {
       comentarioId: item.id
     }
   })
-  const data = { ...values, comentarios: comentariosIds }
+  const data = { ...values, comentarios: comentariosIds, userId: user }
   await axios.post('/usuarios-admin', data)
 }
 
-export default { deleteById, getAll, create }
+const getById = async (id: number): Promise<IUpdateUsuarioAdmin> => {
+  return await axios
+    .get<IUpdateUsuarioAdmin>(`/usuarios-admin/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      throw new Error(error)
+    })
+}
+
+const update = async (
+  values: IUpdateUsuarioAdmin,
+  comentarios: IComentario[],
+  archivos: IArchivo[],
+  user: number
+): Promise<void> => {
+  const comentariosIds = comentarios.map((item: IComentario) => {
+    return {
+      comentarioId: item.id
+    }
+  })
+  const archivosIds = archivos.map((item: IArchivo) => {
+    return {
+      archivoId: item.id
+    }
+  })
+
+  const data = {
+    ...values,
+    comentarios: comentariosIds,
+    archivos: archivosIds,
+    userId: user
+  }
+
+  await axios.put('/usuarios-admin', data)
+}
+
+export default { deleteById, getAll, create, getById, update }

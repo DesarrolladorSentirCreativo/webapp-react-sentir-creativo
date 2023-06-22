@@ -190,17 +190,17 @@ export const UsuariosAdmin: FC = () => {
   }
 
   const fetchData = async (): Promise<void> => {
+    setIsLoading(true)
     const result = await userAdminService.getAll()
     await loadCiudades()
     await loadPaises()
     await loadRegiones()
     setData(result)
+    setIsLoading(false)
   }
 
   const load = async (): Promise<void> => {
-    setIsLoading(true)
     await fetchData()
-    setIsLoading(false)
   }
 
   return (

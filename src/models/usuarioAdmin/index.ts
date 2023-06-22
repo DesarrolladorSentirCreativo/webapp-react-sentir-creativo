@@ -1,5 +1,4 @@
 import { type IArchivo } from '../archivo'
-import { type IComentario } from '../comentario'
 
 export interface IUsuarioAdmin {
   id: number
@@ -42,6 +41,26 @@ export interface ICreateUsuarioAdmin extends Omit<IUsuarioAdmin, 'id'> {
   banco: string
 }
 
+export interface IUpdateUsuarioAdmin extends IUsuarioAdmin {
+  validaDocumento: boolean
+  fechaPago: Date
+  fechaInicio: Date
+  fechaFin: Date
+  sueldoBruto: number
+  password: string
+  email: string
+  roles: IRol[]
+  archivos: IArchivo[]
+  comentarios: IComentario[]
+  acuerdos: IAcuerdo[]
+  privilegios: IPrivilegio[]
+  sucursales: ISucursal[]
+  alias: string
+  repeatPassword: string
+  tipoCuenta: string
+  numCuenta: string
+  banco: string
+}
 interface IRol {
   rolId: number
 }
@@ -51,9 +70,13 @@ interface IAcuerdo {
 }
 
 interface IPrivilegio {
-  privilegioId: number
+  privilegioId: string
 }
 
 interface ISucursal {
   sucursalId: number
+}
+
+interface IComentario {
+  comentarioId: number
 }

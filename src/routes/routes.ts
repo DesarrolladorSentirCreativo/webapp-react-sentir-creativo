@@ -43,6 +43,7 @@ import {
   UpdateFormPrivilegio,
   UpdateFormRol,
   UpdateFormSucursal,
+  UpdateFormUsuarioAdmin,
   UsuariosAdmin
 } from '../pages'
 
@@ -226,6 +227,10 @@ const routes = [
   {
     path: '/usuarios/nuevo',
     component: CreateFormUsuarioAdmin
+  },
+  {
+    path: '/usuarios/actualizar/:id',
+    component: UpdateFormUsuarioAdmin
   }
 ]
 

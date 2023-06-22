@@ -92,7 +92,6 @@ const UpdateFormAudiencia: React.FC = () => {
       setAudienciaId(parseInt(id))
       const comentariosData = await Promise.all(
         data.comentarios.map(async (comentario) => {
-          console.log(comentario.id)
           const comentarioData = await comentarioService.getById(comentario.id)
           return comentarioData
         })

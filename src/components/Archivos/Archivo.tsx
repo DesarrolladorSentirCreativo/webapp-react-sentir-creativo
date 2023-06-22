@@ -32,6 +32,7 @@ const Archivo: React.FC<IArchivoProps> = (props: IArchivoProps) => {
   const [tipoArchivos, setTipoArchivos] = useState<ITipoArchivo[]>([])
 
   useEffect(() => {
+    console.log(archivos)
     load()
   }, [])
 

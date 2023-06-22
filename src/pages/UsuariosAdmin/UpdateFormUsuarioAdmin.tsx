@@ -2,17 +2,18 @@ import {
   Autocomplete,
   Box,
   Button,
+  FormControlLabel,
   Grid,
+  Switch,
   TextField,
   Typography
 } from '@mui/material'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Switch from '@mui/material/Switch'
 import { useFormik } from 'formik'
 import { type FC, useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import * as yup from 'yup'
 
+import { Comentario } from '../../components'
 import { Card, DialogButton } from '../../components/Controls'
 import { useNotification } from '../../context'
 import { formatDateInput } from '../../helpers/date.helper'
@@ -20,6 +21,7 @@ import { getLocalStorage } from '../../helpers/localstorage.helper'
 import { calcularDigitoVerificador } from '../../helpers/rut.helper'
 import { useDireccion, usePrefijo } from '../../hooks'
 import useAcuerdoUserAdmin from '../../hooks/useAcuerdoUserAdmin'
+import useAfp from '../../hooks/useAfp'
 import useCategoriUserAdmin from '../../hooks/useCategoriaUserAdmin'
 import useDialogButton from '../../hooks/useDialogButton'
 import useModoTrabajo from '../../hooks/useModoTrabajo'
@@ -28,15 +30,15 @@ import usePrivilegio from '../../hooks/usePrivilegio'
 import useRol from '../../hooks/useRol'
 import useSucursal from '../../hooks/useSucursal'
 import {
+  type IArchivo,
   type IComentario,
-  type ICreateUsuarioAdmin,
+  type IUpdateUsuarioAdmin,
   type SelectCiudad
 } from '../../models'
 import comentarioService from '../../services/comentario.service'
 import userAdminService from '../../services/userAdmin.service'
 import { SkeletonFormOrganizacion } from '../Organizaciones/components'
-import Comentario from './../../components/Comentarios/Comentario'
-import useAfp from './../../hooks/useAfp'
+import Archivo from './../../components/Archivos/Archivo'
 
 const tiposCuentas = [
   { id: 'Cuenta Corriente', nombre: 'Cuenta Corriente' },
@@ -50,10 +52,11 @@ const tiposDocumentos = [
   { id: 'Pasaporte', nombre: 'Pasaporte' }
 ]
 
-const CreateFormUsuarioAdmin: FC = () => {
+const UpdateFormUsuarioAdmin: FC = () => {
+  const { id } = useParams()
+  const navigate = useNavigate()
   const { paises, loadPaises, regiones, loadRegiones, ciudades, loadCiudades } =
     useDireccion()
-  const navigate = useNavigate()
   const [ciudad, setCiudad] = useState<SelectCiudad[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { getSuccess, getError } = useNotification()
@@ -76,20 +79,26 @@ const CreateFormUsuarioAdmin: FC = () => {
   const { modosTrabajos, loadModosTrabajos } = useModoTrabajo()
   const [digitoVerificadorError, setDigitoVerificadorError] =
     useState<string>('')
+  const [archivos, setArchivos] = useState<IArchivo[]>([])
+  const [usuarioId, setUsuarioId] = useState<number>(0)
 
   useEffect(() => {
-    loadData()
+    loadFormData(id)
   }, [])
 
-  const loadData = async (): Promise<void> => {
+  const addArchivo = (archivo: IArchivo): void => {
+    const result = archivos.filter((item) => item.id !== archivo.id)
+    setArchivos([...result, archivo])
+  }
+
+  const loadFormData = async (id: string | undefined): Promise<void> => {
     setIsLoading(true)
+    loadData(id)
+    if (paises.length <= 0) loadPaises()
 
-    if (paises.length <= 0) await loadPaises()
+    if (regiones.length <= 0) loadRegiones()
 
-    if (regiones.length <= 0) await loadRegiones()
-
-    if (ciudades.length <= 0) await loadCiudades()
-
+    if (ciudades.length <= 0) loadCiudades()
     getUserId()
     await loadPrefijos()
     await loadAfps()
@@ -102,8 +111,78 @@ const CreateFormUsuarioAdmin: FC = () => {
     await loadModosTrabajos()
     setIsLoading(false)
   }
-  const formik = useFormik<ICreateUsuarioAdmin>({
+  const loadData = async (id: string | undefined): Promise<void> => {
+    const usuario = await userAdminService.getById(parseInt(id ?? '0'))
+    await loadUsuarioData(usuario)
+
+    if (id !== undefined) setUsuarioId(parseInt(id))
+
+    const comentariosData = await Promise.all(
+      usuario.comentarios.map(async (comentario) => {
+        const comentarioData = await comentarioService.getById(
+          comentario.comentarioId
+        )
+        return comentarioData
+      })
+    )
+    setArchivos(usuario.archivos)
+    const comentariosValidos = comentariosData.filter(
+      (comentario) => comentario !== null && comentario !== undefined
+    ) as IComentario[]
+    setComentarios(comentariosValidos)
+  }
+
+  const loadUsuarioData = async (
+    usuario: IUpdateUsuarioAdmin
+  ): Promise<void> => {
+    searchCiudades(usuario.regionId)
+    formik.setValues({
+      id: usuario.id,
+      nombre: usuario.nombre,
+      ciudadId: usuario.ciudadId,
+      paisId: usuario.paisId,
+      regionId: usuario.regionId,
+      direccion: usuario.direccion,
+      archivos: usuario.archivos,
+      acuerdos: usuario.acuerdos,
+      alias: usuario.alias,
+      afpId: usuario.afpId,
+      apellidos: usuario.apellidos,
+      categoriaId: usuario.categoriaId,
+      comentarios: usuario.comentarios,
+      email: usuario.email,
+      emailPersonal: usuario.emailPersonal,
+      estadoId: usuario.estadoId,
+      fechaFin: usuario.fechaFin,
+      fechaInicio: usuario.fechaInicio,
+      fechaPago: usuario.fechaPago,
+      modoId: usuario.modoId,
+      numDocumento: usuario.numDocumento,
+      prefijoId: usuario.prefijoId,
+      previsionId: usuario.previsionId,
+      privilegios: usuario.privilegios,
+      repeatPassword: usuario.repeatPassword,
+      password: usuario.password,
+      roles: usuario.roles,
+      sucursales: usuario.sucursales,
+      telefono: usuario.telefono,
+      tipoCuenta: usuario.tipoCuenta,
+      tipoDocumento: usuario.tipoDocumento,
+      validaDocumento: usuario.validaDocumento,
+      sueldoBruto: usuario.sueldoBruto,
+      numCuenta: usuario.numCuenta,
+      banco: usuario.banco
+    })
+  }
+
+  const searchCiudades = (value: number): void => {
+    const result = ciudades.filter((c) => c.regionId === value)
+    setCiudad(result)
+  }
+
+  const formik = useFormik<IUpdateUsuarioAdmin>({
     initialValues: {
+      id: 0,
       prefijoId: 0,
       nombre: '',
       apellidos: '',
@@ -198,21 +277,16 @@ const CreateFormUsuarioAdmin: FC = () => {
     onSubmit: async (values) => {
       setIsLoading(true)
       try {
-        await userAdminService.create(values, comentarios, userId)
-        getSuccess('El usuario fue creado correctamente')
+        await userAdminService.update(values, comentarios, archivos, userId)
+        getSuccess('El usuario fue actualizado correctamente')
         navigate('/usuarios')
       } catch (e) {
         console.log(e)
-        getError('El usuario no pudo ser creado')
+        getError('El usuario no pudo ser actualizado')
         setIsLoading(false)
       }
     }
   })
-
-  const searchCiudades = (value: number): void => {
-    const result = ciudades.filter((c) => c.regionId === value)
-    setCiudad(result)
-  }
 
   const handleConfirm = async (): Promise<void> => {
     comentarioService
@@ -356,6 +430,11 @@ const CreateFormUsuarioAdmin: FC = () => {
     }
   }
 
+  const removeArchivo = (id: number): void => {
+    const data = archivos.filter((archivo) => archivo.id !== id)
+    setArchivos(data)
+  }
+
   if (isLoading) {
     return <SkeletonFormOrganizacion />
   } else {
@@ -363,7 +442,7 @@ const CreateFormUsuarioAdmin: FC = () => {
       <Card title="Formulario">
         <Box component="form" onSubmit={formik.handleSubmit}>
           <Typography variant="h5" sx={{ textAlign: 'center' }}>
-            Formulario para Creación de Usuario
+            Formulario para Actualización de Usuario
           </Typography>
           <Grid container spacing={2} padding={2}>
             <Grid item xs={12}>
@@ -381,6 +460,11 @@ const CreateFormUsuarioAdmin: FC = () => {
                 }}
                 getOptionLabel={(option) =>
                   option.nombre !== undefined ? option.nombre : ''
+                }
+                value={
+                  prefijos.find(
+                    (prefijo) => prefijo.id === formik.values.prefijoId
+                  ) ?? null
                 }
                 renderInput={(params) => (
                   <TextField
@@ -441,6 +525,12 @@ const CreateFormUsuarioAdmin: FC = () => {
                 }}
                 getOptionLabel={(option) =>
                   option.nombre !== undefined ? option.nombre : ''
+                }
+                value={
+                  tiposDocumentos.find(
+                    (tipoDocumento) =>
+                      tipoDocumento.id === formik.values.tipoDocumento
+                  ) ?? null
                 }
                 renderInput={(params) => (
                   <TextField
@@ -579,6 +669,10 @@ const CreateFormUsuarioAdmin: FC = () => {
                 getOptionLabel={(option) =>
                   option.nombre !== undefined ? option.nombre : ''
                 }
+                value={
+                  paises.find((pais) => pais.id === formik.values.paisId) ??
+                  null
+                }
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -603,6 +697,11 @@ const CreateFormUsuarioAdmin: FC = () => {
                     searchCiudades(value !== null ? value.id : 0)
                   }
                 }}
+                value={
+                  regiones.find(
+                    (region) => region.id === formik.values.regionId
+                  ) ?? null
+                }
                 getOptionLabel={(option) =>
                   option.nombre !== undefined ? option.nombre : ''
                 }
@@ -630,6 +729,11 @@ const CreateFormUsuarioAdmin: FC = () => {
                 getOptionLabel={(option) =>
                   option.nombre !== undefined ? option.nombre : ''
                 }
+                value={
+                  ciudades.find(
+                    (ciudad) => ciudad.id === formik.values.ciudadId
+                  ) ?? null
+                }
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -654,7 +758,7 @@ const CreateFormUsuarioAdmin: FC = () => {
                 size="small"
                 value={
                   formik.values.fechaInicio
-                    ? formatDateInput(formik.values.fechaInicio)
+                    ? formatDateInput(new Date(formik.values.fechaInicio))
                     : ''
                 }
                 onChange={(e) => {
@@ -676,7 +780,7 @@ const CreateFormUsuarioAdmin: FC = () => {
                 size="small"
                 value={
                   formik.values.fechaFin
-                    ? formatDateInput(formik.values.fechaFin)
+                    ? formatDateInput(new Date(formik.values.fechaFin))
                     : ''
                 }
                 onChange={(e) => {
@@ -697,7 +801,7 @@ const CreateFormUsuarioAdmin: FC = () => {
                 size="small"
                 value={
                   formik.values.fechaPago
-                    ? formatDateInput(formik.values.fechaPago)
+                    ? formatDateInput(new Date(formik.values.fechaPago))
                     : ''
                 }
                 onChange={(e) => {
@@ -739,6 +843,11 @@ const CreateFormUsuarioAdmin: FC = () => {
                 onChange={(event, value) => {
                   formik.setFieldValue('modoId', value?.id ?? null)
                 }}
+                value={
+                  modosTrabajos.find(
+                    (modo) => modo.id === formik.values.modoId
+                  ) ?? null
+                }
                 getOptionLabel={(option) =>
                   option.nombre !== undefined ? option.nombre : ''
                 }
@@ -763,6 +872,9 @@ const CreateFormUsuarioAdmin: FC = () => {
                 onChange={(event, value) => {
                   formik.setFieldValue('afpId', value?.id ?? null)
                 }}
+                value={
+                  afps.find((afp) => afp.id === formik.values.afpId) ?? null
+                }
                 getOptionLabel={(option) =>
                   option.nombre !== undefined ? option.nombre : ''
                 }
@@ -789,6 +901,11 @@ const CreateFormUsuarioAdmin: FC = () => {
                 }}
                 getOptionLabel={(option) =>
                   option.nombre !== undefined ? option.nombre : ''
+                }
+                value={
+                  previsiones.find(
+                    (prevision) => prevision.id === formik.values.previsionId
+                  ) ?? null
                 }
                 renderInput={(params) => (
                   <TextField
@@ -833,6 +950,11 @@ const CreateFormUsuarioAdmin: FC = () => {
                 }}
                 getOptionLabel={(option) =>
                   option.nombre !== undefined ? option.nombre : ''
+                }
+                value={
+                  tiposCuentas.find(
+                    (tipoCuenta) => tipoCuenta.id === formik.values.tipoCuenta
+                  ) ?? null
                 }
                 renderInput={(params) => (
                   <TextField
@@ -951,6 +1073,11 @@ const CreateFormUsuarioAdmin: FC = () => {
                 onChange={(event, value) => {
                   formik.setFieldValue('categoriaId', value?.id ?? null)
                 }}
+                value={
+                  categoriaUserAdmins.find(
+                    (categoria) => categoria.id === formik.values.categoriaId
+                  ) ?? null
+                }
                 getOptionLabel={(option) =>
                   option.nombre !== undefined ? option.nombre : ''
                 }
@@ -979,6 +1106,11 @@ const CreateFormUsuarioAdmin: FC = () => {
                   }))
                   formik.setFieldValue('roles', newValues)
                 }}
+                value={roles.filter((rol) =>
+                  formik.values.roles.some(
+                    (selected) => selected.rolId === rol.id
+                  )
+                )}
                 getOptionLabel={(option) => option.nombre}
                 renderInput={(params) => (
                   <TextField {...params} fullWidth label="Roles" />
@@ -999,6 +1131,11 @@ const CreateFormUsuarioAdmin: FC = () => {
                   }))
                   formik.setFieldValue('privilegios', newValues)
                 }}
+                value={privilegios.filter((privilegio) =>
+                  formik.values.privilegios.some(
+                    (selected) => selected.privilegioId === privilegio.id
+                  )
+                )}
                 getOptionLabel={(option) => option.nombre}
                 renderInput={(params) => (
                   <TextField {...params} fullWidth label="Privilegios" />
@@ -1019,6 +1156,11 @@ const CreateFormUsuarioAdmin: FC = () => {
                   }))
                   formik.setFieldValue('sucursales', newValues)
                 }}
+                value={sucursales.filter((sucursal) =>
+                  formik.values.sucursales.some(
+                    (selected) => selected.sucursalId === sucursal.id
+                  )
+                )}
                 getOptionLabel={(option) => option.nombre}
                 renderInput={(params) => (
                   <TextField {...params} fullWidth label="Sucursales" />
@@ -1039,12 +1181,23 @@ const CreateFormUsuarioAdmin: FC = () => {
                   }))
                   formik.setFieldValue('acuerdos', newValues)
                 }}
+                value={acuerdosUserAdmins.filter((acuerdo) =>
+                  formik.values.acuerdos.some(
+                    (selected) => selected.acuerdoId === acuerdo.id
+                  )
+                )}
                 getOptionLabel={(option) => option.nombre}
                 renderInput={(params) => (
                   <TextField {...params} fullWidth label="Acuerdos" />
                 )}
               />
             </Grid>
+            <Archivo
+              archivos={archivos}
+              audienciaId={usuarioId}
+              addArchivo={addArchivo}
+              removeArchivo={removeArchivo}
+            />
             <Comentario
               handleComentarioSave={handleComentarioSave}
               handleSetComentario={handleSetComentario}
@@ -1094,4 +1247,4 @@ const CreateFormUsuarioAdmin: FC = () => {
   }
 }
 
-export default CreateFormUsuarioAdmin
+export default UpdateFormUsuarioAdmin
