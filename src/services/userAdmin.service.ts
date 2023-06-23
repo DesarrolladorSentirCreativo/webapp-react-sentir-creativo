@@ -3,6 +3,7 @@ import axios from 'axios'
 import { type IArchivo, type IComentario } from '../models'
 import {
   type ICreateUsuarioAdmin,
+  type ISelectUsuarioAdmin,
   type IUpdateUsuarioAdmin,
   type IUsuarioAdmin
 } from '../models/usuarioAdmin'
@@ -78,4 +79,14 @@ const update = async (
   await axios.put('/usuarios-admin', data)
 }
 
-export default { deleteById, getAll, create, getById, update }
+const select = async (): Promise<ISelectUsuarioAdmin[]> => {
+  return await axios
+    .get<ISelectUsuarioAdmin[]>('/usuarios-admin/select')
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error)
+      return []
+    })
+}
+
+export default { deleteById, getAll, create, getById, update, select }

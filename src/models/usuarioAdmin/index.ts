@@ -20,6 +20,11 @@ export interface IUsuarioAdmin {
   estadoId: number
 }
 
+export interface ISelectUsuarioAdmin {
+  id: number
+  nombre: string
+}
+
 export interface ICreateUsuarioAdmin extends Omit<IUsuarioAdmin, 'id'> {
   validaDocumento: boolean
   fechaPago: Date
