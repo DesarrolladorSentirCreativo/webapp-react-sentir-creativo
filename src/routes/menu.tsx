@@ -15,12 +15,14 @@ const menu: RouteType[] = [
   },
   {
     id: 'audiencias',
+    coleccion: 16,
     title: 'Audiencias',
     icon: <HailIcon />,
     path: '/audiencias'
   },
   {
     id: 'organizacion',
+    coleccion: 18,
     title: 'Organizaciones',
     icon: <BusinessIcon />,
     path: '/organizaciones'
@@ -33,12 +35,14 @@ const menu: RouteType[] = [
       {
         id: 'usuarios',
         title: 'Usuarios',
+        coleccion: 28,
         icon: <ArrowRightIcon />,
         path: '/usuarios',
         children: []
       },
       {
         id: 'acuerdos',
+        coleccion: 25,
         title: 'Acuerdos',
         icon: <ArrowRightIcon />,
         path: '/acuerdos',
@@ -46,6 +50,7 @@ const menu: RouteType[] = [
       },
       {
         id: 'afp',
+        coleccion: 20,
         title: 'AFP',
         icon: <ArrowRightIcon />,
         path: '/afp',
@@ -53,6 +58,7 @@ const menu: RouteType[] = [
       },
       {
         id: 'categoriasPrivilegios',
+        coleccion: 24,
         title: 'Categorías de Privilegios',
         icon: <ArrowRightIcon />,
         path: '/categorias-privilegios',
@@ -60,6 +66,7 @@ const menu: RouteType[] = [
       },
       {
         id: 'categoriasUserAdmins',
+        coleccion: 26,
         title: 'Categorías de Usuarios',
         icon: <ArrowRightIcon />,
         path: '/categorias-usuarios',
@@ -67,6 +74,7 @@ const menu: RouteType[] = [
       },
       {
         id: 'colecciones',
+        coleccion: 29,
         title: 'Colecciones',
         icon: <ArrowRightIcon />,
         path: '/colecciones',
@@ -74,6 +82,7 @@ const menu: RouteType[] = [
       },
       {
         id: 'estadosUserAdmins',
+        coleccion: 27,
         title: 'Estados de Usuarios',
         icon: <ArrowRightIcon />,
         path: '/estados-useradmins',
@@ -81,6 +90,7 @@ const menu: RouteType[] = [
       },
       {
         id: 'previsiones',
+        coleccion: 21,
         title: 'Previsiones de Salud',
         icon: <ArrowRightIcon />,
         path: '/previsiones',
@@ -88,6 +98,7 @@ const menu: RouteType[] = [
       },
       {
         id: 'Privilegios',
+        coleccion: 13,
         title: 'Privilegios',
         icon: <ArrowRightIcon />,
         path: '/privilegios',
@@ -95,6 +106,7 @@ const menu: RouteType[] = [
       },
       {
         id: 'modo',
+        coleccion: 23,
         title: 'Modos de Trabajos',
         icon: <ArrowRightIcon />,
         path: '/modos-trabajos',
@@ -102,6 +114,7 @@ const menu: RouteType[] = [
       },
       {
         id: 'modulos',
+        coleccion: 14,
         title: 'Modulos',
         icon: <ArrowRightIcon />,
         path: '/modulos',
@@ -109,6 +122,7 @@ const menu: RouteType[] = [
       },
       {
         id: 'roles',
+        coleccion: 22,
         title: 'Roles',
         icon: <ArrowRightIcon />,
         path: '/roles',
@@ -116,6 +130,7 @@ const menu: RouteType[] = [
       },
       {
         id: 'sucursales',
+        coleccion: 15,
         title: 'Sucursales',
         icon: <ArrowRightIcon />,
         path: '/sucursales',
