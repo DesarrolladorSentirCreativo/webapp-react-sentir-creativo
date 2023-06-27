@@ -23,16 +23,18 @@ interface Props {
 
 interface User {
   userId: number
-  email: string
-  userName: string
+  nombre: string
+  alias: string
+  apellidos: string
 }
 
 const Topbar: React.FC<Props> = (props) => {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
   const [user, setUser] = useState<User>({
     userId: 0,
-    email: '',
-    userName: ''
+    alias: '',
+    nombre: '',
+    apellidos: ''
   })
   const navigate = useNavigate()
 
@@ -129,7 +131,7 @@ const Topbar: React.FC<Props> = (props) => {
                     textTransform: 'none'
                   }}
                 >
-                  {user.userName}
+                  {user.alias}
                 </Typography>
               </IconButton>
               <Menu
