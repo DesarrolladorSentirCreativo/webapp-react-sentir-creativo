@@ -22,6 +22,7 @@ import { useDireccion, usePrefijo } from '../../hooks'
 import useAcuerdoUserAdmin from '../../hooks/useAcuerdoUserAdmin'
 import useCategoriUserAdmin from '../../hooks/useCategoriaUserAdmin'
 import useDialogButton from '../../hooks/useDialogButton'
+import useEstadoUserAdmin from '../../hooks/useEstadoUserAdmin'
 import useModoTrabajo from '../../hooks/useModoTrabajo'
 import usePrevision from '../../hooks/usePrevision'
 import usePrivilegio from '../../hooks/usePrivilegio'
@@ -73,6 +74,7 @@ const CreateFormUsuarioAdmin: FC = () => {
   const [userId, setUserId] = useState<number>(0)
   const { categoriaUserAdmins, loadCategoriaUserAdmins } =
     useCategoriUserAdmin()
+  const { loadEstadoUserAdmins, estadoUserAdmins } = useEstadoUserAdmin()
   const { modosTrabajos, loadModosTrabajos } = useModoTrabajo()
   const [digitoVerificadorError, setDigitoVerificadorError] =
     useState<string>('')
@@ -100,6 +102,7 @@ const CreateFormUsuarioAdmin: FC = () => {
     await loadAcuerdoUserAdmins()
     await loadCategoriaUserAdmins()
     await loadModosTrabajos()
+    await loadEstadoUserAdmins()
     setIsLoading(false)
   }
   const formik = useFormik<ICreateUsuarioAdmin>({
@@ -797,6 +800,30 @@ const CreateFormUsuarioAdmin: FC = () => {
                     label="Previsión"
                     required
                     value={formik.values.previsionId}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <Autocomplete
+                disablePortal
+                fullWidth
+                size="small"
+                id="estado"
+                options={estadoUserAdmins}
+                onChange={(event, value) => {
+                  formik.setFieldValue('estadoId', value?.id ?? null)
+                }}
+                getOptionLabel={(option) =>
+                  option.nombre !== undefined ? option.nombre : ''
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    label="Estado"
+                    required
+                    value={formik.values.estadoId}
                   />
                 )}
               />

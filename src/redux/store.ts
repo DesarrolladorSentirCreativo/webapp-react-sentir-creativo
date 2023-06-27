@@ -11,6 +11,7 @@ import cuponDescuentoReducer from './states/cuponDescuento'
 import difusionReducer from './states/difusion'
 import direccionReducer from './states/direccion'
 import estadoAudienciaReducer from './states/estadoAudiencia'
+import estadoUserAdmin from './states/estadoUsuarioAdmin'
 import modoTrabajoReducer from './states/modoTrabajo'
 import motivacionReducer from './states/motivacion'
 import organizacionReducer from './states/organizacion'
@@ -44,7 +45,8 @@ const store = configureStore({
     afp: afpReducer,
     prevision: previsionReducer,
     modoTrabajo: modoTrabajoReducer,
-    usuarioAdmin: usuarioAdminReducer
+    usuarioAdmin: usuarioAdminReducer,
+    estadoUserAdmin
   }
 })
 
