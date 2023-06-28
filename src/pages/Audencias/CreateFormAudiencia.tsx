@@ -26,7 +26,11 @@ import {
   usePrefijo
 } from '../../hooks'
 import useDialogButton from '../../hooks/useDialogButton'
-import { type CreateAudiencia, type IComentario } from '../../models'
+import {
+  type CreateAudiencia,
+  type IComentario,
+  type IUserAdminPermisos
+} from '../../models'
 import audienciaService from '../../services/audiencia.service'
 import comentarioService from '../../services/comentario.service'
 import { ModalCrearOrganizacion, SkeletonAudiencia } from './components'
@@ -56,29 +60,47 @@ const CreateFormAudiencia: React.FC = () => {
   const [idAdd, setIdAdd] = useState<number>(0)
 
   useEffect(() => {
-    setLoadingSkeleton(true)
-    if (estadoAudiencias.length <= 0) loadEstadoAudiencias()
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 16
+      )
 
-    if (organizaciones.length <= 0) loadOrganizaciones()
+      if (desiredAccess?.ver) {
+        setLoadingSkeleton(true)
+        if (estadoAudiencias.length <= 0) loadEstadoAudiencias()
 
-    if (antiguedades.length <= 0) loadAntiguedades()
+        if (organizaciones.length <= 0) loadOrganizaciones()
 
-    if (cercanias.length <= 0) loadCercanias()
+        if (antiguedades.length <= 0) loadAntiguedades()
 
-    if (prefijos.length <= 0) loadPrefijos()
+        if (cercanias.length <= 0) loadCercanias()
 
-    if (origenes.length <= 0) loadOrigenes()
+        if (prefijos.length <= 0) loadPrefijos()
 
-    loadDifusiones()
+        if (origenes.length <= 0) loadOrigenes()
 
-    loadCuponDescuentos()
+        loadDifusiones()
 
-    loadMotivaciones()
+        loadCuponDescuentos()
 
-    getUserId()
-    // forzamos la validacion
-    formik.validateForm()
-    setLoadingSkeleton(false)
+        loadMotivaciones()
+
+        getUserId()
+        // forzamos la validacion
+        formik.validateForm()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+      setLoadingSkeleton(false)
+    } finally {
+      setLoadingSkeleton(false)
+    }
   }, [])
 
   const formik = useFormik<CreateAudiencia>({

@@ -31,6 +31,7 @@ import useSucursal from '../../hooks/useSucursal'
 import {
   type IComentario,
   type ICreateUsuarioAdmin,
+  type IUserAdminPermisos,
   type SelectCiudad
 } from '../../models'
 import comentarioService from '../../services/comentario.service'
@@ -84,26 +85,42 @@ const CreateFormUsuarioAdmin: FC = () => {
   }, [])
 
   const loadData = async (): Promise<void> => {
-    setIsLoading(true)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 28
+      )
 
-    if (paises.length <= 0) await loadPaises()
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        if (paises.length <= 0) await loadPaises()
 
-    if (regiones.length <= 0) await loadRegiones()
+        if (regiones.length <= 0) await loadRegiones()
 
-    if (ciudades.length <= 0) await loadCiudades()
+        if (ciudades.length <= 0) await loadCiudades()
 
-    getUserId()
-    await loadPrefijos()
-    await loadAfps()
-    await loadPrevisiones()
-    await loadRoles()
-    await loadPrivilegios()
-    await loadSucursales()
-    await loadAcuerdoUserAdmins()
-    await loadCategoriaUserAdmins()
-    await loadModosTrabajos()
-    await loadEstadoUserAdmins()
-    setIsLoading(false)
+        getUserId()
+        await loadPrefijos()
+        await loadAfps()
+        await loadPrevisiones()
+        await loadRoles()
+        await loadPrivilegios()
+        await loadSucursales()
+        await loadAcuerdoUserAdmins()
+        await loadCategoriaUserAdmins()
+        await loadModosTrabajos()
+        await loadEstadoUserAdmins()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
   const formik = useFormik<ICreateUsuarioAdmin>({
     initialValues: {

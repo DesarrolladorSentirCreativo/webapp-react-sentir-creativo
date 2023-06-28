@@ -12,6 +12,7 @@ import {
   setLocalStorage
 } from '../../helpers/localstorage.helper'
 import { useDireccion } from '../../hooks'
+import { type IAcceso, type IUserAdminPermisos } from '../../models'
 import { type ISucursalDataGrid } from '../../models/sucursal'
 import sucursalService from '../../services/sucursal.service'
 import DialogButton from './../../components/Controls/Buttons/DialogButton/DialogButton'
@@ -22,6 +23,7 @@ const Sucursales: React.FC = () => {
   const [data, setData] = useState<ISucursalDataGrid[]>([])
   const [sucursalId, setSucursalId] = useState<number>(0)
   const { getSuccess, getError } = useNotification()
+  const [permiso, setPermiso] = useState<IAcceso>()
   const [open, setOpen] = useState<boolean>(false)
   const [columnVisibility, setColumnVisibility] = useState(() => {
     const sucursalesPreferences = getLocalStorage('sucursalesPreferences')
@@ -202,9 +204,26 @@ const Sucursales: React.FC = () => {
   }
 
   const load = async (): Promise<void> => {
-    setIsLoading(true)
-    await fetchData()
-    setIsLoading(false)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 15
+      )
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        setPermiso(desiredAccess)
+        await fetchData()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -216,37 +235,45 @@ const Sucursales: React.FC = () => {
           enableRowActions={true}
           onColumnVisibilityChange={setColumnVisibility}
           onDensityChange={setDensity}
-          renderTopToolbarCustomActions={() => (
-            <Button
-              color="secondary"
-              size="small"
-              onClick={() => {
-                navigate('/sucursales/nuevo')
-              }}
-              variant="contained"
-            >
-              Crear Nuevo Registro
-            </Button>
-          )}
+          renderTopToolbarCustomActions={() =>
+            permiso?.crear ? (
+              <Button
+                color="secondary"
+                size="small"
+                onClick={() => {
+                  navigate('/sucursales/nuevo')
+                }}
+                variant="contained"
+              >
+                Crear Nuevo Registro
+              </Button>
+            ) : (
+              <></>
+            )
+          }
           renderRowActions={({ row, table }) => (
             <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
-              <IconButton
-                color="secondary"
-                onClick={() => {
-                  navigate(`/sucursales/actualizar/${row.original.id}`)
-                }}
-              >
-                <EditIcon />
-              </IconButton>
-              <IconButton
-                color="error"
-                onClick={() => {
-                  setSucursalId(row.original.id)
-                  handleOpen()
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
+              {permiso?.actualizar && (
+                <IconButton
+                  color="secondary"
+                  onClick={() => {
+                    navigate(`/sucursales/actualizar/${row.original.id}`)
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+              )}
+              {permiso?.eliminar && (
+                <IconButton
+                  color="error"
+                  onClick={() => {
+                    setSucursalId(row.original.id)
+                    handleOpen()
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              )}
             </Box>
           )}
           initialState={{}}

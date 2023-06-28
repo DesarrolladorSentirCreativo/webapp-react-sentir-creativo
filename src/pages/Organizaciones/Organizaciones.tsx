@@ -13,7 +13,11 @@ import {
   setLocalStorage
 } from '../../helpers/localstorage.helper'
 import { useRubro } from '../../hooks'
-import { type IOrganizacion } from '../../models'
+import {
+  type IAcceso,
+  type IOrganizacion,
+  type IUserAdminPermisos
+} from '../../models'
 import { setOrganizacionDataGrid } from '../../redux/states/organizacion'
 import organizacionService from '../../services/organizacion.service'
 
@@ -25,6 +29,7 @@ const Organizaciones: React.FC = () => {
   const [data, setData] = useState<IOrganizacion[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [open, setOpen] = useState<boolean>(false)
+  const [permiso, setPermiso] = useState<IAcceso>()
   const [comentarioId, setComentarioId] = useState<number>(0)
   const [columnVisibility, setColumnVisibility] = useState(() => {
     const organizacionesData = getLocalStorage('organizacionesData')
@@ -78,10 +83,28 @@ const Organizaciones: React.FC = () => {
   }, [density])
 
   const load = async (): Promise<void> => {
-    setIsLoading(true)
-    await loadRubros()
-    await loadData()
-    setIsLoading(false)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 18
+      )
+
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        setPermiso(desiredAccess)
+        await loadRubros()
+        await loadData()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const columns = useMemo<Array<MRT_ColumnDef<IOrganizacion>>>(
@@ -172,37 +195,45 @@ const Organizaciones: React.FC = () => {
           enableRowActions={true}
           onColumnVisibilityChange={setColumnVisibility}
           onDensityChange={setDensity}
-          renderTopToolbarCustomActions={() => (
-            <Button
-              color="secondary"
-              size="small"
-              onClick={() => {
-                navigate('/organizaciones/nuevo')
-              }}
-              variant="contained"
-            >
-              Crear Nuevo Registro
-            </Button>
-          )}
+          renderTopToolbarCustomActions={() =>
+            permiso?.crear ? (
+              <Button
+                color="secondary"
+                size="small"
+                onClick={() => {
+                  navigate('/organizaciones/nuevo')
+                }}
+                variant="contained"
+              >
+                Crear Nuevo Registro
+              </Button>
+            ) : (
+              <></>
+            )
+          }
           renderRowActions={({ row, table }) => (
             <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
-              <IconButton
-                color="secondary"
-                onClick={() => {
-                  navigate(`/organizaciones/actualizar/${row.original.id}`)
-                }}
-              >
-                <EditIcon />
-              </IconButton>
-              <IconButton
-                color="error"
-                onClick={() => {
-                  setComentarioId(row.original.id)
-                  handleOpen()
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
+              {permiso?.actualizar && (
+                <IconButton
+                  color="secondary"
+                  onClick={() => {
+                    navigate(`/organizaciones/actualizar/${row.original.id}`)
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+              )}
+              {permiso?.eliminar && (
+                <IconButton
+                  color="error"
+                  onClick={() => {
+                    setComentarioId(row.original.id)
+                    handleOpen()
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              )}
             </Box>
           )}
           initialState={{ columnVisibility: { address: false } }}

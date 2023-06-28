@@ -13,8 +13,13 @@ import * as yup from 'yup'
 
 import { Card } from '../../components/Controls'
 import { useNotification } from '../../context'
+import { getLocalStorage } from '../../helpers/localstorage.helper'
 import { useDireccion, useRubro } from '../../hooks'
-import { type CreateOrganizacion, type SelectCiudad } from '../../models'
+import {
+  type CreateOrganizacion,
+  type IUserAdminPermisos,
+  type SelectCiudad
+} from '../../models'
 import organizacionService from '../../services/organizacion.service'
 import { SkeletonFormOrganizacion } from './components'
 
@@ -28,15 +33,32 @@ const CreateFormOrganizacion: React.FC = () => {
   const { getSuccess, getError } = useNotification()
 
   useEffect(() => {
-    setIsLoading(true)
-    if (rubros.length <= 0) loadRubros()
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 18
+      )
 
-    if (paises.length <= 0) loadPaises()
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        if (rubros.length <= 0) loadRubros()
 
-    if (regiones.length <= 0) loadRegiones()
+        if (paises.length <= 0) loadPaises()
 
-    if (ciudades.length <= 0) loadCiudades()
-    setIsLoading(false)
+        if (regiones.length <= 0) loadRegiones()
+
+        if (ciudades.length <= 0) loadCiudades()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }, [])
 
   const searchCiudades = (value: number): void => {

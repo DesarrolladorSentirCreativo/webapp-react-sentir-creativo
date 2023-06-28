@@ -30,6 +30,7 @@ import useDialogButton from '../../hooks/useDialogButton'
 import {
   type IArchivo,
   type IComentario,
+  type IUserAdminPermisos,
   type UpdateAudiencia
 } from '../../models'
 import audienciaService from '../../services/audiencia.service'
@@ -67,45 +68,64 @@ const UpdateFormAudiencia: React.FC = () => {
   }, [])
 
   const load = async (id: string | undefined): Promise<void> => {
-    setLoadingSkeleton(true)
-    if (estadoAudiencias.length <= 0) loadEstadoAudiencias()
-
-    if (organizaciones.length <= 0) loadOrganizaciones()
-
-    if (antiguedades.length <= 0) loadAntiguedades()
-
-    if (cercanias.length <= 0) loadCercanias()
-
-    if (prefijos.length <= 0) loadPrefijos()
-
-    if (origenes.length <= 0) loadOrigenes()
-
-    loadDifusiones()
-
-    loadCuponDescuentos()
-
-    loadMotivaciones()
-
-    getUserId()
-    if (id !== undefined) {
-      const data = await audienciaService.getById(parseInt(id))
-      setAudienciaId(parseInt(id))
-      const comentariosData = await Promise.all(
-        data.comentarios.map(async (comentario) => {
-          const comentarioData = await comentarioService.getById(comentario.id)
-          return comentarioData
-        })
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 16
       )
-      const comentariosValidos = comentariosData.filter(
-        (comentario) => comentario !== null && comentario !== undefined
-      ) as IComentario[]
-      setComentarios(comentariosValidos)
-      setArchivos(data.archivos)
-      loadAudienciaData(data)
-    }
 
-    formik.validateForm()
-    setLoadingSkeleton(false)
+      if (desiredAccess?.ver) {
+        setLoadingSkeleton(true)
+        if (estadoAudiencias.length <= 0) loadEstadoAudiencias()
+
+        if (organizaciones.length <= 0) loadOrganizaciones()
+
+        if (antiguedades.length <= 0) loadAntiguedades()
+
+        if (cercanias.length <= 0) loadCercanias()
+
+        if (prefijos.length <= 0) loadPrefijos()
+
+        if (origenes.length <= 0) loadOrigenes()
+
+        loadDifusiones()
+
+        loadCuponDescuentos()
+
+        loadMotivaciones()
+
+        getUserId()
+        if (id !== undefined) {
+          const data = await audienciaService.getById(parseInt(id))
+          setAudienciaId(parseInt(id))
+          const comentariosData = await Promise.all(
+            data.comentarios.map(async (comentario) => {
+              const comentarioData = await comentarioService.getById(
+                comentario.id
+              )
+              return comentarioData
+            })
+          )
+          const comentariosValidos = comentariosData.filter(
+            (comentario) => comentario !== null && comentario !== undefined
+          ) as IComentario[]
+          setComentarios(comentariosValidos)
+          setArchivos(data.archivos)
+          loadAudienciaData(data)
+        }
+
+        formik.validateForm()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setLoadingSkeleton(false)
+    }
   }
 
   const addArchivo = (archivo: IArchivo): void => {

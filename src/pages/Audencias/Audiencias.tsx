@@ -13,7 +13,11 @@ import {
   setLocalStorage
 } from '../../helpers/localstorage.helper'
 import { useEstadoAudiencia, useOrganizacion } from '../../hooks'
-import { type Audiencia } from '../../models'
+import {
+  type Audiencia,
+  type IAcceso,
+  type IUserAdminPermisos
+} from '../../models'
 import audienciaService from '../../services/audiencia.service'
 
 const Audiencias: React.FC = () => {
@@ -23,6 +27,7 @@ const Audiencias: React.FC = () => {
   const [data, setData] = useState<Audiencia[]>([])
   const { loadEstadoAudiencias, estadoAudiencias } = useEstadoAudiencia()
   const { loadOrganizaciones, organizaciones } = useOrganizacion()
+  const [permiso, setPermiso] = useState<IAcceso>()
   const [audienciaId, setAudienciaId] = useState<number>(0)
   const [open, setOpen] = useState<boolean>(false)
   const [columnVisibility, setColumnVisibility] = useState(() => {
@@ -181,11 +186,29 @@ const Audiencias: React.FC = () => {
   }
 
   const load = async (): Promise<void> => {
-    setIsLoading(true)
-    await loadEstadoAudiencias()
-    await loadOrganizaciones()
-    await fetchData()
-    setIsLoading(false)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 16
+      )
+
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        setPermiso(desiredAccess)
+        await loadEstadoAudiencias()
+        await loadOrganizaciones()
+        await fetchData()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const deleteRegister = async (): Promise<void> => {
@@ -207,37 +230,45 @@ const Audiencias: React.FC = () => {
           enableRowActions={true}
           onColumnVisibilityChange={setColumnVisibility}
           onDensityChange={setDensity}
-          renderTopToolbarCustomActions={() => (
-            <Button
-              color="secondary"
-              size="small"
-              onClick={() => {
-                navigate('/audiencias/nuevo')
-              }}
-              variant="contained"
-            >
-              Crear Nuevo Registro
-            </Button>
-          )}
+          renderTopToolbarCustomActions={() =>
+            permiso?.crear ? (
+              <Button
+                color="secondary"
+                size="small"
+                onClick={() => {
+                  navigate('/audiencias/nuevo')
+                }}
+                variant="contained"
+              >
+                Crear Nuevo Registro
+              </Button>
+            ) : (
+              <></>
+            )
+          }
           renderRowActions={({ row, table }) => (
             <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
-              <IconButton
-                color="secondary"
-                onClick={() => {
-                  navigate(`/audiencias/actualizar/${row.original.id}`)
-                }}
-              >
-                <EditIcon />
-              </IconButton>
-              <IconButton
-                color="error"
-                onClick={() => {
-                  setAudienciaId(row.original.id)
-                  handleOpen()
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
+              {permiso?.actualizar && (
+                <IconButton
+                  color="secondary"
+                  onClick={() => {
+                    navigate(`/audiencias/actualizar/${row.original.id}`)
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+              )}
+              {permiso?.eliminar && (
+                <IconButton
+                  color="error"
+                  onClick={() => {
+                    setAudienciaId(row.original.id)
+                    handleOpen()
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              )}
             </Box>
           )}
           initialState={{}}

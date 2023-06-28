@@ -34,6 +34,7 @@ import {
   type IArchivo,
   type IComentario,
   type IUpdateUsuarioAdmin,
+  type IUserAdminPermisos,
   type SelectCiudad
 } from '../../models'
 import comentarioService from '../../services/comentario.service'
@@ -94,25 +95,45 @@ const UpdateFormUsuarioAdmin: FC = () => {
   }
 
   const loadFormData = async (id: string | undefined): Promise<void> => {
-    setIsLoading(true)
-    loadData(id)
-    if (paises.length <= 0) loadPaises()
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 28
+      )
 
-    if (regiones.length <= 0) loadRegiones()
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        await loadCiudades()
+        await loadPaises()
+        await loadRegiones()
+        loadData(id)
+        if (paises.length <= 0) loadPaises()
 
-    if (ciudades.length <= 0) loadCiudades()
-    getUserId()
-    await loadPrefijos()
-    await loadAfps()
-    await loadPrevisiones()
-    await loadRoles()
-    await loadPrivilegios()
-    await loadSucursales()
-    await loadAcuerdoUserAdmins()
-    await loadCategoriaUserAdmins()
-    await loadModosTrabajos()
-    await loadEstadoUserAdmins()
-    setIsLoading(false)
+        if (regiones.length <= 0) loadRegiones()
+
+        if (ciudades.length <= 0) loadCiudades()
+        getUserId()
+        await loadPrefijos()
+        await loadAfps()
+        await loadPrevisiones()
+        await loadRoles()
+        await loadPrivilegios()
+        await loadSucursales()
+        await loadAcuerdoUserAdmins()
+        await loadCategoriaUserAdmins()
+        await loadModosTrabajos()
+        await loadEstadoUserAdmins()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
   const loadData = async (id: string | undefined): Promise<void> => {
     const usuario = await userAdminService.getById(parseInt(id ?? '0'))

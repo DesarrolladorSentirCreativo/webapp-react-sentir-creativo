@@ -12,8 +12,9 @@ import { useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 
 import { useNotification } from '../../context'
+import { getLocalStorage } from '../../helpers/localstorage.helper'
 import { useDireccion } from '../../hooks'
-import { type SelectCiudad } from '../../models'
+import { type IUserAdminPermisos, type SelectCiudad } from '../../models'
 import { type ICreateSucursal } from '../../models/sucursal'
 import sucursalService from '../../services/sucursal.service'
 import { SkeletonFormOrganizacion } from '../Organizaciones/components'
@@ -28,14 +29,29 @@ const CreateFormSucursal: React.FC = () => {
   const { getSuccess, getError } = useNotification()
 
   useEffect(() => {
-    setIsLoading(true)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 15
+      )
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        if (paises.length <= 0) loadPaises()
 
-    if (paises.length <= 0) loadPaises()
+        if (regiones.length <= 0) loadRegiones()
 
-    if (regiones.length <= 0) loadRegiones()
-
-    if (ciudades.length <= 0) loadCiudades()
-    setIsLoading(false)
+        if (ciudades.length <= 0) loadCiudades()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }, [])
 
   const formik = useFormik<ICreateSucursal>({

@@ -14,8 +14,10 @@ import * as yup from 'yup'
 
 import { Card } from '../../components/Controls'
 import { useNotification } from '../../context'
+import { getLocalStorage } from '../../helpers/localstorage.helper'
 import { useDireccion, useRubro } from '../../hooks'
 import {
+  type IUserAdminPermisos,
   type OrganizacionDataGrid,
   type OrganizacionDireccion,
   type SelectCiudad,
@@ -39,13 +41,30 @@ const UpdateFormOrganizacion: React.FC = () => {
   const { getError, getSuccess } = useNotification()
 
   useEffect(() => {
-    setIsLoading(true)
-    loadData(id)
-    loadRubros()
-    loadPaises()
-    loadRegiones()
-    loadCiudades()
-    setIsLoading(false)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 18
+      )
+
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        loadData(id)
+        loadRubros()
+        loadPaises()
+        loadRegiones()
+        loadCiudades()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }, [])
 
   const searchCiudades = (value: number): void => {
