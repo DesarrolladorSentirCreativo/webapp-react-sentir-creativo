@@ -16,7 +16,7 @@ import { useNotification } from '../../context'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
 import useAcuerdoUserAdmin from '../../hooks/useAcuerdoUserAdmin'
 import usePrivilegio from '../../hooks/usePrivilegio'
-import { type ICreateRol } from '../../models'
+import { type ICreateRol, type IUserAdminPermisos } from '../../models'
 import rolService from '../../services/rol.service'
 import { SkeletonFormOrganizacion } from '../Organizaciones/components'
 
@@ -33,11 +33,27 @@ const CreateFormRol: FC = () => {
   }, [])
 
   const loadForm = async (): Promise<void> => {
-    setIsLoading(true)
-    getUserId()
-    await loadAcuerdoUserAdmins()
-    await loadPrivilegios()
-    setIsLoading(false)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 22
+      )
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        getUserId()
+        await loadAcuerdoUserAdmins()
+        await loadPrivilegios()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
   const formik = useFormik<ICreateRol>({
     initialValues: {

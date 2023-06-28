@@ -1,3 +1,4 @@
+import { type IAcceso } from '../acceso'
 import { type IArchivo } from '../archivo'
 
 export interface IUsuarioAdmin {
@@ -84,4 +85,12 @@ interface ISucursal {
 
 interface IComentario {
   comentarioId: number
+}
+
+export interface IUserAdminPermisos {
+  id: number
+  nombre: string
+  apellidos: string
+  alias: string
+  accesos: IAcceso[]
 }

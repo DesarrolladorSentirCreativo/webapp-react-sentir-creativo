@@ -15,7 +15,10 @@ import { Card } from '../../components/Controls'
 import { useNotification } from '../../context'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
 import useModulo from '../../hooks/useModulo'
-import { type ICreateColeccionUserAdmin } from '../../models'
+import {
+  type ICreateColeccionUserAdmin,
+  type IUserAdminPermisos
+} from '../../models'
 import coleccionUserAdminService from '../../services/coleccionUserAdmin.service'
 import { SkeletonFormOrganizacion } from '../Organizaciones/components'
 
@@ -27,10 +30,27 @@ const CreateFormColeccionUserAdmin: FC = () => {
   const [userId, setUserId] = useState<number>(0)
 
   useEffect(() => {
-    setIsLoading(true)
-    getUserId()
-    loadModulos()
-    setIsLoading(false)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 29
+      )
+
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        getUserId()
+        loadModulos()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }, [])
 
   const formik = useFormik<ICreateColeccionUserAdmin>({

@@ -23,7 +23,8 @@ import {
   type IAccesos,
   type IGetByIdPrivilegio,
   type IModuloCheckBox,
-  type IUpdatePrivilegio
+  type IUpdatePrivilegio,
+  type IUserAdminPermisos
 } from '../../models'
 import moduloService from '../../services/modulo.service'
 import privilegioService from '../../services/privilegio.service'
@@ -60,11 +61,28 @@ const UpdateFormPrivilegio: FC = () => {
     }
 
   const loadPages = async (): Promise<void> => {
-    setLoading(true)
-    getUserId()
-    await loadColeccionesCheckbox()
-    await loadCategoriaPrivilegios()
-    setLoading(false)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 13
+      )
+
+      if (desiredAccess?.ver) {
+        setLoading(true)
+        getUserId()
+        await loadColeccionesCheckbox()
+        await loadCategoriaPrivilegios()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setLoading(false)
+    }
   }
   const getUserId = (): void => {
     const userData = getLocalStorage('user') || '{}'

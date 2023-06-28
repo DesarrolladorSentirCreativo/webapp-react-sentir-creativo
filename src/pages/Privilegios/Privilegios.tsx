@@ -12,7 +12,11 @@ import {
   setLocalStorage
 } from '../../helpers/localstorage.helper'
 import useCategoriPrivilegio from '../../hooks/useCategoriaPrivilegio'
-import { type IPrivilegio } from '../../models'
+import {
+  type IAcceso,
+  type IPrivilegio,
+  type IUserAdminPermisos
+} from '../../models'
 import privilegioService from '../../services/privilegio.service'
 
 export const Privilegios: FC = () => {
@@ -21,6 +25,7 @@ export const Privilegios: FC = () => {
   const [data, setData] = useState<IPrivilegio[]>([])
   const [sucursalId, setSucursalId] = useState<number>(0)
   const { getSuccess, getError } = useNotification()
+  const [permiso, setPermiso] = useState<IAcceso>()
   const [open, setOpen] = useState<boolean>(false)
   const { categoriaPrivilegios, loadCategoriaPrivilegios } =
     useCategoriPrivilegio()
@@ -130,10 +135,28 @@ export const Privilegios: FC = () => {
   }
 
   const load = async (): Promise<void> => {
-    setIsLoading(true)
-    await fetchData()
-    await loadCategoriaPrivilegios()
-    setIsLoading(false)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 13
+      )
+
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        setPermiso(desiredAccess)
+        await fetchData()
+        await loadCategoriaPrivilegios()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -145,37 +168,45 @@ export const Privilegios: FC = () => {
           enableRowActions={true}
           onColumnVisibilityChange={setColumnVisibility}
           onDensityChange={setDensity}
-          renderTopToolbarCustomActions={() => (
-            <Button
-              color="secondary"
-              size="small"
-              onClick={() => {
-                navigate('/privilegios/nuevo')
-              }}
-              variant="contained"
-            >
-              Crear Nuevo Registro
-            </Button>
-          )}
+          renderTopToolbarCustomActions={() =>
+            permiso?.crear ? (
+              <Button
+                color="secondary"
+                size="small"
+                onClick={() => {
+                  navigate('/privilegios/nuevo')
+                }}
+                variant="contained"
+              >
+                Crear Nuevo Registro
+              </Button>
+            ) : (
+              <></>
+            )
+          }
           renderRowActions={({ row, table }) => (
             <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
-              <IconButton
-                color="secondary"
-                onClick={() => {
-                  navigate(`/privilegios/actualizar/${row.original.id}`)
-                }}
-              >
-                <EditIcon />
-              </IconButton>
-              <IconButton
-                color="error"
-                onClick={() => {
-                  setSucursalId(row.original.id)
-                  handleOpen()
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
+              {permiso?.actualizar && (
+                <IconButton
+                  color="secondary"
+                  onClick={() => {
+                    navigate(`/privilegios/actualizar/${row.original.id}`)
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+              )}
+              {permiso?.eliminar && (
+                <IconButton
+                  color="error"
+                  onClick={() => {
+                    setSucursalId(row.original.id)
+                    handleOpen()
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              )}
             </Box>
           )}
           initialState={{}}

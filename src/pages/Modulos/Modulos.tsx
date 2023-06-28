@@ -11,7 +11,11 @@ import {
   getLocalStorage,
   setLocalStorage
 } from '../../helpers/localstorage.helper'
-import { type IModulo } from '../../models'
+import {
+  type IAcceso,
+  type IModulo,
+  type IUserAdminPermisos
+} from '../../models'
 import moduloService from '../../services/modulo.service'
 
 const Modulos: FC = () => {
@@ -21,6 +25,7 @@ const Modulos: FC = () => {
   const [sucursalId, setSucursalId] = useState<number>(0)
   const { getSuccess, getError } = useNotification()
   const [open, setOpen] = useState<boolean>(false)
+  const [permiso, setPermiso] = useState<IAcceso>()
   const [columnVisibility, setColumnVisibility] = useState(() => {
     const modulosPreferences = getLocalStorage('modulosPreferences')
     const result = modulosPreferences ? JSON.parse(modulosPreferences) : {}
@@ -109,9 +114,27 @@ const Modulos: FC = () => {
   }
 
   const load = async (): Promise<void> => {
-    setIsLoading(true)
-    await fetchData()
-    setIsLoading(false)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 14
+      )
+
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        setPermiso(desiredAccess)
+        await fetchData()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -123,37 +146,45 @@ const Modulos: FC = () => {
           enableRowActions={true}
           onColumnVisibilityChange={setColumnVisibility}
           onDensityChange={setDensity}
-          renderTopToolbarCustomActions={() => (
-            <Button
-              color="secondary"
-              size="small"
-              onClick={() => {
-                navigate('/modulos/nuevo')
-              }}
-              variant="contained"
-            >
-              Crear Nuevo Registro
-            </Button>
-          )}
+          renderTopToolbarCustomActions={() =>
+            permiso?.crear ? (
+              <Button
+                color="secondary"
+                size="small"
+                onClick={() => {
+                  navigate('/modulos/nuevo')
+                }}
+                variant="contained"
+              >
+                Crear Nuevo Registro
+              </Button>
+            ) : (
+              <></>
+            )
+          }
           renderRowActions={({ row, table }) => (
             <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
-              <IconButton
-                color="secondary"
-                onClick={() => {
-                  navigate(`/modulos/actualizar/${row.original.id}`)
-                }}
-              >
-                <EditIcon />
-              </IconButton>
-              <IconButton
-                color="error"
-                onClick={() => {
-                  setSucursalId(row.original.id)
-                  handleOpen()
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
+              {permiso?.actualizar && (
+                <IconButton
+                  color="secondary"
+                  onClick={() => {
+                    navigate(`/modulos/actualizar/${row.original.id}`)
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+              )}
+              {permiso?.eliminar && (
+                <IconButton
+                  color="error"
+                  onClick={() => {
+                    setSucursalId(row.original.id)
+                    handleOpen()
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              )}
             </Box>
           )}
           initialState={{}}

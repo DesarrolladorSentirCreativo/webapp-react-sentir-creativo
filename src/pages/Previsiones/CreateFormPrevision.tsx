@@ -7,7 +7,7 @@ import * as yup from 'yup'
 import { Card } from '../../components/Controls'
 import { useNotification } from '../../context'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
-import { type ICreatePrevision } from '../../models'
+import { type ICreatePrevision, type IUserAdminPermisos } from '../../models'
 import previsionService from '../../services/prevision.service'
 import { SkeletonFormOrganizacion } from '../Organizaciones/components'
 
@@ -18,7 +18,26 @@ const CreateFormPrevision: FC = () => {
   const [userId, setUserId] = useState<number>(0)
 
   useEffect(() => {
-    getUserId()
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 21
+      )
+
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        getUserId()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }, [])
 
   const formik = useFormik<ICreatePrevision>({

@@ -12,7 +12,11 @@ import {
   setLocalStorage
 } from '../../helpers/localstorage.helper'
 import useModulo from '../../hooks/useModulo'
-import { type IColeccionUserAdminDataGrid } from '../../models'
+import {
+  type IAcceso,
+  type IColeccionUserAdminDataGrid,
+  type IUserAdminPermisos
+} from '../../models'
 import coleccionUserAdminService from '../../services/coleccionUserAdmin.service'
 
 const ColeccionesUserAdmin: FC = () => {
@@ -22,6 +26,7 @@ const ColeccionesUserAdmin: FC = () => {
   const [sucursalId, setSucursalId] = useState<number>(0)
   const { getSuccess, getError } = useNotification()
   const [open, setOpen] = useState<boolean>(false)
+  const [permiso, setPermiso] = useState<IAcceso>()
   const { loadModulos, modulos } = useModulo()
   const [columnVisibility, setColumnVisibility] = useState(() => {
     const coleccionesUserAdminPreferences = getLocalStorage(
@@ -143,10 +148,28 @@ const ColeccionesUserAdmin: FC = () => {
   }
 
   const load = async (): Promise<void> => {
-    setIsLoading(true)
-    loadModulos()
-    await fetchData()
-    setIsLoading(false)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 29
+      )
+
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        loadModulos()
+        setPermiso(desiredAccess)
+        await fetchData()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -158,37 +181,45 @@ const ColeccionesUserAdmin: FC = () => {
           enableRowActions={true}
           onColumnVisibilityChange={setColumnVisibility}
           onDensityChange={setDensity}
-          renderTopToolbarCustomActions={() => (
-            <Button
-              color="secondary"
-              size="small"
-              onClick={() => {
-                navigate('/colecciones/nuevo')
-              }}
-              variant="contained"
-            >
-              Crear Nuevo Registro
-            </Button>
-          )}
+          renderTopToolbarCustomActions={() =>
+            permiso?.crear ? (
+              <Button
+                color="secondary"
+                size="small"
+                onClick={() => {
+                  navigate('/colecciones/nuevo')
+                }}
+                variant="contained"
+              >
+                Crear Nuevo Registro
+              </Button>
+            ) : (
+              <></>
+            )
+          }
           renderRowActions={({ row, table }) => (
             <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
-              <IconButton
-                color="secondary"
-                onClick={() => {
-                  navigate(`/colecciones/actualizar/${row.original.id}`)
-                }}
-              >
-                <EditIcon />
-              </IconButton>
-              <IconButton
-                color="error"
-                onClick={() => {
-                  setSucursalId(row.original.id)
-                  handleOpen()
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
+              {permiso?.actualizar && (
+                <IconButton
+                  color="secondary"
+                  onClick={() => {
+                    navigate(`/colecciones/actualizar/${row.original.id}`)
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+              )}
+              {permiso?.eliminar && (
+                <IconButton
+                  color="error"
+                  onClick={() => {
+                    setSucursalId(row.original.id)
+                    handleOpen()
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              )}
             </Box>
           )}
           initialState={{}}

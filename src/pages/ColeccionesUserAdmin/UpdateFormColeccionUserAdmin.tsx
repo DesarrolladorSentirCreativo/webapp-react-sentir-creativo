@@ -15,7 +15,7 @@ import { Card } from '../../components/Controls'
 import { useNotification } from '../../context'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
 import useModulo from '../../hooks/useModulo'
-import { type IColeccionUserAdmin } from '../../models'
+import { type IColeccionUserAdmin, type IUserAdminPermisos } from '../../models'
 import coleccionUserAdminService from '../../services/coleccionUserAdmin.service'
 import { SkeletonFormOrganizacion } from '../Organizaciones/components'
 
@@ -28,11 +28,28 @@ const UpdateFormColeccionUserAdmin: FC = () => {
   const { loadModulos, modulos } = useModulo()
 
   useEffect(() => {
-    setIsLoading(true)
-    loadModulos()
-    loadData(id)
-    getUserId()
-    setIsLoading(false)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 29
+      )
+
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        loadModulos()
+        loadData(id)
+        getUserId()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }, [])
 
   const loadColeccionData = async (

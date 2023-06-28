@@ -7,7 +7,10 @@ import * as yup from 'yup'
 import { Card } from '../../components/Controls'
 import { useNotification } from '../../context'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
-import { type ICreateCategoriaUserAdmin } from '../../models'
+import {
+  type ICreateCategoriaUserAdmin,
+  type IUserAdminPermisos
+} from '../../models'
 import categoriaUserAdminService from '../../services/categoriaUserAdmin.service'
 import { SkeletonFormOrganizacion } from '../Organizaciones/components'
 
@@ -18,7 +21,26 @@ const CreateFormCategoriaUserAdmin: FC = () => {
   const [userId, setUserId] = useState<number>(0)
 
   useEffect(() => {
-    getUserId()
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 26
+      )
+
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        getUserId()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }, [])
 
   const formik = useFormik<ICreateCategoriaUserAdmin>({

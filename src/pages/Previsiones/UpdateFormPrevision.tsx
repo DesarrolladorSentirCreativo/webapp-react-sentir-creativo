@@ -7,7 +7,7 @@ import * as yup from 'yup'
 import { Card } from '../../components/Controls'
 import { useNotification } from '../../context'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
-import { type IPrevision } from '../../models'
+import { type IPrevision, type IUserAdminPermisos } from '../../models'
 import previsionService from '../../services/prevision.service'
 import { SkeletonFormOrganizacion } from '../Organizaciones/components'
 
@@ -31,11 +31,28 @@ const UpdateFormPrevision: FC = () => {
   }
 
   const loadData = async (id: string | undefined): Promise<void> => {
-    setIsLoading(true)
-    const sucursal = await previsionService.getById(parseInt(id ?? '0'))
-    await loadPrevisionData(sucursal)
-    getUserId()
-    setIsLoading(false)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 21
+      )
+
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        const sucursal = await previsionService.getById(parseInt(id ?? '0'))
+        await loadPrevisionData(sucursal)
+        getUserId()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const formik = useFormik<IPrevision>({

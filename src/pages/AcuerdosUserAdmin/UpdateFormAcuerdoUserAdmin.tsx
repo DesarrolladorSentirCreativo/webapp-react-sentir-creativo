@@ -7,7 +7,7 @@ import * as yup from 'yup'
 import { Card } from '../../components/Controls'
 import { useNotification } from '../../context'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
-import { type IAcuerdoUserAdmin } from '../../models'
+import { type IAcuerdoUserAdmin, type IUserAdminPermisos } from '../../models'
 import acuerdoUserAdminService from '../../services/acuerdoUserAdmin.service'
 import { SkeletonFormOrganizacion } from '../Organizaciones/components'
 
@@ -19,10 +19,27 @@ const UpdateFormAcuerdoUserAdmin: FC = () => {
   const [userId, setUserId] = useState<number>(0)
 
   useEffect(() => {
-    setIsLoading(true)
-    loadData(id)
-    getUserId()
-    setIsLoading(false)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 25
+      )
+
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        loadData(id)
+        getUserId()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }, [])
 
   const loadModuloData = async (acuerdo: IAcuerdoUserAdmin): Promise<void> => {

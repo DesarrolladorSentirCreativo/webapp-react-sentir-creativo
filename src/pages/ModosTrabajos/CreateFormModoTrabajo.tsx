@@ -7,7 +7,7 @@ import * as yup from 'yup'
 import { Card } from '../../components/Controls'
 import { useNotification } from '../../context'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
-import { type ICreateModoTrabajo } from '../../models'
+import { type ICreateModoTrabajo, type IUserAdminPermisos } from '../../models'
 import modoTrabajoService from '../../services/modoTrabajo.service'
 import { SkeletonFormOrganizacion } from '../Organizaciones/components'
 
@@ -18,7 +18,26 @@ const CreateFormModoTrabajo: FC = () => {
   const [userId, setUserId] = useState<number>(0)
 
   useEffect(() => {
-    getUserId()
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 23
+      )
+
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        getUserId()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }, [])
 
   const formik = useFormik<ICreateModoTrabajo>({

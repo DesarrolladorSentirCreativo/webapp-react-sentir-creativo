@@ -33,12 +33,12 @@ const MenuSidebarSingleLevel: React.FC<Props> = ({ item }) => {
     const userData = getLocalStorage('user') || '{}'
     try {
       const userPermiso: IUserAcceso = JSON.parse(userData)
-      const exists = userPermiso?.accesos.some(
+      const exists = userPermiso?.accesos.find(
         (obj) => obj.coleccionId === item.coleccion
       )
 
       if (exists) {
-        setValida(true)
+        setValida(exists.ver)
       } else {
         setValida(false)
       }

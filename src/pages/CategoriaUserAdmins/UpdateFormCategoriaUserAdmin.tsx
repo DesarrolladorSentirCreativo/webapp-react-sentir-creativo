@@ -7,7 +7,7 @@ import * as yup from 'yup'
 import { Card } from '../../components/Controls'
 import { useNotification } from '../../context'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
-import { type ICategoriaUserAdmin } from '../../models'
+import { type ICategoriaUserAdmin, type IUserAdminPermisos } from '../../models'
 import categoriaUserAdminService from '../../services/categoriaUserAdmin.service'
 import { SkeletonFormOrganizacion } from '../Organizaciones/components'
 
@@ -33,13 +33,30 @@ const UpdateFormCategoriaUserAdmin: FC = () => {
   }
 
   const loadData = async (id: string | undefined): Promise<void> => {
-    setIsLoading(true)
-    const sucursal = await categoriaUserAdminService.getById(
-      parseInt(id ?? '0')
-    )
-    await loadCategoriaUserAdminData(sucursal)
-    getUserId()
-    setIsLoading(false)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 26
+      )
+
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        const sucursal = await categoriaUserAdminService.getById(
+          parseInt(id ?? '0')
+        )
+        await loadCategoriaUserAdminData(sucursal)
+        getUserId()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const formik = useFormik<ICategoriaUserAdmin>({

@@ -16,7 +16,7 @@ import { useNotification } from '../../context'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
 import useAcuerdoUserAdmin from '../../hooks/useAcuerdoUserAdmin'
 import usePrivilegio from '../../hooks/usePrivilegio'
-import { type IUpdateRol } from '../../models'
+import { type IUpdateRol, type IUserAdminPermisos } from '../../models'
 import rolService from '../../services/rol.service'
 import { SkeletonFormOrganizacion } from '../Organizaciones/components'
 
@@ -44,13 +44,29 @@ const UpdateFormRol: FC = () => {
   }
 
   const loadData = async (id: string | undefined): Promise<void> => {
-    setIsLoading(true)
-    const rol = await rolService.getById(parseInt(id ?? '0'))
-    await loadAcuerdoUserAdmins()
-    await loadPrivilegios()
-    getUserId()
-    await loadModuloData(rol)
-    setIsLoading(false)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 22
+      )
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        const rol = await rolService.getById(parseInt(id ?? '0'))
+        await loadAcuerdoUserAdmins()
+        await loadPrivilegios()
+        getUserId()
+        await loadModuloData(rol)
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const formik = useFormik<IUpdateRol>({

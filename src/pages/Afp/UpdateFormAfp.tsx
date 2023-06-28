@@ -7,7 +7,7 @@ import * as yup from 'yup'
 import { Card } from '../../components/Controls'
 import { useNotification } from '../../context'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
-import { type IAfp } from '../../models'
+import { type IAfp, type IUserAdminPermisos } from '../../models'
 import afpService from '../../services/afp.service'
 import { SkeletonFormOrganizacion } from '../Organizaciones/components'
 
@@ -31,11 +31,28 @@ const UpdateFormAfp: FC = () => {
   }
 
   const loadData = async (id: string | undefined): Promise<void> => {
-    setIsLoading(true)
-    const sucursal = await afpService.getById(parseInt(id ?? '0'))
-    await loadAfpData(sucursal)
-    getUserId()
-    setIsLoading(false)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 20
+      )
+
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        const sucursal = await afpService.getById(parseInt(id ?? '0'))
+        await loadAfpData(sucursal)
+        getUserId()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const formik = useFormik<IAfp>({

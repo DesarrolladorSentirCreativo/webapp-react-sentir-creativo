@@ -7,7 +7,7 @@ import * as yup from 'yup'
 import { Card } from '../../components/Controls'
 import { useNotification } from '../../context'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
-import { type IEstadoUserAdmin } from '../../models'
+import { type IEstadoUserAdmin, type IUserAdminPermisos } from '../../models'
 import estadoUserAdminService from '../../services/estadoUserAdmin.service'
 import { SkeletonFormOrganizacion } from '../Organizaciones/components'
 
@@ -34,13 +34,30 @@ const UpdateFormEstadoUserAdmin: FC = () => {
   }
 
   const loadData = async (id: string | undefined): Promise<void> => {
-    setIsLoading(true)
-    const estadoUserAdmin = await estadoUserAdminService.getById(
-      parseInt(id ?? '0')
-    )
-    await loadEstadoUserAdminData(estadoUserAdmin)
-    getUserId()
-    setIsLoading(false)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 27
+      )
+
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        const estadoUserAdmin = await estadoUserAdminService.getById(
+          parseInt(id ?? '0')
+        )
+        await loadEstadoUserAdminData(estadoUserAdmin)
+        getUserId()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const formik = useFormik<IEstadoUserAdmin>({

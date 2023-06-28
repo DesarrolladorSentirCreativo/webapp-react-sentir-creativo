@@ -7,7 +7,7 @@ import * as yup from 'yup'
 import { Card } from '../../components/Controls'
 import { useNotification } from '../../context'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
-import { type IModoTrabajo } from '../../models'
+import { type IModoTrabajo, type IUserAdminPermisos } from '../../models'
 import modoTrabajoService from '../../services/modoTrabajo.service'
 import { SkeletonFormOrganizacion } from '../Organizaciones/components'
 
@@ -33,11 +33,28 @@ const UpdateFormModoTrabajo: FC = () => {
   }
 
   const loadData = async (id: string | undefined): Promise<void> => {
-    setIsLoading(true)
-    const sucursal = await modoTrabajoService.getById(parseInt(id ?? '0'))
-    await loadModoTrabajoData(sucursal)
-    getUserId()
-    setIsLoading(false)
+    try {
+      const userData = getLocalStorage('user')
+      const userPermissions: IUserAdminPermisos = userData
+        ? JSON.parse(userData)
+        : null
+      const desiredAccess = userPermissions?.accesos.find(
+        (acceso) => acceso.coleccionId === 23
+      )
+
+      if (desiredAccess?.ver) {
+        setIsLoading(true)
+        const sucursal = await modoTrabajoService.getById(parseInt(id ?? '0'))
+        await loadModoTrabajoData(sucursal)
+        getUserId()
+      } else {
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log('Mi error', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const formik = useFormik<IModoTrabajo>({
