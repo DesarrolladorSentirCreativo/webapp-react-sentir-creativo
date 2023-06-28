@@ -27,13 +27,21 @@ interface IUserAcceso {
 const MenuSidebarSingleLevel: React.FC<Props> = ({ item }) => {
   const navigate = useNavigate()
   const location = useLocation()
-  const [user, setUser] = React.useState<IUserAcceso>()
   const [valida, setValida] = React.useState<boolean>(false)
 
   useEffect(() => {
     const userData = getLocalStorage('user') || '{}'
     try {
-      setUser(JSON.parse(userData))
+      const userPermiso: IUserAcceso = JSON.parse(userData)
+      const exists = userPermiso?.accesos.some(
+        (obj) => obj.coleccionId === item.coleccion
+      )
+
+      if (exists) {
+        setValida(true)
+      } else {
+        setValida(false)
+      }
     } catch (error) {
       console.error('Error parsing user data:', error)
     }
@@ -49,18 +57,6 @@ const MenuSidebarSingleLevel: React.FC<Props> = ({ item }) => {
     const newPath = nuevaRuta
     return newPath === path
   }
-
-  useEffect(() => {
-    const exists = user?.accesos.some(
-      (obj) => obj.coleccionId === item.coleccion
-    )
-
-    if (exists) {
-      setValida(true)
-    } else {
-      setValida(false)
-    }
-  }, [item])
 
   return (
     <>
