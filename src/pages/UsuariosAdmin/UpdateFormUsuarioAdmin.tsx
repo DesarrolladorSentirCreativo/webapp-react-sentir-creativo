@@ -299,15 +299,19 @@ const UpdateFormUsuarioAdmin: FC = () => {
         .max(30, 'El telefono no debe superar los 30 caracteres')
     }),
     onSubmit: async (values) => {
-      setIsLoading(true)
-      try {
-        await userAdminService.update(values, comentarios, archivos, userId)
-        getSuccess('El usuario fue actualizado correctamente')
-        navigate('/usuarios')
-      } catch (e) {
-        console.log(e)
-        getError('El usuario no pudo ser actualizado')
-        setIsLoading(false)
+      if (values.password === values.repeatPassword) {
+        setIsLoading(true)
+        try {
+          await userAdminService.update(values, comentarios, archivos, userId)
+          getSuccess('El usuario fue actualizado correctamente')
+          navigate('/usuarios')
+        } catch (e) {
+          console.log(e)
+          getError('El usuario no pudo ser actualizado')
+          setIsLoading(false)
+        }
+      } else {
+        getError('Las contraseñas no coinciden')
       }
     }
   })

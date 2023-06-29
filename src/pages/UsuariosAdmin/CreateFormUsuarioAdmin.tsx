@@ -216,14 +216,19 @@ const CreateFormUsuarioAdmin: FC = () => {
         .max(30, 'El telefono no debe superar los 30 caracteres')
     }),
     onSubmit: async (values) => {
-      setIsLoading(true)
-      try {
-        await userAdminService.create(values, comentarios, userId)
-        getSuccess('El usuario fue creado correctamente')
-        navigate('/usuarios')
-      } catch (e) {
-        console.log(e)
-        getError('El usuario no pudo ser creado')
+      if (values.password === values.repeatPassword) {
+        setIsLoading(true)
+        try {
+          await userAdminService.create(values, comentarios, userId)
+          getSuccess('El usuario fue creado correctamente')
+          navigate('/usuarios')
+        } catch (e) {
+          console.log(e)
+          getError('El usuario no pudo ser creado')
+          setIsLoading(false)
+        }
+      } else {
+        getError('Las contraseñas no coinciden')
         setIsLoading(false)
       }
     }
