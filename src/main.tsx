@@ -11,11 +11,11 @@ import App from './App'
 import { ThemeConfig } from './config/config.theme'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-    <React.StrictMode>
-        <ThemeConfig>
-            <BrowserRouter>
-            <App/>
-            </BrowserRouter>
-        </ThemeConfig>
-    </React.StrictMode>
+  <React.StrictMode>
+    <ThemeConfig>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ThemeConfig>
+  </React.StrictMode>
 )

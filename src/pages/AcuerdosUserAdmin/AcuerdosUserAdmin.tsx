@@ -167,7 +167,7 @@ const AcuerdosUserAdmin: FC = () => {
                 size="small"
                 variant="contained"
                 onClick={() => {
-                  navigate('/acuerdos/crear')
+                  navigate('/acuerdos/nuevo')
                 }}
               >
                 Crear Acuerdo

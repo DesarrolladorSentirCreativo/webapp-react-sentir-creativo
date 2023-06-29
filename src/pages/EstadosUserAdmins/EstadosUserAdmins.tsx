@@ -77,7 +77,6 @@ const EstadosUserAdmins: FC = () => {
     load()
   }, [])
 
-  console.log(data)
   useEffect(() => {
     const estadoUserAdminPreferences = getLocalStorage(
       'estadoUserAdminPreferences'
