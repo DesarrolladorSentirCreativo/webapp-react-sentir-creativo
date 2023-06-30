@@ -2,24 +2,16 @@ import axios from 'axios'
 
 import authService from '../services/auth.service'
 
-axios.defaults.baseURL = 'https://localhost:5293/api/v1'
+// axios.defaults.baseURL = 'https://localhost:5293/api/v1'
 
-// axios.defaults.baseURL = 'https://api.sentircreativo.com/api/v1'
+axios.defaults.baseURL = 'https://api.sentircreativo.com/api/v1'
 
 const token = localStorage.getItem('token')
 
 axios.defaults.headers.Authorization =
-  token && !authService.isTokenExpired(token) ? `Bearer ${token}` : null
-
-axios.interceptors.request.use(
-  function (config) {
-    return config
-  },
-  async function (error) {
-    // Do something with request error
-    return await Promise.reject(error)
-  }
-)
+  token && !authService.isTokenExpired(token)
+    ? `Bearer ${token.replace(/['"]+/g, '')}`
+    : null
 
 axios.interceptors.response.use(
   (response) => response,
