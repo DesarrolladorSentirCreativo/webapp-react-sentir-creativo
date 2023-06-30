@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogTitle
 } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 
 interface IDialogButton {
   open: boolean
@@ -17,6 +17,7 @@ interface IDialogButton {
   onConfirm: () => Promise<void>
 }
 const DialogButton: React.FC<IDialogButton> = (props: IDialogButton) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const {
     open,
     onClose,
@@ -27,20 +28,28 @@ const DialogButton: React.FC<IDialogButton> = (props: IDialogButton) => {
     onConfirm
   } = props
 
+  const handleClick = async (): Promise<void> => {
+    setIsLoading(true)
+    await onConfirm()
+    setIsLoading(false)
+    onClose()
+  }
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>{message}</DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>{cancelButtonText}</Button>
+        <Button onClick={onClose} disabled={isLoading}>
+          {cancelButtonText}
+        </Button>
         <Button
+          disabled={isLoading}
           variant="contained"
           onClick={() => {
-            onConfirm()
-            onClose()
+            handleClick()
           }}
         >
-          {confirmButtonText}
+          {isLoading ? 'Cargando...' : confirmButtonText}
         </Button>
       </DialogActions>
     </Dialog>
