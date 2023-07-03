@@ -14,7 +14,7 @@ const Layout: React.FC = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <Topbar handleDrawerToggle={handleDrawerToggle} />
-      <Box component="nav" sx={{ width: { md: 240, xs: 0 }, flexShrink: 0 }}>
+      <Box component="nav" sx={{ width: { md: 0, xs: 0 }, flexShrink: 0 }}>
         <Sidebar
           mobileOpen={mobileOpen}
           handleDrawerToggle={handleDrawerToggle}

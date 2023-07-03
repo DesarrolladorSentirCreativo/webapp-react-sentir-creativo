@@ -1,7 +1,6 @@
 import './Sidebar.css'
 
 import { Drawer, Toolbar } from '@mui/material'
-import React from 'react'
 
 import { themePallete } from '../../config/config.theme'
 import sizeConfig from '../../config/size.config.'
@@ -14,60 +13,41 @@ interface Props {
 }
 const Sidebar: React.FC<Props> = (props) => {
   return (
-      <>
-          <Drawer
-              variant="temporary"
-              open={props.mobileOpen}
-              onClose={props.handleDrawerToggle}
-              ModalProps={{
-                keepMounted: true // Better open performance on mobile.
-              }}
-              sx={{
-                width: sizeConfig.sidebar.width,
-                flexShrink: 0,
-                '& .MuiDrawer-paper': {
-                  width: sizeConfig.sidebar.width,
-                  boxSizing: 'border-box',
-                  borderRight: '0px',
-                  backgroundColor: themePallete.SIDEBAR_BG
-                },
-                display: { xs: 'block', md: 'none' }
-              }}
-          >
-              <div>
-                  <Toolbar sx={{ background: themePallete.SIDEBAR_BG, width: '100%', p: 2 }}>
-                      <img src='/static/images/white_animate.com_l.png' className='logo-sidebar' alt='Sentir Creativo' />
-                  </Toolbar>
-                  <MenuProvider>
-                      <MenuSidebar />
-                  </MenuProvider>
-              </div>
-          </Drawer>
-          <Drawer variant='permanent' sx={{
-            width: { md: sizeConfig.sidebar.width, xs: 0 },
-            flexShrink: 0,
-            '& .MuiDrawer-paper': {
-              width: sizeConfig.sidebar.width,
-              boxSizing: 'border-box',
-              borderRight: '0px',
-              backgroundColor: themePallete.SIDEBAR_BG
-
-            },
-            display: { xs: 'none', md: 'block' }
-          }}
-                  open
-          >
-              <div>
-                  <Toolbar sx={{ background: themePallete.SIDEBAR_BG, width: '100%', p: 2 }}>
-                      <img src='/static/images/white_animate.com_l.png' className='logo-sidebar' alt='Sentir Creativo' />
-                  </Toolbar>
-                  <MenuProvider>
-                      <MenuSidebar />
-                  </MenuProvider>
-              </div>
-          </Drawer>
-      </>
-
+    <Drawer
+      variant="temporary"
+      open={props.mobileOpen}
+      onClose={props.handleDrawerToggle}
+      ModalProps={{
+        keepMounted: true // Mejora el rendimiento de apertura en dispositivos móviles.
+      }}
+      sx={{
+        width: sizeConfig.sidebar.width,
+        flexShrink: 0,
+        '& .MuiDrawer-paper': {
+          width: sizeConfig.sidebar.width,
+          boxSizing: 'border-box',
+          borderRight: '0px',
+          backgroundColor: themePallete.SIDEBAR_BG
+        },
+        display: 'block' // Se muestra en todas las tamaños de pantalla
+      }}
+    >
+      <div>
+        <Toolbar
+          sx={{ background: themePallete.SIDEBAR_BG, width: '100%', p: 2 }}
+        >
+          <img
+            src="/static/images/white_animate.com_l.png"
+            className="logo-sidebar"
+            alt="Sentir Creativo"
+          />
+        </Toolbar>
+        <MenuProvider>
+          <MenuSidebar />
+        </MenuProvider>
+      </div>
+    </Drawer>
   )
 }
+
 export default Sidebar

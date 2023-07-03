@@ -76,7 +76,7 @@ const Topbar: React.FC<Props> = (props) => {
     <AppBar
       position="fixed"
       sx={{
-        width: { md: `calc(100% - ${sizeConfig.sidebar.width})` },
+        width: '100%',
         ml: sizeConfig.sidebar.width,
         boxShadow: 'unset',
         backgroundColor: themePallete.PRIMARY,
@@ -89,7 +89,7 @@ const Topbar: React.FC<Props> = (props) => {
           aria-label="open drawer"
           edge="start"
           onClick={props.handleDrawerToggle}
-          sx={{ mr: 2, display: { md: 'none' } }}
+          sx={{ mr: 2 }}
         >
           <MenuIcon />
         </IconButton>
