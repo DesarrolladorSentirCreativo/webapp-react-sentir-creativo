@@ -8,3 +8,7 @@ export interface IAcceso {
 }
 
 export interface IAccesos extends Omit<IAcceso, 'id' | 'coleccionId'> {}
+
+export interface IAccesoModulo extends IAcceso {
+  moduloId: number
+}

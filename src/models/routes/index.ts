@@ -5,6 +5,7 @@ interface RouteType {
   title: string
   icon?: ReactNode
   coleccion?: number
+  modulo?: number
   path?: string
   children?: RouteType[]
 }

@@ -30,6 +30,7 @@ const menu: RouteType[] = [
   {
     id: 'usuarios',
     title: 'Usuarios',
+    modulo: 4,
     icon: <PersonIcon />,
     children: [
       {
