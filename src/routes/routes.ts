@@ -29,6 +29,7 @@ import {
   Privilegios,
   Roles,
   Sucursales,
+  TecnicasArtisticas,
   UpdateFormAcuerdoUserAdmin,
   UpdateFormAfp,
   UpdateFormAudiencia,
@@ -276,6 +277,11 @@ const routes = [
     path: '/usuarios/actualizar/:id',
     coleccion: 28,
     component: UpdateFormUsuarioAdmin
+  },
+  {
+    path: '/tecnicas-artisticas',
+    coleccion: 30,
+    component: TecnicasArtisticas
   }
 ]
 

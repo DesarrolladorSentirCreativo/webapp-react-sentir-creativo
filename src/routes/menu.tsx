@@ -3,6 +3,7 @@ import BusinessIcon from '@mui/icons-material/Business'
 import HailIcon from '@mui/icons-material/Hail'
 import HouseIcon from '@mui/icons-material/House'
 import PersonIcon from '@mui/icons-material/Person'
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 
 import { type RouteType } from '../models'
 
@@ -26,6 +27,22 @@ const menu: RouteType[] = [
     title: 'Organizaciones',
     icon: <BusinessIcon />,
     path: '/organizaciones'
+  },
+  {
+    id: 'servicio',
+    modulo: 8,
+    title: 'Servicios',
+    icon: <ShoppingCartIcon />,
+    children: [
+      {
+        id: 'tecnicaartisticas',
+        title: 'Tecnica Artisticas',
+        coleccion: 30,
+        icon: <ArrowRightIcon />,
+        path: '/tecnicas-artisticas',
+        children: []
+      }
+    ]
   },
   {
     id: 'usuarios',
