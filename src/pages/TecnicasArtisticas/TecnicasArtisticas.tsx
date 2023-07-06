@@ -146,7 +146,7 @@ const TecnicasArtisticas: FC = () => {
         ? JSON.parse(userData)
         : null
       const desiredAccess = userPermissions?.accesos.find(
-        (acceso) => acceso.coleccionId === 24
+        (acceso) => acceso.coleccionId === 30
       )
 
       if (desiredAccess?.ver) {

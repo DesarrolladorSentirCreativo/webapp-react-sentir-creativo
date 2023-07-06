@@ -19,6 +19,7 @@ import {
   CreateFormPrivilegio,
   CreateFormRol,
   CreateFormSucursal,
+  CreateFormTecnicaArtistica,
   CreateFormUsuarioAdmin,
   EstadosUserAdmins,
   Home,
@@ -282,6 +283,11 @@ const routes = [
     path: '/tecnicas-artisticas',
     coleccion: 30,
     component: TecnicasArtisticas
+  },
+  {
+    path: '/tecnicas-artisticas/nuevo',
+    coleccion: 28,
+    component: CreateFormTecnicaArtistica
   }
 ]
 
