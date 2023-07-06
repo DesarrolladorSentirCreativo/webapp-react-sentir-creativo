@@ -45,6 +45,7 @@ import {
   UpdateFormPrivilegio,
   UpdateFormRol,
   UpdateFormSucursal,
+  UpdateFormTecnicaArtistica,
   UpdateFormUsuarioAdmin,
   UsuariosAdmin
 } from '../pages'
@@ -286,8 +287,13 @@ const routes = [
   },
   {
     path: '/tecnicas-artisticas/nuevo',
-    coleccion: 28,
+    coleccion: 30,
     component: CreateFormTecnicaArtistica
+  },
+  {
+    path: '/tecnicas-artisticas/actualizar/:id',
+    coleccion: 30,
+    component: UpdateFormTecnicaArtistica
   }
 ]
 

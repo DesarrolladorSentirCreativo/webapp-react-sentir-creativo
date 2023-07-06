@@ -21,6 +21,7 @@ import previsionReducer from './states/prevision'
 import rolReducer from './states/rol'
 import rubroReducer from './states/rubro'
 import sucursalReducer from './states/sucursal'
+import tecnicaArtisticaReducer from './states/tecnicaArtistica'
 import usuarioAdminReducer from './states/usuarioAdmin'
 
 const store = configureStore({
@@ -46,7 +47,8 @@ const store = configureStore({
     prevision: previsionReducer,
     modoTrabajo: modoTrabajoReducer,
     usuarioAdmin: usuarioAdminReducer,
-    estadoUserAdmin
+    estadoUserAdmin,
+    tecnicaArtistica: tecnicaArtisticaReducer
   }
 })
 
