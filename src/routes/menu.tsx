@@ -36,10 +36,18 @@ const menu: RouteType[] = [
     children: [
       {
         id: 'tecnicaartisticas',
-        title: 'Tecnica Artisticas',
+        title: 'Técnica Artística',
         coleccion: 30,
         icon: <ArrowRightIcon />,
         path: '/tecnicas-artisticas',
+        children: []
+      },
+      {
+        id: 'ocaciones',
+        title: 'Ocasión',
+        coleccion: 31,
+        icon: <ArrowRightIcon />,
+        path: '/ocaciones',
         children: []
       }
     ]

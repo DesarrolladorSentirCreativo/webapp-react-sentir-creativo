@@ -81,7 +81,7 @@ const CreateFormTecnicaArtistica: FC = () => {
       <Card title="Formulario">
         <Box component="form" onSubmit={formik.handleSubmit}>
           <Typography variant="h5" sx={{ textAlign: 'center' }}>
-            Formulario para Creación de Tecnica Artistica
+            Formulario para Creación de Técnica Artística
           </Typography>
           <Grid container spacing={2} padding={2}>
             <Grid item xs={12} sm={12} md={12}>

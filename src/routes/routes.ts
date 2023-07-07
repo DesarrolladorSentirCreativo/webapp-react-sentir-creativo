@@ -14,6 +14,7 @@ import {
   CreateFormEstadoUserAdmin,
   CreateFormModoTrabajo,
   CreateFormModulo,
+  CreateFormOcacion,
   CreateFormOrganizacion,
   CreateFormPrevision,
   CreateFormPrivilegio,
@@ -25,6 +26,7 @@ import {
   Home,
   ModosTrabajos,
   Modulos,
+  Ocaciones,
   Organizaciones,
   Previsiones,
   Privilegios,
@@ -40,6 +42,7 @@ import {
   UpdateFormEstadoUserAdmin,
   UpdateFormModoTrabajo,
   UpdateFormModulo,
+  UpdateFormOcacion,
   UpdateFormOrganizacion,
   UpdateFormPrevision,
   UpdateFormPrivilegio,
@@ -294,6 +297,21 @@ const routes = [
     path: '/tecnicas-artisticas/actualizar/:id',
     coleccion: 30,
     component: UpdateFormTecnicaArtistica
+  },
+  {
+    path: '/ocaciones',
+    coleccion: 31,
+    component: Ocaciones
+  },
+  {
+    path: '/ocaciones/nuevo',
+    coleccion: 30,
+    component: CreateFormOcacion
+  },
+  {
+    path: '/ocaciones/actualizar/:id',
+    coleccion: 30,
+    component: UpdateFormOcacion
   }
 ]
 

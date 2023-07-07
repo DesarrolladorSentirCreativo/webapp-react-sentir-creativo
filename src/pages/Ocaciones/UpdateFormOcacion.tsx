@@ -7,15 +7,11 @@ import * as yup from 'yup'
 import { Card } from '../../components/Controls'
 import { useNotification } from '../../context'
 import { getLocalStorage } from '../../helpers/localstorage.helper'
-import {
-  type ITecnicaArtistica,
-  type IUpdateTecnicaArtistica,
-  type IUserAdminPermisos
-} from '../../models'
-import tecnicaArtisticaService from '../../services/tecnicaArtistica.service'
+import { type IUpdateOcacion, type IUserAdminPermisos } from '../../models'
+import ocacionService from '../../services/ocacion.service'
 import { SkeletonFormOrganizacion } from '../Organizaciones/components'
 
-const UpdateFormTecnicaArtistica: FC = () => {
+const UpdateFormOcacion: FC = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -29,7 +25,7 @@ const UpdateFormTecnicaArtistica: FC = () => {
         ? JSON.parse(userData)
         : null
       const desiredAccess = userPermissions?.accesos.find(
-        (acceso) => acceso.coleccionId === 30
+        (acceso) => acceso.coleccionId === 31
       )
 
       if (desiredAccess?.ver) {
@@ -46,23 +42,19 @@ const UpdateFormTecnicaArtistica: FC = () => {
     }
   }, [])
 
-  const loadSucursalData = async (
-    tecnicaArtistica: ITecnicaArtistica
-  ): Promise<void> => {
+  const loadSucursalData = async (ocacion: IUpdateOcacion): Promise<void> => {
     formik.setValues({
-      id: tecnicaArtistica.id,
-      nombre: tecnicaArtistica.nombre
+      id: ocacion.id,
+      nombre: ocacion.nombre
     })
   }
 
   const loadData = async (id: string | undefined): Promise<void> => {
-    const tecnicaArtistica = await tecnicaArtisticaService.getById(
-      parseInt(id ?? '0')
-    )
-    await loadSucursalData(tecnicaArtistica)
+    const ocacion = await ocacionService.getById(parseInt(id ?? '0'))
+    await loadSucursalData(ocacion)
   }
 
-  const formik = useFormik<IUpdateTecnicaArtistica>({
+  const formik = useFormik<IUpdateOcacion>({
     initialValues: {
       id: 0,
       nombre: ''
@@ -77,12 +69,12 @@ const UpdateFormTecnicaArtistica: FC = () => {
     onSubmit: async (values) => {
       setIsLoading(true)
       try {
-        await tecnicaArtisticaService.update(values, userId)
-        getSuccess('La tecnica artistica se actualizó correctamente')
-        navigate('/tecnicas-artisticas')
+        await ocacionService.update(values, userId)
+        getSuccess('La ocación se actualizó correctamente')
+        navigate('/ocaciones')
       } catch (e) {
         console.log(e)
-        getError('La tecnica artistica no se actualizó correctamente')
+        getError('La ocación no se actualizó correctamente')
         setIsLoading(false)
       }
     }
@@ -101,7 +93,7 @@ const UpdateFormTecnicaArtistica: FC = () => {
       <Card title="Formulario">
         <Box component="form" onSubmit={formik.handleSubmit}>
           <Typography variant="h5" sx={{ textAlign: 'center' }}>
-            Formulario para Actualización de Técnica Artística
+            Formulario para Actualización de Ocación
           </Typography>
           <Grid container spacing={2} padding={2}>
             <Grid item xs={12} sm={12} md={12}>
@@ -136,7 +128,7 @@ const UpdateFormTecnicaArtistica: FC = () => {
                 variant="contained"
                 color="error"
                 onClick={() => {
-                  navigate('/tecnicas-artisticas')
+                  navigate('/ocaciones')
                 }}
               >
                 Cancelar
@@ -149,4 +141,4 @@ const UpdateFormTecnicaArtistica: FC = () => {
   }
 }
 
-export default UpdateFormTecnicaArtistica
+export default UpdateFormOcacion
