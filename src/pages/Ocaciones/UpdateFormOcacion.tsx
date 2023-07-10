@@ -93,7 +93,7 @@ const UpdateFormOcacion: FC = () => {
       <Card title="Formulario">
         <Box component="form" onSubmit={formik.handleSubmit}>
           <Typography variant="h5" sx={{ textAlign: 'center' }}>
-            Formulario para Actualización de Ocación
+            Formulario para Actualización de Ocasión
           </Typography>
           <Grid container spacing={2} padding={2}>
             <Grid item xs={12} sm={12} md={12}>

@@ -55,11 +55,11 @@ const CreateFormOCacion: FC = () => {
       setIsLoading(true)
       try {
         await ocacionService.create(values, userId)
-        getSuccess('La ocación fue creada correctamente')
+        getSuccess('La ocasión fue creada correctamente')
         navigate('/ocaciones')
       } catch (e) {
         console.log(e)
-        getError('La ocación no pudo ser creada')
+        getError('La ocasión no pudo ser creada')
         setIsLoading(false)
       }
     }
@@ -78,7 +78,7 @@ const CreateFormOCacion: FC = () => {
       <Card title="Formulario">
         <Box component="form" onSubmit={formik.handleSubmit}>
           <Typography variant="h5" sx={{ textAlign: 'center' }}>
-            Formulario para Creación de Ocación
+            Formulario para Creación de Ocasión
           </Typography>
           <Grid container spacing={2} padding={2}>
             <Grid item xs={12} sm={12} md={12}>

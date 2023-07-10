@@ -44,7 +44,7 @@ const menu: RouteType[] = [
       },
       {
         id: 'ocaciones',
-        title: 'Ocasión',
+        title: 'Ocasiones',
         coleccion: 31,
         icon: <ArrowRightIcon />,
         path: '/ocaciones',
