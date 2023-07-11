@@ -11,6 +11,7 @@ import {
   CreateFormCategoriaPrivilegio,
   CreateFormCategoriaUserAdmin,
   CreateFormColeccionUserAdmin,
+  CreateFormEstadoServicio,
   CreateFormEstadoUserAdmin,
   CreateFormModoTrabajo,
   CreateFormModulo,
@@ -22,6 +23,7 @@ import {
   CreateFormSucursal,
   CreateFormTecnicaArtistica,
   CreateFormUsuarioAdmin,
+  EstadosServicios,
   EstadosUserAdmins,
   Home,
   ModosTrabajos,
@@ -39,6 +41,7 @@ import {
   UpdateFormCategoriaPrivilegio,
   UpdateFormCategoriaUserAdmin,
   UpdateFormColeccionUserAdmin,
+  UpdateFormEstadoServicio,
   UpdateFormEstadoUserAdmin,
   UpdateFormModoTrabajo,
   UpdateFormModulo,
@@ -312,6 +315,21 @@ const routes = [
     path: '/ocaciones/actualizar/:id',
     coleccion: 30,
     component: UpdateFormOcacion
+  },
+  {
+    path: '/estados-servicios',
+    coleccion: 33,
+    component: EstadosServicios
+  },
+  {
+    path: '/estados-servicios/nuevo',
+    coleccion: 33,
+    component: CreateFormEstadoServicio
+  },
+  {
+    path: '/estados-servicios/actualizar/:id',
+    coleccion: 33,
+    component: UpdateFormEstadoServicio
   }
 ]
 

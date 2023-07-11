@@ -2,9 +2,9 @@ import axios from 'axios'
 
 import authService from '../services/auth.service'
 
-// axios.defaults.baseURL = 'https://localhost:5293/api/v1'
+axios.defaults.baseURL = 'https://localhost:5293/api/v1'
 
-axios.defaults.baseURL = 'https://api.sentircreativo.com/api/v1'
+// axios.defaults.baseURL = 'https://api.sentircreativo.com/api/v1'
 
 const token = localStorage.getItem('token')
 

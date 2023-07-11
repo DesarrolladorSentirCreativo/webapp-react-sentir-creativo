@@ -35,11 +35,11 @@ const menu: RouteType[] = [
     icon: <ShoppingCartIcon />,
     children: [
       {
-        id: 'tecnicaartisticas',
-        title: 'Técnica Artística',
-        coleccion: 30,
+        id: 'estadosServicios',
+        title: 'Estados de Servicios',
+        coleccion: 33,
         icon: <ArrowRightIcon />,
-        path: '/tecnicas-artisticas',
+        path: '/estados-servicios',
         children: []
       },
       {
@@ -48,6 +48,14 @@ const menu: RouteType[] = [
         coleccion: 31,
         icon: <ArrowRightIcon />,
         path: '/ocaciones',
+        children: []
+      },
+      {
+        id: 'tecnicaartisticas',
+        title: 'Técnica Artística',
+        coleccion: 30,
+        icon: <ArrowRightIcon />,
+        path: '/tecnicas-artisticas',
         children: []
       }
     ]
