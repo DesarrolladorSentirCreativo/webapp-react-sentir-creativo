@@ -13,6 +13,7 @@ import {
   CreateFormColeccionUserAdmin,
   CreateFormEstadoServicio,
   CreateFormEstadoUserAdmin,
+  CreateFormFormato,
   CreateFormModoTrabajo,
   CreateFormModulo,
   CreateFormOcacion,
@@ -25,6 +26,7 @@ import {
   CreateFormUsuarioAdmin,
   EstadosServicios,
   EstadosUserAdmins,
+  Formatos,
   Home,
   ModosTrabajos,
   Modulos,
@@ -43,6 +45,7 @@ import {
   UpdateFormColeccionUserAdmin,
   UpdateFormEstadoServicio,
   UpdateFormEstadoUserAdmin,
+  UpdateFormFormato,
   UpdateFormModoTrabajo,
   UpdateFormModulo,
   UpdateFormOcacion,
@@ -330,6 +333,21 @@ const routes = [
     path: '/estados-servicios/actualizar/:id',
     coleccion: 33,
     component: UpdateFormEstadoServicio
+  },
+  {
+    path: '/formatos',
+    coleccion: 34,
+    component: Formatos
+  },
+  {
+    path: '/formatos/nuevo',
+    coleccion: 34,
+    component: CreateFormFormato
+  },
+  {
+    path: '/formatos/actualizar/:id',
+    coleccion: 34,
+    component: UpdateFormFormato
   }
 ]
 

@@ -43,6 +43,14 @@ const menu: RouteType[] = [
         children: []
       },
       {
+        id: 'formatos',
+        title: 'Formatos',
+        coleccion: 34,
+        icon: <ArrowRightIcon />,
+        path: '/formatos',
+        children: []
+      },
+      {
         id: 'ocaciones',
         title: 'Ocasiones',
         coleccion: 31,
