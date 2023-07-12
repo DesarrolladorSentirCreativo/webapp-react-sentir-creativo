@@ -1250,6 +1250,7 @@ const UpdateFormUsuarioAdmin: FC = () => {
               />
             </Grid>
             <Archivo
+              contexto="usersadmin"
               archivos={archivos}
               audienciaId={usuarioId}
               addArchivo={addArchivo}

@@ -13,6 +13,7 @@ interface IArchivoProps {
   audienciaId: number
   addArchivo: (archivo: IArchivo) => void
   removeArchivo: (id: number) => void
+  contexto: string
 }
 
 const archivoForm: IArchivo = {
@@ -25,14 +26,13 @@ const archivoForm: IArchivo = {
   publico: false
 }
 const Archivo: React.FC<IArchivoProps> = (props: IArchivoProps) => {
-  const { archivos, audienciaId, addArchivo, removeArchivo } = props
+  const { archivos, audienciaId, addArchivo, removeArchivo, contexto } = props
   const [open, setOpen] = useState<boolean>(false)
   const [archivo, setArchivo] = useState<IArchivo>(archivoForm)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [tipoArchivos, setTipoArchivos] = useState<ITipoArchivo[]>([])
 
   useEffect(() => {
-    console.log(archivos)
     load()
   }, [])
 
@@ -122,7 +122,7 @@ const Archivo: React.FC<IArchivoProps> = (props: IArchivoProps) => {
         audienciaId={audienciaId}
         closeLoading={handleCloseLoading}
         removeArchivo={removeArchivo}
-        contexto={'audiencia'}
+        contexto={contexto}
       />
     </>
   )

@@ -47,7 +47,7 @@ export async function uploadFileToS3({
   const [ext] = file.name.split('.').reverse()
   const fileKey = `${parent}/${parentId}/${name}.${ext}`
   const fileData = await file.arrayBuffer()
-
+  console.log(parent)
   const command = new PutObjectCommand({
     Bucket: BucketName,
     Key: fileKey,

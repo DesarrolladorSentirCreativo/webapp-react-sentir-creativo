@@ -850,6 +850,7 @@ const UpdateFormAudiencia: React.FC = () => {
             </Grid>
           </Grid>
           <Archivo
+            contexto="audiencia"
             archivos={archivos}
             audienciaId={audienciaId}
             addArchivo={addArchivo}
